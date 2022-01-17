@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Connection to MySql</title>
+  </head>
+  <body>
+    <div>
+      <h5>
+        <a href="connect">Test Connect MySql</a>
+      </h5>
+      <% if(users.length > 0) { %>
+      <ul>
+        <% users.map(u => { %>
+        <li><%= u._id %></li>
+        <li><%= u.username %></li>
+        <li><%= u.password %></li>
+        <%})%>
+      </ul>
+      <% } %>
+    </div>
+  </body>
+</html>

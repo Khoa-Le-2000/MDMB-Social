@@ -1,0 +1,27 @@
+{
+  "name": "MDMB-Social",
+  "version": "1.0.0",
+  "description": "## How to install MySql & MySql Workbench: [Reference Openplanning](https://openplanning.net/10221/cai-dat-co-so-du-lieu-mysql-tren-windows)",
+  "main": "index.js",
+  "scripts": {
+    "withLib": "node src/serverWithLib.js",
+    "withOutLib": "node src/serverWithOutLib.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Khoa-Le-2000/MDMB-Social.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Khoa-Le-2000/MDMB-Social/issues"
+  },
+  "homepage": "https://github.com/Khoa-Le-2000/MDMB-Social#readme",
+  "dependencies": {
+    "array-flatten": "^3.0.0",
+    "ejs": "^3.1.6",
+    "express": "^4.17.2",
+    "mysql2": "^2.3.3"
+  }
+}
