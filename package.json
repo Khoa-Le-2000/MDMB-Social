@@ -1,0 +1,19 @@
+{
+  "name": "mdmb-social",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Khoa-Le-2000/MDMB-Social.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Khoa-Le-2000/MDMB-Social/issues"
+  },
+  "homepage": "https://github.com/Khoa-Le-2000/MDMB-Social#readme"
+}
