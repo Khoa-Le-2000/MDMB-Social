@@ -8,5 +8,10 @@
     "start": "nodejs index.js"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.17.2",
+    "mysql": "^2.18.1"
+  }
 }

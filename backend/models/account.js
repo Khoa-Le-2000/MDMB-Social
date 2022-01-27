@@ -13,3 +13,4 @@ class Account {
 }
 
 exports.Account = Account;
+// export default Account;
