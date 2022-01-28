@@ -1,8 +1,10 @@
+import React from 'react';
+import './Login.css';
 function Login() {
   return (
-    <div>
-      <h1>Form login</h1>
-      <input type="text" />
+    <div className="form-group">
+      <h1 className="heading">Form login</h1>
+      <input type="text" placeholder="Email or phone number" />
     </div>
   );
 }
