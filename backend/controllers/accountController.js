@@ -1,5 +1,5 @@
 const Account = require('../models/account');
-const AccountDAO = require('../dao/accountDAO');
+const AccountDAO = require('../models/data-access/accountDAO');
 
 function login(req, res) {
 
