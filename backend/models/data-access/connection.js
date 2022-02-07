@@ -1,10 +1,15 @@
-var mysql = require('mysql');
+const mysql = require('mysql');
+const config = require('../../config/db.config');
 
-var con = mysql.createConnection({
-  host: "54.169.145.140",
-  user: "admin",
-  password: "qwer1234",
-  database: "MDMB",
-  insecureAuth: true,
-});
-module.exports = con;
+function createConnection(){
+    return mysql.createConnection({
+        host: config.HOST,
+        user: config.USER,
+        password: config.PASSWORD,
+        database: config.DATABASE
+    });
+}
+
+module.exports = {
+    createConnection
+}
