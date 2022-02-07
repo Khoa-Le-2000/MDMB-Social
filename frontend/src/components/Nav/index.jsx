@@ -17,7 +17,10 @@ function Nav() {
           <Link to="/">Home</Link>
         </li>
         <li>
-          <Link to="/pricing">Pricing</Link>
+          <Link to="/login">Login</Link>
+        </li>
+        <li>
+          <Link to="/register">Register</Link>
         </li>
       </ul>
       {authed && <button onClick={handleLogout}>Logout</button>}
