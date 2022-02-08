@@ -1,13 +1,13 @@
 const Account = require('../models/account');
 const AccountDAO = require('../models/data-access/accountDAO');
 const jwt = require('jsonwebtoken');
-const base64url = require('base64url')
+const bcrypt = require('bcrypt');
 
 function login(req, res) {
   var Username = req.body.Username;
   var Password = req.body.Password;
   AccountDAO.getAccounts(Username, (Account) => {
-    if (Account == false) res.send('login failure');
+    if (Account == false) res.send({ result: 'login failure' });
     else {
       let acccount = Account;
       bcrypt.compare(Password, acccount.Password, function (err, result) {
@@ -19,7 +19,7 @@ function login(req, res) {
             accessToken: accessToken,
             refreshToken: refreshToken
           });
-        } else res.send('login failure');
+        } else res.send({ result: 'login failure' });
       })
     }
   });
