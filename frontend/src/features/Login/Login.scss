@@ -1,0 +1,142 @@
+@use '../../styles/' as *;
+
+.login {
+  &__inner {
+    padding: 10px 30px;
+
+    //override css bootstrap
+    .form-check {
+      margin-bottom: 0;
+    }
+
+    .carousel-caption {
+      position: initial;
+    }
+
+    .title {
+      font-size: medium;
+      margin-bottom: 60px;
+      margin-top: 30px;
+      line-height: 1.5;
+    }
+
+    .hero {
+      height: 100%;
+      display: flex;
+      padding: 20px;
+      background-color: $bg-color;
+    }
+    .slider {
+      height: 100%;
+      &__heading {
+        color: $main-color;
+      }
+
+      &__desc {
+        color: $main-color;
+      }
+    }
+  }
+
+  &__wrap {
+    padding: 20px 100px;
+  }
+
+  &__column {
+    background-color: #e6e5ed;
+    border-radius: 10px;
+  }
+}
+
+.form {
+  &__forgot {
+    text-align: right;
+  }
+  .forgot__title {
+    color: $main-color;
+  }
+  &__btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .btn-login {
+      background-color: $main-color;
+      border: 1px solid $main-color;
+      border-radius: 4px;
+    }
+  }
+  &__register_detail {
+    margin-top: 3rem;
+    display: flex;
+    align-self: center;
+    justify-content: center;
+  }
+  .register__wrap {
+    margin-left: 10px;
+    color: $main-color;
+  }
+  &__group-checkbox {
+    height: 38px;
+    display: flex;
+    align-items: center;
+  }
+}
+.sign__other {
+  margin-top: 20px;
+
+  &--text {
+    text-align: center;
+    // display: flex;
+    // flex-direction: row;
+    &::after,
+    &::before {
+      // content: '';
+      // flex: 1 1;
+      // border-bottom: 1px solid;
+      // margin: auto;
+      display: inline-block;
+      content: '';
+      border-top: 1px solid #68e1fc;
+      width: 6rem;
+      transform: translateY(-5px);
+    }
+    &:before {
+      margin-right: 10px;
+    }
+    &:after {
+      margin-left: 10px;
+    }
+  }
+
+  &--icon {
+    display: flex;
+    justify-content: space-evenly;
+  }
+
+  .img {
+    &__border {
+      border: 1px solid $main-color;
+      border-radius: 4px;
+
+      width: 85px;
+      height: 50px;
+      border-radius: 4px;
+      a {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+    }
+    &__inner {
+      padding: 10px;
+    }
+
+    &__img {
+      transform: scale(0.8, 0.8);
+
+      width: 100%;
+      max-height: 100%;
+      object-fit: scale-down;
+    }
+  }
+}
