@@ -2,7 +2,7 @@ const connection = require('./connection');
 const Account = require('../account')
 const bcrypt = require("bcrypt");
 
-function getAccounts(Username, Password, Callback) {
+function getAccounts(Username, Callback) {
 
   var con = connection.createConnection();
   con.connect(function (err) {
@@ -13,12 +13,8 @@ function getAccounts(Username, Password, Callback) {
       if (err) throw err;
       if (result.length > 0) {
         var acc = new Account.Account(result[0].AccountId, result[0].Password, result[0].Phone, result[0].Email, result[0].Name, result[0].Avatar, result[0].Birthday, result[0].Gender, result[0].CreatedDate);
-        bcrypt.compare(Password, acc.Password, function (err, result) {
-          // result == true
-          if(result==true) return Callback(acc);
-          else return Callback(false);
-        })
-      } else return Callback(-1);
+        return Callback(acc)
+      } else return Callback(false);
     });
   });
 }

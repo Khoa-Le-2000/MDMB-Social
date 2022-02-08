@@ -12,7 +12,7 @@ function login(req, res) {
     if (Account == false) res.send('login failure');
     else {
       let payload = Account;
-      let token = jwt.sign(JSON.stringify(payload), "secret");
+      let token = jwt.sign(JSON.stringify(payload),process.env.ACCESS_TOKEN_SECRET);
       res.send(token);
     }
   });
