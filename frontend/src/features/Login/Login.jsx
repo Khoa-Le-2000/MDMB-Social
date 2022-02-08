@@ -1,3 +1,4 @@
+/* eslint-disable no-control-regex */
 import React from 'react';
 import './Login.scss';
 import Hero1 from 'assets/images/heros/hero1.svg';
@@ -19,22 +20,26 @@ import { Row, Container, Col, Form, Button, Carousel } from 'react-bootstrap';
 
 const schema = yup.object().shape({
   emailorphone: yup
-    .string()
-    .required()
-    .test('emailorphone', 'Enter Valid Phone/Email', function (value) {
-      const emailRegex =
-        /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
+    .string('Email or phone number must be a string')
+    .required("Email or phone number can't be empty")
+    .test(
+      'emailorphone',
+      'Email or phone number is not valid',
+      function (value) {
+        const emailRegex =
+          /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
 
-      const phoneRegex = /(84|0[3|5|7|8|9])+([0-9]{8})/;
-      const isValidEmail = emailRegex.test(value);
-      const isValidPhone = phoneRegex.test(value);
+        const phoneRegex = /(84|0[3|5|7|8|9])+([0-9]{8})/;
+        const isValidEmail = emailRegex.test(value);
+        const isValidPhone = phoneRegex.test(value);
 
-      if (!isValidEmail && !isValidPhone) {
-        return false;
+        if (!isValidEmail && !isValidPhone) {
+          return false;
+        }
+        return true;
       }
-      return true;
-    }),
-  password: yup.string().min(8).max(32).required(),
+    ),
+  password: yup.string('').min(8).max(32).required('Password is required'),
 });
 
 function Login() {
@@ -44,7 +49,6 @@ function Login() {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
 
@@ -76,7 +80,9 @@ function Login() {
                       {...register('emailorphone')}
                     />
                     {errors.emailorphone && (
-                      <p className="error">{errors.emailorphone?.message}</p>
+                      <Form.Text className="text-danger">
+                        {errors.emailorphone?.message}
+                      </Form.Text>
                     )}
                   </Col>
                 </Form.Group>
@@ -89,7 +95,9 @@ function Login() {
                       {...register('password')}
                     />
                     {errors.password && (
-                      <p className="error">{errors.password?.message}</p>
+                      <Form.Text className="text-danger">
+                        {errors.password?.message}
+                      </Form.Text>
                     )}
                   </Col>
                 </Form.Group>
