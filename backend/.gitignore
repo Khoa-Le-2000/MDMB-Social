@@ -6,3 +6,9 @@ node_modules/
 
 # dotenv environment variables file
 .env
+
+# test file
+test.js
+
+#routes
+routes/

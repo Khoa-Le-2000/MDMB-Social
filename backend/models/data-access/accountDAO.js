@@ -1,19 +1,24 @@
-const con = require('./connection');
+const connection = require('./connection');
 const Account = require('../account')
+const bcrypt = require("bcrypt");
 
-function getAccounts(req, res) {
-  var Accounts = [];
+function getAccounts(Username, Password, Callback) {
+
+  var con = connection.createConnection();
   con.connect(function (err) {
     if (err) throw err;
     console.log("Connected!");
-    con.query("SELECT * FROM Account;", function (err, result) {
+    var sql = `SELECT * FROM Account Where (Email='${Username}' or Phone ='${Username}')`;
+    con.query(sql, function (err, result) {
       if (err) throw err;
-      for (i = 0; i < result.length; i++) {
-        let acc = new Account.Account(result[i].AccountId, result[i].Password, result[i].Phone, result[i].Email, result[i].Name, result[i].Avatar, result[i].Birthday, result[i].Gender, result[i].CreatedDate);
-        Accounts.push(acc);
-      }
-      var data = JSON.stringify(Accounts);
-      res.status(200).send(data);
+      if (result.length > 0) {
+        var acc = new Account.Account(result[0].AccountId, result[0].Password, result[0].Phone, result[0].Email, result[0].Name, result[0].Avatar, result[0].Birthday, result[0].Gender, result[0].CreatedDate);
+        bcrypt.compare(Password, acc.Password, function (err, result) {
+          // result == true
+          if(result==true) return Callback(acc);
+          else return Callback(false);
+        })
+      } else return Callback(-1);
     });
   });
 }
