@@ -17,6 +17,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import { Row, Container, Col, Form, Button, Carousel } from 'react-bootstrap';
+import axios from 'axios';
 
 const schema = yup.object().shape({
   emailorphone: yup
@@ -39,7 +40,7 @@ const schema = yup.object().shape({
         return true;
       }
     ),
-  password: yup.string('').min(8).max(32).required('Password is required'),
+  password: yup.string('').min(6).max(32).required('Password is required'),
 });
 
 function Login() {
@@ -52,8 +53,19 @@ function Login() {
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
 
-  const onLoginHandler = (data) => {
+  const onLoginHandler = async (data) => {
     console.log(data);
+
+    const response = await axios.post(
+    // 'http://localhost:8080/account/login',
+    'http://13.250.46.59:8080/account/login',
+      {
+        Username: data.emailorphone,
+        Password: data.password,
+      }
+    );
+
+    console.log(response);
 
     // login().then(() => {
     //   navigate('/dashboard');
