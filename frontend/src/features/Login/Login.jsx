@@ -1,6 +1,6 @@
+/* eslint-disable no-control-regex */
 import React from 'react';
 import './Login.scss';
-import { Button, Carousel, Col, Container, Form, Row } from 'react-bootstrap';
 import Hero1 from 'assets/images/heros/hero1.svg';
 import Hero2 from 'assets/images/heros/hero2.svg';
 import Hero3 from 'assets/images/heros/hero3.svg';
@@ -12,14 +12,52 @@ import GithubIcon from 'assets/images/icons/github.svg';
 import { Link, useNavigate } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
 
+import * as yup from 'yup';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+
+import { Row, Container, Col, Form, Button, Carousel } from 'react-bootstrap';
+
+const schema = yup.object().shape({
+  emailorphone: yup
+    .string('Email or phone number must be a string')
+    .required("Email or phone number can't be empty")
+    .test(
+      'emailorphone',
+      'Email or phone number is not valid',
+      function (value) {
+        const emailRegex =
+          /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
+
+        const phoneRegex = /(84|0[3|5|7|8|9])+([0-9]{8})/;
+        const isValidEmail = emailRegex.test(value);
+        const isValidPhone = phoneRegex.test(value);
+
+        if (!isValidEmail && !isValidPhone) {
+          return false;
+        }
+        return true;
+      }
+    ),
+  password: yup.string('').min(8).max(32).required('Password is required'),
+});
+
 function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const handleLogin = () => {
-    login().then(() => {
-      navigate('/dashboard');
-    });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(schema) });
+
+  const onLoginHandler = (data) => {
+    console.log(data);
+
+    // login().then(() => {
+    //   navigate('/dashboard');
+    // });
   };
 
   return (
@@ -34,16 +72,33 @@ function Login() {
                 start using the app.
               </h5>
 
-              <Form className="form">
+              <Form className="form" onSubmit={handleSubmit(onLoginHandler)}>
                 <Form.Group className="mb-3" controlId="formPlaintextEmail">
                   <Col sm="12" className="form__input">
-                    <Form.Control placeholder="Email or phone number" />
+                    <Form.Control
+                      placeholder="Email or phone number"
+                      {...register('emailorphone')}
+                    />
+                    {errors.emailorphone && (
+                      <Form.Text className="text-danger">
+                        {errors.emailorphone?.message}
+                      </Form.Text>
+                    )}
                   </Col>
                 </Form.Group>
 
                 <Form.Group className="mb-3">
                   <Col sm="12" className="form__input">
-                    <Form.Control type="password" placeholder="Password" />
+                    <Form.Control
+                      type="password"
+                      placeholder="Password"
+                      {...register('password')}
+                    />
+                    {errors.password && (
+                      <Form.Text className="text-danger">
+                        {errors.password?.message}
+                      </Form.Text>
+                    )}
                   </Col>
                 </Form.Group>
 
@@ -58,11 +113,7 @@ function Login() {
                   <Form.Group className="form__group-checkbox">
                     <Form.Check type="checkbox" label="Remember me" />
                   </Form.Group>
-                  <Button
-                    type="submit"
-                    className="btn-login"
-                    onClick={handleLogin}
-                  >
+                  <Button type="submit" className="btn-login">
                     Login
                   </Button>
                 </div>
@@ -141,6 +192,7 @@ function Login() {
           </Col>
         </Row>
       </div>
+      ;
     </Container>
   );
 }
