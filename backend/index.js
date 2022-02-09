@@ -7,8 +7,6 @@ const cors = require('cors');
 
 app.use(express.json());
 
-const server = app.listen(PORT);
-route(app);
 
 const corsOptions = {
     origin: '*',
@@ -17,5 +15,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+const server = app.listen(PORT);
+route(app);
 
 console.log(`Server is running on port ${PORT}`);

@@ -57,10 +57,11 @@ function Login() {
     console.log(data);
 
     const response = await axios.post(
-      'http://13.250.46.59:8080/account/login',
+    // 'http://localhost:8080/account/login',
+    'http://13.250.46.59:8080/account/login',
       {
-        email: data.emailorphone,
-        password: data.password,
+        Username: data.emailorphone,
+        Password: data.password,
       }
     );
 
