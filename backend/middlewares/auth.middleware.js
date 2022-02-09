@@ -13,7 +13,8 @@ function verifyToken(req, res, next) {
 
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
         if (err) return res.status(401).send({ error: 'Invalid token' });
-        if (decoded.exp < Date.now()) return res.status(401).send({ error: 'Token expired' });
+        var dateNow = new Date();
+        if (decoded.exp < dateNow.getTime()) return res.status(401).send({ error: 'Token expired' });
         req.userId = decoded.id;
         next();
     });
