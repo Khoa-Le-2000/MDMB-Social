@@ -25,7 +25,10 @@ function verifyRefreshToken(req, res, next) {
 
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
         if (err) return res.status(401).send({ error: 'Invalid token' });
-        if (decoded.exp < Date.now()) return res.status(401).send({ error: 'Token expired' });
+        var dateNow = new Date();
+        if (decoded.exp < dateNow.getTime() / 1000){
+            return res.status(401).send({ error: 'Token expired' });
+        }
         req.userId = decoded.id;
         next();
     });
