@@ -10,6 +10,14 @@ function createConnection(){
     });
 }
 
+function closeConnection(connection){
+    connection.end(function(err){
+        if(err) throw err;
+        // console.log('Close connection');
+    });
+}
+
 module.exports = {
-    createConnection
+    createConnection,
+    closeConnection
 }
