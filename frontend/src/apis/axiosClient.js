@@ -2,7 +2,7 @@ import axios from 'axios';
 import queryString from 'query-string';
 
 const axiosClient = axios.create({
-  baseURL: process.env.BASE_API_URL,
+  baseURL: 'http://13.250.46.59:8080/',
   headers: {
     'content-type': 'application/json',
   },

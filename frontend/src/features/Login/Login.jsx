@@ -9,15 +9,16 @@ import GoogleIcon from 'assets/images/icons/google.svg';
 import FacebookIcon from 'assets/images/icons/facebook.svg';
 import GithubIcon from 'assets/images/icons/github.svg';
 
-import { Link, useNavigate } from 'react-router-dom';
-import useAuth from 'hooks/useAuth';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import { Row, Container, Col, Form, Button, Carousel } from 'react-bootstrap';
-import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { login } from 'redux/actions/authAction';
+import Dashboard from 'features/Dashboard/Dashboard';
 
 const schema = yup.object().shape({
   emailorphone: yup
@@ -43,9 +44,9 @@ const schema = yup.object().shape({
   password: yup.string('').min(6).max(32).required('Password is required'),
 });
 
-function Login() {
+function Login({ auth }) {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const dispatch = useDispatch();
 
   const {
     register,
@@ -54,24 +55,13 @@ function Login() {
   } = useForm({ resolver: yupResolver(schema) });
 
   const onLoginHandler = async (data) => {
-    console.log(data);
-
-    const response = await axios.post(
-      'http://13.250.46.59:8080/account/login',
-      {
-        email: data.emailorphone,
-        password: data.password,
-      }
-    );
-
-    console.log(response);
-
-    // login().then(() => {
-    //   navigate('/dashboard');
-    // });
+    dispatch(login(data));
+    navigate('/dashboard');
   };
 
-  return (
+  return auth ? (
+    <Navigate to="/dashboard" replace={true} />
+  ) : (
     <Container>
       <div className="login__inner">
         <Row>
@@ -203,7 +193,6 @@ function Login() {
           </Col>
         </Row>
       </div>
-      ;
     </Container>
   );
 }
