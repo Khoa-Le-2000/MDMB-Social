@@ -1,23 +1,20 @@
 /* eslint-disable no-control-regex */
-import React from 'react';
-import './Login.scss';
+import { yupResolver } from '@hookform/resolvers/yup';
 import Hero1 from 'assets/images/heros/hero1.svg';
 import Hero2 from 'assets/images/heros/hero2.svg';
 import Hero3 from 'assets/images/heros/hero3.svg';
-
-import GoogleIcon from 'assets/images/icons/google.svg';
 import FacebookIcon from 'assets/images/icons/facebook.svg';
 import GithubIcon from 'assets/images/icons/github.svg';
-
-import { Link, useNavigate } from 'react-router-dom';
-import useAuth from 'hooks/useAuth';
-
-import * as yup from 'yup';
+import GoogleIcon from 'assets/images/icons/google.svg';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { Button, Carousel, Col, Container, Form, Row } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-
-import { Row, Container, Col, Form, Button, Carousel } from 'react-bootstrap';
-import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { login } from 'redux/actions/authAction';
+import * as yup from 'yup';
+import './Login.scss';
 
 const schema = yup.object().shape({
   emailorphone: yup
@@ -43,9 +40,9 @@ const schema = yup.object().shape({
   password: yup.string('').min(6).max(32).required('Password is required'),
 });
 
-function Login() {
+function Login({ auth }) {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const dispatch = useDispatch();
 
   const {
     register,
@@ -54,25 +51,13 @@ function Login() {
   } = useForm({ resolver: yupResolver(schema) });
 
   const onLoginHandler = async (data) => {
-    console.log(data);
-
-    const response = await axios.post(
-    // 'http://localhost:8080/account/login',
-    'http://13.250.46.59:8080/account/login',
-      {
-        Username: data.emailorphone,
-        Password: data.password,
-      }
-    );
-
-    console.log(response);
-
-    // login().then(() => {
-    //   navigate('/dashboard');
-    // });
+    dispatch(login(data));
+    navigate('/dashboard');
   };
 
-  return (
+  return auth ? (
+    <Navigate to="/dashboard" replace={true} />
+  ) : (
     <Container>
       <div className="login__inner">
         <Row>
@@ -204,9 +189,11 @@ function Login() {
           </Col>
         </Row>
       </div>
-      ;
     </Container>
   );
 }
 
 export default Login;
+Login.propTypes = {
+  auth: PropTypes.object.isRequired,
+};
