@@ -1,11 +1,12 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import React from 'react';
+import PropTypes from 'prop-types';
 
 function RequireAuth({ children }) {
   const location = useLocation();
 
-  const auth = useSelector((state) => state.authReducer.token);
+  const auth = useSelector((state) => state.authReducer.login.token);
 
   return auth ? (
     children
@@ -14,3 +15,6 @@ function RequireAuth({ children }) {
   );
 }
 export default RequireAuth;
+RequireAuth.propTypes = {
+  children: PropTypes.element.isRequired,
+};
