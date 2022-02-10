@@ -49,6 +49,8 @@ function loginByGoogle(req, res) {
       })
     }
     verify().catch(console.error);
+  } else {
+    res.send({ result: 'No token provided' });
   }
 }
 module.exports = {
