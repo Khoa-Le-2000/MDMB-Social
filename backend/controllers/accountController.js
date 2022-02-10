@@ -29,26 +29,36 @@ function loginByGoogle(req, res) {
   let token = req.body.token;
   if (token) {
     const client = new OAuth2Client(process.env.clientID);
+
     async function verify() {
       const ticket = await client.verifyIdToken({
         idToken: token,
         audience: process.env.clientID,
-      });
-      const payload = ticket.getPayload();
-      const Email = payload['email'];
-      AccountDAO.getAccountByGoogleEmail(Email, (Account) => {
-        if (Account == false) res.send({ result: 'login failure' });
-        else {
-          let accessToken = jwt.sign({ id: Account.AccountId }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
-          let refreshToken = jwt.sign({ id: Account.AccountId }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
-          res.send({
-            accessToken: accessToken,
-            refreshToken: refreshToken
+      }, (err, ticket) => {
+        if (err) {
+          // console.log(err);
+          return res.send({ result: 'Invalid token' });
+        } else {
+          const payload = ticket.getPayload();
+          const Email = payload['email'];
+          AccountDAO.getAccountByGoogleEmail(Email, (Account) => {
+            if (Account == false) res.send({ result: 'Login failure' });
+            else {
+              let accessToken = jwt.sign({ id: Account.AccountId }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+              let refreshToken = jwt.sign({ id: Account.AccountId }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
+              res.send({
+                accessToken: accessToken,
+                refreshToken: refreshToken
+              });
+            }
           });
         }
-      })
+      }
+      );
     }
     verify().catch(console.error);
+  } else {
+    res.send({ result: 'No token provided' });
   }
 }
 module.exports = {

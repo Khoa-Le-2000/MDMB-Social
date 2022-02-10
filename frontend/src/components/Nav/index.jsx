@@ -1,13 +1,19 @@
-import useAuth from 'hooks/useAuth';
+import React from 'react';
+import { Button } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
+import { logout } from 'redux/actions/authAction';
 import './nav.scss';
 
 function Nav() {
-  const { authed, logout } = useAuth();
+  const auth = useSelector((state) => state.authReducer.login.token);
+
   const navigate = useNavigate();
 
+  const dispatch = useDispatch();
+
   const handleLogout = () => {
-    logout();
+    dispatch(logout(auth?.accessToken));
     navigate('/');
   };
 
@@ -24,7 +30,7 @@ function Nav() {
           <Link to="/register">Register</Link>
         </li>
       </ul>
-      {authed && <button onClick={handleLogout}>Logout</button>}
+      {auth && <Button onClick={handleLogout}>Logout</Button>}
     </nav>
   );
 }
