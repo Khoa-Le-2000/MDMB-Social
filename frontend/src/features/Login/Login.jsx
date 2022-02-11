@@ -11,11 +11,11 @@ import { Button, Carousel, Col, Container, Form, Row } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
-import { loginByGoogle, login } from 'redux/actions/authAction';
+import { loginByGoogle, login, loginFailure } from 'redux/actions/authAction';
 import * as yup from 'yup';
 import './Login.scss';
 import GoogleLogin from 'react-google-login';
-// import ReCAPTCHA from 'react-google-recaptcha';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 const schema = yup.object().shape({
   emailorphone: yup
@@ -53,15 +53,16 @@ function Login({ auth }) {
   } = useForm({ resolver: yupResolver(schema) });
 
   const onLoginHandler = async (data) => {
-    // const recaptchaValue = refRecapCha.current.getValue();
-    // console.log('recaptchaValue: ', recaptchaValue);
+    const recaptchaValue = refRecapCha.current.getValue();
+    console.log('recaptchaValue: ', recaptchaValue);
 
     dispatch(login(data));
     navigate('/dashboard');
   };
 
   const handleGoogleLoginFailure = (error) => {
-    console.log('🚀 :: file: index.jsx :: line 18 :: error', error);
+    console.log('🚀 :: file: Login.jsx :: line 64 :: error', error);
+    dispatch(loginFailure(error.message));
   };
 
   const handleGoogleLoginSuccess = async (googleData) => {
@@ -89,6 +90,7 @@ function Login({ auth }) {
                       placeholder="Email or phone number"
                       {...register('emailorphone')}
                     />
+
                     {errors.emailorphone && (
                       <Form.Text className="text-danger">
                         {errors.emailorphone?.message}

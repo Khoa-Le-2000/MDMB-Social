@@ -53,7 +53,6 @@ export const loginByGoogle = (tokenId) => async (dispatch) => {
 
   const data = await authApi.loginWithGoogle(tokenId);
 
-  console.log('🚀 :: file: authAction.js :: line 57 :: data', data);
   const { accessToken, refreshToken } = data?.data;
 
   if (data.status === 200 && accessToken && refreshToken) {
@@ -63,6 +62,9 @@ export const loginByGoogle = (tokenId) => async (dispatch) => {
         refreshToken,
       })
     );
+  } else {
+    const { result } = data?.data;
+    dispatch(loginFailure({ message: result }));
   }
 };
 
