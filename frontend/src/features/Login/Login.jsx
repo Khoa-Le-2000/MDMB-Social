@@ -4,17 +4,18 @@ import Hero1 from 'assets/images/heros/hero1.svg';
 import Hero2 from 'assets/images/heros/hero2.svg';
 import Hero3 from 'assets/images/heros/hero3.svg';
 import FacebookIcon from 'assets/images/icons/facebook.svg';
-import GithubIcon from 'assets/images/icons/github.svg';
 import GoogleIcon from 'assets/images/icons/google.svg';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useRef } from 'react';
 import { Button, Carousel, Col, Container, Form, Row } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
-import { login } from 'redux/actions/authAction';
+import { loginByGoogle, login } from 'redux/actions/authAction';
 import * as yup from 'yup';
 import './Login.scss';
+import GoogleLogin from 'react-google-login';
+// import ReCAPTCHA from 'react-google-recaptcha';
 
 const schema = yup.object().shape({
   emailorphone: yup
@@ -43,6 +44,7 @@ const schema = yup.object().shape({
 function Login({ auth }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const refRecapCha = useRef();
 
   const {
     register,
@@ -51,8 +53,19 @@ function Login({ auth }) {
   } = useForm({ resolver: yupResolver(schema) });
 
   const onLoginHandler = async (data) => {
+    // const recaptchaValue = refRecapCha.current.getValue();
+    // console.log('recaptchaValue: ', recaptchaValue);
+
     dispatch(login(data));
     navigate('/dashboard');
+  };
+
+  const handleGoogleLoginFailure = (error) => {
+    console.log('🚀 :: file: index.jsx :: line 18 :: error', error);
+  };
+
+  const handleGoogleLoginSuccess = async (googleData) => {
+    dispatch(loginByGoogle(googleData.tokenId));
   };
 
   return auth ? (
@@ -104,6 +117,10 @@ function Login({ auth }) {
                     <Link to="/forgot">Forgot password?</Link>
                   </small>
                 </div>
+                {/* <ReCAPTCHA
+                  ref={refRecapCha}
+                  sitekey={process.env.REACT_APP_GOOGLE_SITE_KEY}
+                /> */}
                 <hr />
 
                 <div className="form__btn">
@@ -118,23 +135,29 @@ function Login({ auth }) {
                   <p className="sign__other--text">Or continue with</p>
                   <div className="sign__other--icon">
                     <div className="img__border">
-                      <a href="https://accounts.google.com/o/oauth2/auth/oauthchooseaccount?client_id=717762328687-iludtf96g1hinl76e4lc1b9a82g457nn.apps.googleusercontent.com&scope=profile%20email&redirect_uri=https%3A%2F%2Fstackauth.com%2Fauth%2Foauth2%2Fgoogle&state=%7B%22sid%22%3A1%2C%22st%22%3A%2259%3A3%3Abbc%2C16%3Aa049838fec06b231%2C10%3A1644235567%2C16%3A1143c846ce2139c8%2C74cf371fa1ad9bae6105a04bba70c5378451e0af0be8518078ae4ff00220ed19%22%2C%22cid%22%3A%22717762328687-iludtf96g1hinl76e4lc1b9a82g457nn.apps.googleusercontent.com%22%2C%22k%22%3A%22Google%22%2C%22ses%22%3A%22a18098a0d6d440e18341d025e4451334%22%7D&response_type=code&flowName=GeneralOAuthFlow">
+                      <GoogleLogin
+                        clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+                        onSuccess={handleGoogleLoginSuccess}
+                        onFailure={handleGoogleLoginFailure}
+                        cookiePolicy="single_host_origin"
+                        className="img__google-login"
+                        icon={false}
+                      >
                         <img
                           src={GoogleIcon}
                           alt="google"
                           className="img__img"
                         />
-                      </a>
+                      </GoogleLogin>
                     </div>
                     <div className="img__border">
-                      <img
-                        src={FacebookIcon}
-                        alt="facebook"
-                        className="img__img"
-                      />
-                    </div>
-                    <div className="img__border">
-                      <img src={GithubIcon} alt="github" className="img__img" />
+                      <button className="img__facebook-login">
+                        <img
+                          src={FacebookIcon}
+                          alt="facebook"
+                          className="img__img"
+                        />
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -195,5 +218,5 @@ function Login({ auth }) {
 
 export default Login;
 Login.propTypes = {
-  auth: PropTypes.object.isRequired,
+  auth: PropTypes.string,
 };

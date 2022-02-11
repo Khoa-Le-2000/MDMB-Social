@@ -6,7 +6,9 @@ import PropTypes from 'prop-types';
 function RequireAuth({ children }) {
   const location = useLocation();
 
-  const auth = useSelector((state) => state.authReducer.login.token);
+  const auth = useSelector(
+    (state) => state.authReducer.login.token.accessToken
+  );
 
   return auth ? (
     children

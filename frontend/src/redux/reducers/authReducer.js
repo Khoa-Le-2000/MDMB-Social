@@ -57,6 +57,18 @@ const authReducer = (state = initialState, action) => {
         },
       };
 
+    case AuthActionTypes.LOGIN_GOOGLE_SUCCESS:
+      return {
+        ...state,
+        login: {
+          ...state.login,
+          isFetching: false,
+          error: false,
+          success: true,
+          token: action.payload,
+        },
+      };
+
     case AuthActionTypes.LOGOUT_START:
       return {
         ...state,

@@ -24,29 +24,47 @@ export const loginSuccess = (token) => {
   };
 };
 
-export const login =
-  ({ emailorphone, password }) =>
-  async (dispatch) => {
-    dispatch(loginStart());
+export const login = (data) => async (dispatch) => {
+  dispatch(loginStart());
 
-    const data = await authApi.login({
-      emailorphone,
-      password,
-    });
-    const { accessToken, refreshToken } = data?.data;
+  const { emailorphone, password } = data;
 
-    if (data.status === 200 && accessToken && refreshToken) {
-      dispatch(
-        loginSuccess({
-          accessToken,
-          refreshToken,
-        })
-      );
-    } else {
-      const message = data?.data?.message;
-      dispatch(loginFailure(message));
-    }
-  };
+  const data = await authApi.login({
+    emailorphone,
+    password,
+  });
+  const { accessToken, refreshToken } = data?.data;
+
+  if (data.status === 200 && accessToken && refreshToken) {
+    dispatch(
+      loginSuccess({
+        accessToken,
+        refreshToken,
+      })
+    );
+  } else {
+    const message = data?.data?.message;
+    dispatch(loginFailure(message));
+  }
+};
+
+export const loginByGoogle = (tokenId) => async (dispatch) => {
+  dispatch(loginStart());
+
+  const data = await authApi.loginWithGoogle(tokenId);
+
+  console.log('🚀 :: file: authAction.js :: line 57 :: data', data);
+  const { accessToken, refreshToken } = data?.data;
+
+  if (data.status === 200 && accessToken && refreshToken) {
+    dispatch(
+      loginSuccess({
+        accessToken,
+        refreshToken,
+      })
+    );
+  }
+};
 
 export const refreshToken = (refreshToken) => async (dispatch) => {
   const data = await authApi.refreshToken(refreshToken);
@@ -75,7 +93,6 @@ export const logoutSuccess = () => {
 };
 
 export const logout = (accessToken) => async (dispatch) => {
-  console.log('accessToken: ', accessToken);
   dispatch(logoutStart());
   // const data = await authApi.logout();
   dispatch(logoutSuccess());

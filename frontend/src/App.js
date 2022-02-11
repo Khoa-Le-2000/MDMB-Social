@@ -11,7 +11,9 @@ import MainLayout from 'layouts/MainLayout';
 import { useSelector } from 'react-redux';
 
 function App() {
-  const auth = useSelector((state) => state?.authReducer?.login?.token);
+  const auth = useSelector(
+    (state) => state?.authReducer?.login?.token?.accessToken
+  );
 
   return (
     <>

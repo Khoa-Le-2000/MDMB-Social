@@ -16,7 +16,7 @@ function Dashboard() {
       Dashboard (private)
       <h5>Access token: {auth?.accessToken}</h5>
       <h5>Refresh Token: {auth?.refreshToken}</h5>
-      <Button onClick={onHandleRefreshToken} className="btn ">
+      <Button onClick={onHandleRefreshToken} className="btn">
         Refresh Token
       </Button>
     </div>
