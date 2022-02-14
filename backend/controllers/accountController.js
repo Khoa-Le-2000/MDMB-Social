@@ -8,19 +8,14 @@ function login(req, res) {
   var Username = req.body.Username;
   var Password = req.body.Password;
   AccountDAO.getAccount(Username, (Account) => {
-    if (Account == false) res.send({ result: 'login failure' });
+    if (Account == false) res.status(200).send({ result: 'login failure' });
     else {
       let acccount = Account;
       bcrypt.compare(Password, acccount.Password, function (err, result) {
         // result == true
         if (result == true) {
-          let accessToken = jwt.sign({ id: acccount.AccountId }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
-          let refreshToken = jwt.sign({ id: acccount.AccountId }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
-          res.send({
-            accessToken: accessToken,
-            refreshToken: refreshToken
-          });
-        } else res.send({ result: 'login failure' });
+          sendToken(req, res, Account);
+        } else res.status(200).send({ result: 'login failure' });
       })
     }
   });
@@ -37,19 +32,24 @@ function loginByGoogle(req, res) {
       }, (err, ticket) => {
         if (err) {
           // console.log(err);
-          return res.send({ result: 'Invalid token' });
+          return res.status(200).send({ result: 'Invalid token' });
         } else {
           const payload = ticket.getPayload();
           const Email = payload['email'];
-          AccountDAO.getAccountByGoogleEmail(Email, (Account) => {
-            if (Account == false) res.send({ result: 'Login failure' });
+          AccountDAO.getAccountByEmail(Email, (Account) => {
+            if (Account == false) {
+              res.status(200).send({ result: "login failure" })
+              //create account
+              // let Name = payload['name'];
+              // let Avatar = payload['picture'];
+              // let CreatedDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
+              // AccountDAO.CreateAccount(null, null, Email, Name, Avatar, null, null, CreatedDate);
+              // AccountDAO.getAccountByEmail(Email, (Account) => {
+              //   sendToken(req, res, Account);
+              // })
+            }
             else {
-              let accessToken = jwt.sign({ id: Account.AccountId }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
-              let refreshToken = jwt.sign({ id: Account.AccountId }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
-              res.send({
-                accessToken: accessToken,
-                refreshToken: refreshToken
-              });
+              sendToken(req, res, Account);
             }
           });
         }
@@ -61,7 +61,42 @@ function loginByGoogle(req, res) {
     res.send({ result: 'No token provided' });
   }
 }
+function loginByFaceBook(req, res) {
+  let user = req.user;
+  if (user) {
+    let Email = user.emails[0].value;
+    AccountDAO.getAccountByEmail(Email, (Account) => {
+      if (Account == false) {
+        res.status(200).send({ result: "login failure" });
+        // let Name = user.displayName;
+        // let Gender = user.gender;
+        // let Avatar = user.photos[0].value;
+        // let CreatedDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        // AccountDAO.CreateAccount(null, null, Email, Name, Avatar, null, Gender, CreatedDate);
+        // AccountDAO.getAccountByEmail(Email, (Account) => {
+        //   sendToken(req, res, Account);
+        // })
+      } else {
+        sendToken(req, res, Account);
+      }
+    })
+  }
+  else {
+    res.status(200).send({ result: 'No token provided' });
+  }
+
+}
+function sendToken(req, res, Account) {
+  let accessToken = jwt.sign({ id: Account.AccountId }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+  let refreshToken = jwt.sign({ id: Account.AccountId }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
+  res.status(200).send({
+    accessToken: accessToken,
+    refreshToken: refreshToken
+  });
+}
+
 module.exports = {
   login,
-  loginByGoogle
+  loginByGoogle,
+  loginByFaceBook
 }
