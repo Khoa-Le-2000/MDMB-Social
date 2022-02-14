@@ -8,13 +8,8 @@ import Dashboard from 'features/Dashboard/Dashboard';
 import NotFound from 'features/404/NotFound';
 import Home from 'features/Home/Home';
 import MainLayout from 'layouts/MainLayout';
-import { useSelector } from 'react-redux';
 
 function App() {
-  const auth = useSelector(
-    (state) => state?.authReducer?.login?.token?.accessToken
-  );
-
   return (
     <>
       <MainLayout />
@@ -29,7 +24,7 @@ function App() {
             </RequireAuth>
           }
         />
-        <Route path="/login" element={<Login auth={auth} />} />
+        <Route path="/login" element={<Login />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

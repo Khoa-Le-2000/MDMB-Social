@@ -5,15 +5,15 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { interceptor } from 'apis/axiosClient';
 
-const persistConfig = {
-  key: 'auth',
-  storage,
-  whitelist: ['authReducer'],
-};
-
 const rootReducer = combineReducers({
-  authReducer,
+  auth: authReducer,
 });
+
+const persistConfig = {
+  key: 'root',
+  storage,
+  whitelist: ['auth'],
+};
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
