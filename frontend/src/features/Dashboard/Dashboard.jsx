@@ -2,9 +2,10 @@ import React from 'react';
 import { Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { refreshToken } from 'redux/actions/authAction';
+import { getAuth } from 'redux/selectors/authSelector';
 
 function Dashboard() {
-  const auth = useSelector((state) => state.authReducer.login.token);
+  const auth = useSelector(getAuth);
 
   const dispatch = useDispatch();
 
