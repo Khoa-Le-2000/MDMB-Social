@@ -10,4 +10,7 @@ export const AuthActionTypes = {
   LOGOUT_SUCCESS: 'user/logout/success',
 
   REFRESH_TOKEN_SUCCESS: 'user/refreshToken',
+
+  VERIFY_CAPTCHA_SUCCESS: 'auth/verifyCaptcha/success',
+  VERIFY_CAPTCHA_FAILURE: 'auth/verifyCaptcha/failure',
 };

@@ -21,6 +21,10 @@ const authApi = {
       refreshToken,
     });
   },
+  verifyCaptcha: (response) => {
+    const url = `auth/captcha?captcha=${response}`;
+    return axiosClient.get(url);
+  },
 };
 
 export default authApi;

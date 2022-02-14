@@ -52,9 +52,10 @@ function Login({ auth }) {
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
 
-  const onLoginHandler = async (data) => {
-    const recaptchaValue = refRecapCha.current.getValue();
-    console.log('recaptchaValue: ', recaptchaValue);
+  const onLoginHandler = (data) => {
+    // const response = refRecapCha.current.getValue();
+    // if(response)
+    // dispatch(loginByGoogle(response));
 
     dispatch(login(data));
     navigate('/dashboard');
@@ -65,7 +66,7 @@ function Login({ auth }) {
     dispatch(loginFailure(error.message));
   };
 
-  const handleGoogleLoginSuccess = async (googleData) => {
+  const handleGoogleLoginSuccess = (googleData) => {
     dispatch(loginByGoogle(googleData.tokenId));
   };
 

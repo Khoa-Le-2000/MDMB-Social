@@ -24,10 +24,10 @@ export const loginSuccess = (token) => {
   };
 };
 
-export const login = (data) => async (dispatch) => {
+export const login = (user) => async (dispatch) => {
   dispatch(loginStart());
 
-  const { emailorphone, password } = data;
+  const { emailorphone, password } = user;
 
   const data = await authApi.login({
     emailorphone,
@@ -91,6 +91,29 @@ export const logoutStart = () => {
 export const logoutSuccess = () => {
   return {
     type: AuthActionTypes.LOGOUT_SUCCESS,
+  };
+};
+
+export const verifyCaptcha = (response) => async (dispatch) => {
+  const data = await authApi.verifyCaptcha(response);
+  if (data?.result === 'success') {
+    dispatch(verifyCaptchaSuccess(data));
+  } else {
+    dispatch(verifyCaptchaFailure(data));
+  }
+};
+
+export const verifyCaptchaSuccess = (data) => {
+  return {
+    type: AuthActionTypes.VERIFY_CAPTCHA_SUCCESS,
+    payload: data,
+  };
+};
+
+export const verifyCaptchaFailure = (data) => {
+  return {
+    type: AuthActionTypes.VERIFY_CAPTCHA_FAILURE,
+    payload: data,
   };
 };
 

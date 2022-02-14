@@ -11,6 +11,12 @@ const initialState = {
     success: false,
     message: null,
   },
+  captcha: {
+    isFetching: false,
+    error: false,
+    success: false,
+    message: null,
+  },
   register: {
     error: false,
     isFetching: false,
