@@ -10,7 +10,7 @@ export const loginStart = () => {
 export const loginFailure = (message) => {
   return {
     type: AuthActionTypes.LOGIN_FAILURE,
-    payload: message,
+    payload: message.result,
   };
 };
 
@@ -33,9 +33,8 @@ export const login = (user) => async (dispatch) => {
     emailorphone,
     password,
   });
-  const { accessToken, refreshToken } = data?.data;
-
-  if (data.status === 200 && accessToken && refreshToken) {
+  if (data?.accessToken && data?.refreshToken) {
+    const { accessToken, refreshToken } = data;
     dispatch(
       loginSuccess({
         accessToken,
@@ -43,8 +42,12 @@ export const login = (user) => async (dispatch) => {
       })
     );
   } else {
-    const message = data?.data?.message;
-    dispatch(loginFailure(message));
+    // const { result } = data;
+    dispatch(
+      loginFailure({
+        result: 'Tài khoản hoặc mật khẩu không chinh xác',
+      })
+    );
   }
 };
 
@@ -53,9 +56,9 @@ export const loginByGoogle = (tokenId) => async (dispatch) => {
 
   const data = await authApi.loginWithGoogle(tokenId);
 
-  const { accessToken, refreshToken } = data?.data;
+  if (data?.accessToken && data?.refreshToken) {
+    const { accessToken, refreshToken } = data;
 
-  if (data.status === 200 && accessToken && refreshToken) {
     dispatch(
       loginSuccess({
         accessToken,
@@ -63,15 +66,16 @@ export const loginByGoogle = (tokenId) => async (dispatch) => {
       })
     );
   } else {
-    const { result } = data?.data;
-    dispatch(loginFailure({ message: result }));
+    const { result } = data;
+    dispatch(loginFailure(result));
   }
 };
 
 export const refreshToken = (refreshToken) => async (dispatch) => {
   const data = await authApi.refreshToken(refreshToken);
-  if (data?.status === 200 && data?.data?.accessToken) {
-    dispatch(refreshTokenSuccess(data.data.accessToken));
+  if (data?.accessToken) {
+    const { accessToken } = data;
+    dispatch(refreshTokenSuccess(accessToken));
   }
 };
 

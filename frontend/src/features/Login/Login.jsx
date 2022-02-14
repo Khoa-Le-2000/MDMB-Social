@@ -5,25 +5,36 @@ import Hero2 from 'assets/images/heros/hero2.svg';
 import Hero3 from 'assets/images/heros/hero3.svg';
 import FacebookIcon from 'assets/images/icons/facebook.svg';
 import GoogleIcon from 'assets/images/icons/google.svg';
-import PropTypes from 'prop-types';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Button, Carousel, Col, Container, Form, Row } from 'react-bootstrap';
-import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
-import { loginByGoogle, login, loginFailure } from 'redux/actions/authAction';
-import * as yup from 'yup';
-import './Login.scss';
 import GoogleLogin from 'react-google-login';
 import ReCAPTCHA from 'react-google-recaptcha';
+import { useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+import {
+  login,
+  loginByGoogle,
+  loginFailure,
+  verifyCaptcha,
+} from 'redux/actions/authAction';
+import {
+  getAuth,
+  getCaptcha,
+  getErrorCount,
+  getErrorLogin,
+  getErrorMessageLogin,
+} from 'redux/selectors/authSelector';
+import * as yup from 'yup';
+import './Login.scss';
 
 const schema = yup.object().shape({
   emailorphone: yup
-    .string('Email or phone number must be a string')
-    .required("Email or phone number can't be empty")
+    .string('Email or số điện thoại không hợp lệ')
+    .required('Email không được để trống')
     .test(
       'emailorphone',
-      'Email or phone number is not valid',
+      'Email hoặc số điện thoại không đúng định dạng',
       function (value) {
         const emailRegex =
           /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
@@ -38,13 +49,25 @@ const schema = yup.object().shape({
         return true;
       }
     ),
-  password: yup.string('').min(6).max(32).required('Password is required'),
+  password: yup
+    .string()
+    .min(6, 'Mật khẩu phải có ít nhất 6 ký tự')
+    .max(32, 'Mật khẩu không được quá 32 ký tự')
+    .required('Mật khẩu không được để trống'),
 });
 
-function Login({ auth }) {
+function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const refRecapCha = useRef();
+
+  const isHuman = useSelector(getCaptcha)?.success;
+  const countError = useSelector(getErrorCount);
+  const messageErrorLogin = useSelector(getErrorMessageLogin);
+  const hasError = useSelector(getErrorLogin);
+  const isAuthenticated = useSelector(getAuth)?.accessToken;
+
+  const [message, setMessage] = useState('');
 
   const {
     register,
@@ -52,17 +75,29 @@ function Login({ auth }) {
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
 
-  const onLoginHandler = (data) => {
-    // const response = refRecapCha.current.getValue();
-    // if(response)
-    // dispatch(loginByGoogle(response));
-
+  const onLoginHandler = (data, e) => {
+    e.preventDefault();
+    if (countError >= 3) {
+      const response = refRecapCha.current.getValue();
+      if (response) {
+        dispatch(verifyCaptcha(response));
+        setMessage('');
+      } else {
+        setMessage('Vui lòng xác nhận bằng captcha');
+        return;
+      }
+      if (isHuman) {
+        dispatch(login(data));
+        navigate('/dashboard');
+      }
+    }
     dispatch(login(data));
-    navigate('/dashboard');
+    if (!hasError) {
+      navigate('/dashboard');
+    }
   };
 
   const handleGoogleLoginFailure = (error) => {
-    console.log('🚀 :: file: Login.jsx :: line 64 :: error', error);
     dispatch(loginFailure(error.message));
   };
 
@@ -70,7 +105,18 @@ function Login({ auth }) {
     dispatch(loginByGoogle(googleData.tokenId));
   };
 
-  return auth ? (
+  let errorMessage;
+  if (message !== '') {
+    errorMessage = <Form.Text className="text-danger">{message}</Form.Text>;
+  } else if (hasError) {
+    errorMessage = (
+      <Form.Text className="text-danger">{messageErrorLogin}</Form.Text>
+    );
+  } else {
+    errorMessage = null;
+  }
+
+  return isAuthenticated ? (
     <Navigate to="/dashboard" replace={true} />
   ) : (
     <Container>
@@ -91,11 +137,12 @@ function Login({ auth }) {
                       placeholder="Email or phone number"
                       {...register('emailorphone')}
                     />
-
-                    {errors.emailorphone && (
+                    {errors.emailorphone ? (
                       <Form.Text className="text-danger">
                         {errors.emailorphone?.message}
                       </Form.Text>
+                    ) : (
+                      errorMessage
                     )}
                   </Col>
                 </Form.Group>
@@ -107,10 +154,12 @@ function Login({ auth }) {
                       placeholder="Password"
                       {...register('password')}
                     />
-                    {errors.password && (
+                    {errors.password ? (
                       <Form.Text className="text-danger">
                         {errors.password?.message}
                       </Form.Text>
+                    ) : (
+                      errorMessage
                     )}
                   </Col>
                 </Form.Group>
@@ -120,10 +169,13 @@ function Login({ auth }) {
                     <Link to="/forgot">Forgot password?</Link>
                   </small>
                 </div>
-                {/* <ReCAPTCHA
-                  ref={refRecapCha}
-                  sitekey={process.env.REACT_APP_GOOGLE_SITE_KEY}
-                /> */}
+
+                {countError >= 3 && (
+                  <ReCAPTCHA
+                    ref={refRecapCha}
+                    sitekey={process.env.REACT_APP_GOOGLE_SITE_KEY}
+                  />
+                )}
                 <hr />
 
                 <div className="form__btn">
@@ -220,6 +272,4 @@ function Login({ auth }) {
 }
 
 export default Login;
-Login.propTypes = {
-  auth: PropTypes.string,
-};
+// Login.propTypes = {};
