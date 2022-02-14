@@ -15,7 +15,7 @@
 
     .title {
       font-size: medium;
-      margin-bottom: 60px;
+      margin-bottom: 40px;
       margin-top: 30px;
       line-height: 1.5;
     }
@@ -56,6 +56,7 @@
     color: $main-color;
   }
   &__btn {
+    margin-top: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -120,7 +121,6 @@
 
       width: 85px;
       height: 50px;
-      border-radius: 4px;
       a {
         width: 100%;
         height: 100%;
@@ -130,10 +130,37 @@
     &__inner {
       padding: 10px;
     }
+    &__google-login {
+      background-color: transparent !important;
+      width: 100%;
+      height: 100%;
+      span {
+        padding: 0 !important;
+        width: 100%;
+        height: 100%;
+      }
+    }
 
+    &__facebook-login {
+      display: inline-flex;
+      align-items: center;
+      box-shadow: rgb(0 0 0 / 24%) 0px 2px 2px 0px,
+        rgb(0 0 0 / 24%) 0px 0px 1px 0px;
+      padding: 0px;
+      border-radius: 2px;
+      border: 1px solid transparent;
+      font-size: 14px;
+      font-weight: 500;
+      height: 100%;
+      width: 100%;
+      span {
+        padding: 0 !important;
+        width: 100%;
+        height: 100%;
+      }
+    }
     &__img {
       transform: scale(0.8, 0.8);
-
       width: 100%;
       max-height: 100%;
       object-fit: scale-down;

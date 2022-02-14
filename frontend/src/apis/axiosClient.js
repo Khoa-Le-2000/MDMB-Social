@@ -12,7 +12,7 @@ const axiosClient = axios.create({
 });
 
 export const interceptor = (store) => {
-  axios.interceptors.request.use(
+  axiosClient.interceptors.request.use(
     async (config) => {
       const user = store?.getState()?.authReducer?.login?.token;
 
@@ -47,7 +47,13 @@ export const interceptor = (store) => {
       return Promise.reject(error);
     }
   );
-  axios.interceptors.response.use(
+  axiosClient.interceptors.response.use(
+    (response) => {
+      if (response && response.data) {
+        return response.data;
+      }
+      return response;
+    },
     (next) => {
       return Promise.resolve(next);
     },

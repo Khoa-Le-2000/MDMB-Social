@@ -8,10 +8,22 @@ const authApi = {
       Password: data.password,
     });
   },
+
+  loginWithGoogle: (tokenId) => {
+    const url = 'account/login-by-google';
+    return axiosClient.post(url, {
+      token: tokenId,
+    });
+  },
+
   refreshToken: (refreshToken) => {
     return axiosClient.post('auth/refresh-token', {
       refreshToken,
     });
+  },
+  verifyCaptcha: (response) => {
+    const url = `auth/captcha?captcha=${response}`;
+    return axiosClient.get(url);
   },
 };
 

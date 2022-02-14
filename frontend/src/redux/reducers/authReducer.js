@@ -10,6 +10,13 @@ const initialState = {
     isFetching: false,
     success: false,
     message: null,
+    errorCount: 0,
+  },
+  captcha: {
+    isFetching: false,
+    error: false,
+    success: false,
+    message: null,
   },
   register: {
     error: false,
@@ -32,6 +39,10 @@ const authReducer = (state = initialState, action) => {
         login: {
           ...state.login,
           isFetching: true,
+          error: false,
+          success: false,
+          message: null,
+          token: null,
         },
       };
     case AuthActionTypes.LOGIN_SUCCESS:
@@ -42,6 +53,8 @@ const authReducer = (state = initialState, action) => {
           isFetching: false,
           error: false,
           success: true,
+          message: null,
+          errorCount: 0,
           token: action.payload,
         },
       };
@@ -54,6 +67,20 @@ const authReducer = (state = initialState, action) => {
           error: true,
           success: false,
           message: action.payload,
+          errorCount: state.login.errorCount + 1,
+          token: null,
+        },
+      };
+
+    case AuthActionTypes.LOGIN_GOOGLE_SUCCESS:
+      return {
+        ...state,
+        login: {
+          ...state.login,
+          isFetching: false,
+          error: false,
+          success: true,
+          token: action.payload,
         },
       };
 
@@ -73,6 +100,8 @@ const authReducer = (state = initialState, action) => {
           isFetching: false,
           error: false,
           success: true,
+          errorCount: 0,
+          message: null,
         },
         login: {
           ...state.login,
@@ -101,6 +130,26 @@ const authReducer = (state = initialState, action) => {
             ...state.login.token,
             accessToken: action.payload,
           },
+        },
+      };
+
+    case AuthActionTypes.VERIFY_CAPTCHA_SUCCESS:
+      return {
+        ...state,
+        captcha: {
+          isFetching: false,
+          success: true,
+          message: null,
+        },
+      };
+
+    case AuthActionTypes.VERIFY_CAPTCHA_FAILURE:
+      return {
+        ...state,
+        captcha: {
+          isFetching: false,
+          success: false,
+          message: action.payload,
         },
       };
     default: {

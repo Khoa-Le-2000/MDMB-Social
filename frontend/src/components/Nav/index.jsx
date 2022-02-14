@@ -4,9 +4,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { logout } from 'redux/actions/authAction';
 import './nav.scss';
+import { getAuth } from 'redux/selectors/authSelector';
 
 function Nav() {
-  const auth = useSelector((state) => state.authReducer.login.token);
+  const auth = useSelector(getAuth);
 
   const navigate = useNavigate();
 
@@ -30,7 +31,7 @@ function Nav() {
           <Link to="/register">Register</Link>
         </li>
       </ul>
-      {auth && <Button onClick={handleLogout}>Logout</Button>}
+      {auth?.accessToken && <Button onClick={handleLogout}>Logout</Button>}
     </nav>
   );
 }
