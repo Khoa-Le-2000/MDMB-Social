@@ -16,8 +16,8 @@ function refreshToken(req, res, next) {
 function captcha(req, res) {
   // let captcha = req.body.captcha;
   let captcha = req.query.captcha;
-  console.log("🚀 :: captcha :: req.query", req.query);
-  console.log("🚀 :: captcha :: captcha", captcha);
+  // console.log("🚀 :: captcha :: req.query", req.query);
+  // console.log("🚀 :: captcha :: captcha", captcha);
   // let captcha = req.body['g-recaptcha-response'];
   // console.log(req.query);
   if (!captcha) {
