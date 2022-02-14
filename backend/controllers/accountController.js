@@ -8,14 +8,14 @@ function login(req, res) {
   var Username = req.body.Username;
   var Password = req.body.Password;
   AccountDAO.getAccount(Username, (Account) => {
-    if (Account == false) res.status(200).send({ result: 'login failure' });
+    if (Account == false) res.status(401).send({ result: 'login failure' });
     else {
       let acccount = Account;
       bcrypt.compare(Password, acccount.Password, function (err, result) {
         // result == true
         if (result == true) {
           sendToken(req, res, Account);
-        } else res.status(200).send({ result: 'login failure' });
+        } else res.status(401).send({ result: 'login failure' });
       })
     }
   });
@@ -32,13 +32,13 @@ function loginByGoogle(req, res) {
       }, (err, ticket) => {
         if (err) {
           // console.log(err);
-          return res.status(200).send({ result: 'Invalid token' });
+          return res.status(401).send({ result: 'Invalid token' });
         } else {
           const payload = ticket.getPayload();
           const Email = payload['email'];
           AccountDAO.getAccountByEmail(Email, (Account) => {
             if (Account == false) {
-              res.status(200).send({ result: "login failure" })
+              res.status(401).send({ result: "login failure" })
               //create account
               // let Name = payload['name'];
               // let Avatar = payload['picture'];
@@ -58,7 +58,7 @@ function loginByGoogle(req, res) {
     }
     verify().catch(console.error);
   } else {
-    res.send({ result: 'No token provided' });
+    res.status(401).send({ result: 'No token provided' });
   }
 }
 function loginByFaceBook(req, res) {
@@ -67,7 +67,7 @@ function loginByFaceBook(req, res) {
     let Email = user.emails[0].value;
     AccountDAO.getAccountByEmail(Email, (Account) => {
       if (Account == false) {
-        res.status(200).send({ result: "login failure" });
+        res.status(401).send({ result: "login failure" });
         // let Name = user.displayName;
         // let Gender = user.gender;
         // let Avatar = user.photos[0].value;
@@ -82,7 +82,7 @@ function loginByFaceBook(req, res) {
     })
   }
   else {
-    res.status(200).send({ result: 'No token provided' });
+    res.status(401).send({ result: 'No token provided' });
   }
 
 }
