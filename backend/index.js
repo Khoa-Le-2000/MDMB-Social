@@ -4,9 +4,10 @@ const route = require('./routes/index');
 const app = express();
 const PORT = process.env.PORT;
 const cors = require('cors');
+const session = require('express-session');
+const passport = require('./middlewares/passport.middleware');
 //
 const cookieParse = require('cookie-parser')
-const sendtoken = require('./controllers/accountController');
 
 app.use(express.json());
 app.use(cookieParse())
@@ -16,6 +17,12 @@ const corsOptions = {
     optionsSuccessStatus: 200,
     credentials: true,
 };
+app.use(passport.initialize())
+app.use(session({
+    secret: 'strange key',
+    resave: true,
+    saveUninitialized: true
+}));
 
 
 

@@ -19,7 +19,7 @@ function getAccount(Username, Callback) {
       });
   });
 }
-function getAccountByGoogleEmail(Email, Callback) {
+function getAccountByEmail(Email, Callback) {
 
   var con = connection.createConnection();
   con.connect(function (err) {
@@ -37,7 +37,21 @@ function getAccountByGoogleEmail(Email, Callback) {
       });
   });
 }
+function CreateAccount(Password, Phone, Email, Name, Avatar, Birthday, Gender, CreatedDate) {
+
+  var con = connection.createConnection();
+  con.connect(function (err) {
+    if (err) throw err;
+    var sql = `insert into MDMB.Account(Password, Phone, Email, Name, Avatar, Birthday, Gender, CreatedDate) values(?,?,?,?,?,?,?,?)`;
+    con.query(sql, [Password, Phone, Email, Name, Avatar, Birthday, Gender, CreatedDate],
+      function (err, result) {
+        connection.closeConnection(con);
+        if (err) throw err;
+      });
+  });
+}
 module.exports = {
   getAccount,
-  getAccountByGoogleEmail
+  getAccountByEmail,
+  CreateAccount
 }
