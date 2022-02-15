@@ -6,3 +6,4 @@ API Endpoint |  HTTP Verb | Descrpition | Parmameter In | Return
 /auth/refresh-token | POST | Create new access token | refreshToken | accessToken
 /account/login-by-google | POST | Check login | token | refreshToken, accessToken
 /auth/captcha | GET | Check google captcha | captcha | result (success/fail), error
+/account/login-by-facebook| GET | login facebook | user | refreshToken, accessToken
