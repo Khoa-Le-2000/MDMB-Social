@@ -33,6 +33,8 @@ export const login = (user) => async (dispatch) => {
     emailorphone,
     password,
   });
+  console.log('🚀 :: login :: data', data);
+
   if (data?.accessToken && data?.refreshToken) {
     const { accessToken, refreshToken } = data;
     dispatch(
