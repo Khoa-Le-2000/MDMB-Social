@@ -16,6 +16,11 @@ const authApi = {
     });
   },
 
+  loginWithFacebook: (tokenId) => {
+    const url = `account/login-by-facebook/user?=${tokenId}`;
+    return axiosClient.get(url);
+  },
+
   refreshToken: (refreshToken) => {
     return axiosClient.post('auth/refresh-token', {
       refreshToken,

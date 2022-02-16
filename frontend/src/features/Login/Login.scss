@@ -2,7 +2,23 @@
 
 .login {
   &__inner {
-    padding: 10px 30px;
+    padding: 10px 40px;
+
+    @include tablet-large {
+      padding: 20px 30px;
+    }
+
+    @include tablet-small {
+      padding: 15px;
+    }
+
+    @include mobile-large {
+      padding: 10px 20px;
+    }
+
+    @include mobile-small {
+      padding: 10px;
+    }
 
     //override css bootstrap
     .form-check {
@@ -12,16 +28,31 @@
     .carousel-caption {
       position: initial;
     }
+    .form-label {
+      font-weight: 500;
+      font-size: 1.2rem;
+    }
 
     .title {
       font-size: medium;
-      margin-bottom: 40px;
-      margin-top: 30px;
+      margin-bottom: 30px;
+      margin-top: 20px;
       line-height: 1.5;
+      font-size: 1rem;
+
+      @include tablet-large {
+        margin-bottom: 50px;
+        margin-top: 50px;
+      }
+
+      @include tablet-small {
+        margin-bottom: 30px;
+        margin-top: 20px;
+      }
     }
 
     .hero {
-      height: 100%;
+      height: 50vh;
       display: flex;
       padding: 20px;
       background-color: $bg-color;
@@ -39,7 +70,67 @@
   }
 
   &__wrap {
-    padding: 20px 100px;
+    padding: 10px 80px;
+
+    @include tablet-large {
+      padding: 20px 30px;
+    }
+
+    @include tablet-small {
+      h2 {
+        font-size: 2rem;
+        font-weight: bold;
+      }
+      padding: 10px 15px;
+    }
+
+    @include mobile-large {
+      padding: 20px 15px;
+    }
+
+    @include mobile-small {
+      padding: 10px;
+    }
+
+    .form-group__input {
+      margin-bottom: 1rem;
+
+      .form__input {
+        @include tablet-large {
+          input {
+            padding: 10px;
+          }
+        }
+
+        @include tablet-small {
+          input {
+            padding: 13px;
+            font-size: 1.2rem;
+          }
+        }
+
+        @include mobile-large {
+          input {
+            padding: 15px;
+            font-size: 1.2rem;
+          }
+        }
+
+        @include mobile-small {
+          input {
+            font-size: 1.3rem;
+          }
+        }
+      }
+
+      @include tablet-large {
+        margin-bottom: 1.5rem;
+      }
+
+      @include tablet-small {
+        margin-bottom: 1.5rem;
+      }
+    }
   }
 
   &__column {
@@ -54,6 +145,21 @@
   }
   .forgot__title {
     color: $main-color;
+    a {
+      text-decoration: underline;
+    }
+
+    @include tablet-large {
+      font-size: 1rem;
+    }
+
+    @include tablet-small {
+      font-size: 1rem;
+    }
+
+    @include mobile-large {
+      font-size: 1rem;
+    }
   }
   &__btn {
     margin-top: 20px;
@@ -61,6 +167,23 @@
     justify-content: space-between;
     align-items: center;
     .btn-login {
+      @include tablet-large {
+        padding: 10px 20px;
+      }
+
+      @include tablet-small {
+        padding: 10px 25px;
+      }
+
+      @include mobile-large {
+        padding: 10px 30px;
+      }
+
+      @include mobile-small {
+        padding: 10px 25px;
+        width: 100%;
+      }
+
       background-color: $main-color;
       border: 1px solid $main-color;
       border-radius: 4px;
@@ -71,10 +194,26 @@
     display: flex;
     align-self: center;
     justify-content: center;
+
+    @include tablet-small {
+      margin-top: 2rem;
+    }
   }
   .register__wrap {
     margin-left: 10px;
     color: $main-color;
+
+    @include tablet-large {
+      font-size: 1rem;
+    }
+
+    @include tablet-small {
+      font-size: 1.1rem;
+    }
+
+    @include mobile-large {
+      font-size: 1.1rem;
+    }
   }
   &__group-checkbox {
     height: 38px;
@@ -95,10 +234,22 @@
       // flex: 1 1;
       // border-bottom: 1px solid;
       // margin: auto;
+
+      @include tablet-small {
+        width: 4rem;
+      }
+
+      @include mobile-large {
+        width: 3rem;
+      }
+
+      @include mobile-small {
+        width: 2.5rem;
+      }
       display: inline-block;
       content: '';
       border-top: 1px solid #68e1fc;
-      width: 6rem;
+      width: 5rem;
       transform: translateY(-5px);
     }
     &:before {

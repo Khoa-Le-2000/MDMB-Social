@@ -8,6 +8,7 @@ import GoogleIcon from 'assets/images/icons/google.svg';
 import React, { useRef, useState } from 'react';
 import { Button, Carousel, Col, Container, Form, Row } from 'react-bootstrap';
 import GoogleLogin from 'react-google-login';
+import FacebookLogin from 'react-facebook-login';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -27,6 +28,8 @@ import {
 } from 'redux/selectors/authSelector';
 import * as yup from 'yup';
 import './Login.scss';
+import authApi from 'apis/authApi';
+import { useViewport } from 'hooks';
 
 const schema = yup.object().shape({
   emailorphone: yup
@@ -69,6 +72,8 @@ function Login() {
 
   const [message, setMessage] = useState('');
 
+  const { width } = useViewport();
+
   const {
     register,
     handleSubmit,
@@ -105,6 +110,21 @@ function Login() {
     dispatch(loginByGoogle(googleData.tokenId));
   };
 
+  const responseFacebook = async (response) => {
+    console.log(response);
+    const { accessToken } = response;
+    const data = await authApi.loginWithFacebook(accessToken);
+    console.log('🚀 :: responseFacebook :: data', data);
+  };
+
+  const handleFacebookLoginFailure = (error) => {
+    console.log(error);
+  };
+
+  const componentClicked = (data) => {
+    console.log(data);
+  };
+
   let errorMessage;
   if (message !== '') {
     errorMessage = <Form.Text className="text-danger">{message}</Form.Text>;
@@ -122,17 +142,26 @@ function Login() {
     <Container>
       <div className="login__inner">
         <Row>
-          <Col lg={6} md={6} sm={6} className="login__column">
+          <Col
+            lg={width >= 768 ? 6 : 12}
+            md={width >= 768 ? 6 : 12}
+            sm={width >= 768 ? 6 : 12}
+            className="login__column"
+          >
             <div className="login__wrap">
-              <h2>Login</h2>
+              <h2>Log in</h2>
               <h5 className="title">
                 Welcome to MDMB Social, please put your credentials below to
                 start using the app.
               </h5>
 
               <Form className="form" onSubmit={handleSubmit(onLoginHandler)}>
-                <Form.Group className="mb-3" controlId="formPlaintextEmail">
+                <Form.Group
+                  className="form-group__input"
+                  controlId="formPlaintextEmail"
+                >
                   <Col sm="12" className="form__input">
+                    <Form.Label>Email address</Form.Label>
                     <Form.Control
                       placeholder="Email or phone number"
                       {...register('emailorphone')}
@@ -147,8 +176,9 @@ function Login() {
                   </Col>
                 </Form.Group>
 
-                <Form.Group className="mb-3">
+                <Form.Group className="form-group__input">
                   <Col sm="12" className="form__input">
+                    <Form.Label>Password</Form.Label>
                     <Form.Control
                       type="password"
                       placeholder="Password"
@@ -179,9 +209,11 @@ function Login() {
                 <hr />
 
                 <div className="form__btn">
-                  <Form.Group className="form__group-checkbox">
-                    <Form.Check type="checkbox" label="Remember me" />
-                  </Form.Group>
+                  {width >= 372 && (
+                    <Form.Group className="form__group-checkbox">
+                      <Form.Check type="checkbox" label="Remember me" />
+                    </Form.Group>
+                  )}
                   <Button type="submit" className="btn-login">
                     Login
                   </Button>
@@ -205,14 +237,36 @@ function Login() {
                         />
                       </GoogleLogin>
                     </div>
-                    <div className="img__border">
-                      <button className="img__facebook-login">
-                        <img
-                          src={FacebookIcon}
-                          alt="facebook"
-                          className="img__img"
-                        />
-                      </button>
+
+                    <div
+                      className="img__border"
+                      style={{
+                        position: 'relative',
+                      }}
+                    >
+                      <img
+                        src={FacebookIcon}
+                        alt="facebook"
+                        className="img__img"
+                      />
+                      <FacebookLogin
+                        appId={process.env.REACT_APP_FACEBOOK_APP_ID}
+                        textButton=""
+                        icon={false}
+                        onFailure={handleFacebookLoginFailure}
+                        buttonStyle={{
+                          backgroundColor: 'transparent',
+                          border: 'none',
+                          display: 'block',
+                          position: 'absolute',
+                          top: '0',
+                          left: '0',
+                          width: '100%',
+                          height: '100%',
+                        }}
+                        onClick={componentClicked}
+                        callback={responseFacebook}
+                      />
                     </div>
                   </div>
                 </div>
@@ -226,45 +280,54 @@ function Login() {
               </Form>
             </div>
           </Col>
-          <Col lg={6} md={6} sm={12}>
-            <Carousel fade variant="dark" className="slider">
-              <Carousel.Item>
-                <div className="hero">
-                  <img className="w-100" src={Hero1} alt="icon" />
-                </div>
-                <Carousel.Caption>
-                  <h3 className="slider__heading">First slide label</h3>
-                  <p className="slider__desc">
-                    Nulla vitae elit libero, a pharetra augue mollis interdum.
-                  </p>
-                </Carousel.Caption>
-              </Carousel.Item>
-              <Carousel.Item>
-                <div className="hero">
-                  <img className="w-100" src={Hero2} alt="icon" />
-                </div>
-                <Carousel.Caption>
-                  <h3 className="slider__heading">Second slide label</h3>
-                  <p className="slider__desc">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  </p>
-                </Carousel.Caption>
-              </Carousel.Item>
-              <Carousel.Item>
-                <div className="hero">
-                  <img className="w-100" src={Hero3} alt="icon" />
-                </div>
+          {width >= 768 && (
+            <Col lg={6} md={6} sm={12}>
+              <Carousel
+                fade
+                variant="dark"
+                className="slider"
+                touch={false}
+                nextIcon=""
+                prevIcon=""
+              >
+                <Carousel.Item>
+                  <div className="hero">
+                    <img className="w-100" src={Hero1} alt="icon" />
+                  </div>
+                  <Carousel.Caption>
+                    <h3 className="slider__heading">First slide label</h3>
+                    <p className="slider__desc">
+                      Nulla vitae elit libero, a pharetra augue mollis interdum.
+                    </p>
+                  </Carousel.Caption>
+                </Carousel.Item>
+                <Carousel.Item>
+                  <div className="hero">
+                    <img className="w-100" src={Hero2} alt="icon" />
+                  </div>
+                  <Carousel.Caption>
+                    <h3 className="slider__heading">Second slide label</h3>
+                    <p className="slider__desc">
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    </p>
+                  </Carousel.Caption>
+                </Carousel.Item>
+                <Carousel.Item>
+                  <div className="hero">
+                    <img className="w-100" src={Hero3} alt="icon" />
+                  </div>
 
-                <Carousel.Caption>
-                  <h3 className="slider__heading">Third slide label</h3>
-                  <p className="slider__desc">
-                    Praesent commodo cursus magna, vel scelerisque nisl
-                    consectetur.
-                  </p>
-                </Carousel.Caption>
-              </Carousel.Item>
-            </Carousel>
-          </Col>
+                  <Carousel.Caption>
+                    <h3 className="slider__heading">Third slide label</h3>
+                    <p className="slider__desc">
+                      Praesent commodo cursus magna, vel scelerisque nisl
+                      consectetur.
+                    </p>
+                  </Carousel.Caption>
+                </Carousel.Item>
+              </Carousel>
+            </Col>
+          )}
         </Row>
       </div>
     </Container>
