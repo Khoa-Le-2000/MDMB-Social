@@ -7,7 +7,7 @@ import Hero3 from 'assets/images/heros/hero3.svg';
 import FacebookIcon from 'assets/images/icons/facebook.svg';
 import GoogleIcon from 'assets/images/icons/google.svg';
 import { useViewport } from 'hooks';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button, Carousel, Col, Form, Row } from 'react-bootstrap';
 import FacebookLogin from 'react-facebook-login';
 import GoogleLogin from 'react-google-login';
@@ -69,7 +69,8 @@ function Login() {
   const countError = useSelector(getErrorCount);
   const messageErrorLogin = useSelector(getErrorMessageLogin);
   const hasError = useSelector(getErrorLogin);
-  const isRedirectRegister = useSelector(getRedirect);
+
+  const isRedirectRegister = useSelector(getRedirect)?.register;
 
   const [message, setMessage] = useState('');
 
@@ -113,7 +114,7 @@ function Login() {
 
   const handleGoogleLoginSuccess = (googleData) => {
     dispatch(loginByGoogle(googleData.tokenId));
-    if (isRedirectRegister?.register) {
+    if (isRedirectRegister) {
       navigate('register/google');
     }
   };
@@ -287,7 +288,7 @@ function Login() {
             sm={12}
           >
             <Carousel
-              fade={true}
+              fade={false}
               className="slider"
               touch={false}
               slide={true}

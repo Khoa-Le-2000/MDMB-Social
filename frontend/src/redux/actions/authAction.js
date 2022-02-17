@@ -23,7 +23,6 @@ export const registerSuccess = () => {
 export const register = () => async (dispatch) => {
   dispatch(registerStart());
   const { message } = authApi.register();
-  console.log('🚀 :: register :: message', message);
 
   if (message === 'success') {
     dispatch(registerSuccess());

@@ -1,9 +1,14 @@
 import React from 'react';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 import { Link, Route, Routes } from 'react-router-dom';
+import { getRedirect } from 'redux/selectors/authSelector';
 import './register.scss';
 
-function Register({ isRedirectRegister }) {
+function Register() {
+  const isRedirectRegister = useSelector(getRedirect)?.register;
+  console.log('🚀 :: Register :: isRedirectRegister', isRedirectRegister);
+
   return (
     <div className="register">
       <Container>
