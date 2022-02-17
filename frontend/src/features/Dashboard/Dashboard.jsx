@@ -1,17 +1,25 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { refreshToken } from 'redux/actions/authAction';
+import { useNavigate } from 'react-router-dom';
+import { logout, refreshToken } from 'redux/actions/authAction';
 import { getAuth } from 'redux/selectors/authSelector';
 
 function Dashboard() {
   const auth = useSelector(getAuth);
+
+  const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
   const onHandleRefreshToken = () => {
     dispatch(refreshToken(auth.refreshToken));
   };
+  const handleLogout = () => {
+    dispatch(logout(auth?.accessToken));
+    navigate('/');
+  };
+
   return (
     <div>
       Dashboard (private)
@@ -20,6 +28,7 @@ function Dashboard() {
       <Button onClick={onHandleRefreshToken} className="btn">
         Refresh Token
       </Button>
+      {auth?.accessToken && <Button onClick={handleLogout}>Logout</Button>}
     </div>
   );
 }
