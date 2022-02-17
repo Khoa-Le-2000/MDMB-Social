@@ -62,6 +62,11 @@ const authReducer = (state = initialState, action) => {
           errorCount: 0,
           token: action.payload,
         },
+        redirect: {
+          ...state.redirect,
+          login: true,
+          register: false,
+        },
       };
     case AuthActionTypes.LOGIN_FAILURE:
       console.log(action.payload);
@@ -75,6 +80,11 @@ const authReducer = (state = initialState, action) => {
           message: action.payload,
           errorCount: state.login.errorCount + 1,
           token: null,
+        },
+        redirect: {
+          ...state.redirect,
+          login: false,
+          register: false,
         },
       };
 

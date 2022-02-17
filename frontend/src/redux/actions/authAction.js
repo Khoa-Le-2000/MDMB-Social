@@ -23,7 +23,6 @@ export const registerSuccess = () => {
 export const register = () => async (dispatch) => {
   dispatch(registerStart());
   const { message } = authApi.register();
-  console.log('🚀 :: register :: message', message);
 
   if (message === 'success') {
     dispatch(registerSuccess());
@@ -74,7 +73,7 @@ export const login = (user) => async (dispatch) => {
     );
   } else {
     // const { result } = data;
-    dispatch(loginFailure('Tài khoản hoặc mật khẩu không chính xác'));
+    dispatch(loginFailure('Wrong email or password!'));
   }
 };
 
@@ -94,8 +93,7 @@ export const loginByGoogle = (tokenId) => async (dispatch) => {
   } else if (data?.result === 'login failure') {
     dispatch(redirectToRegister());
   } else {
-    console.log('🚀 :: loginByGoogle :: data?.result', data?.result);
-    dispatch(loginFailure('Không thể đăng nhập bằng Google'));
+    dispatch(loginFailure(`Can't sign in to your Google Account`));
   }
 };
 
