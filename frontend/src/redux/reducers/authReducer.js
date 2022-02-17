@@ -98,11 +98,6 @@ const authReducer = (state = initialState, action) => {
           success: true,
           token: action.payload,
         },
-        redirect: {
-          ...state.redirect,
-          login: true,
-          register: false,
-        },
       };
 
     case AuthActionTypes.LOGOUT_START:
