@@ -11,6 +11,7 @@ const initialState = {
     success: false,
     message: null,
     errorCount: 0,
+    redirect: false,
   },
   captcha: {
     isFetching: false,
@@ -28,6 +29,10 @@ const initialState = {
     error: false,
     isFetching: false,
     success: false,
+  },
+  redirect: {
+    login: false,
+    register: false,
   },
 };
 
@@ -59,6 +64,7 @@ const authReducer = (state = initialState, action) => {
         },
       };
     case AuthActionTypes.LOGIN_FAILURE:
+      console.log(action.payload);
       return {
         ...state,
         login: {
@@ -107,6 +113,11 @@ const authReducer = (state = initialState, action) => {
           ...state.login,
           token: null,
         },
+        redirect: {
+          ...state.redirect,
+          login: false,
+          register: false,
+        },
       };
 
     case AuthActionTypes.LOGOUT_FAILURE: {
@@ -150,6 +161,24 @@ const authReducer = (state = initialState, action) => {
           isFetching: false,
           success: false,
           message: action.payload,
+        },
+      };
+
+    case AuthActionTypes.REDIRECT_TO_LOGIN:
+      return {
+        ...state,
+        redirect: {
+          ...state.redirect,
+          login: true,
+        },
+      };
+
+    case AuthActionTypes.REDIRECT_TO_REGISTER:
+      return {
+        ...state,
+        redirect: {
+          ...state.redirect,
+          register: true,
         },
       };
     default: {
