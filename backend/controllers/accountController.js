@@ -38,7 +38,7 @@ function loginByGoogle(req, res) {
           const Email = payload['email'];
           AccountDAO.getAccountByEmail(Email, (Account) => {
             if (Account == false) {
-              res.status(401).send({ result: "login failure" })
+              res.status(200).send({ result: "login failure" })
               //create account
               // let Name = payload['name'];
               // let Avatar = payload['picture'];
