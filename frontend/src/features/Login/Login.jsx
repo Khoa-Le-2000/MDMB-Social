@@ -292,8 +292,8 @@ function Login() {
             sm={12}
           >
             <Carousel
-              fade
-              interval={5000}
+              fade={true}
+              interval={2000}
               variant="dark"
               className="slider"
               touch={false}
