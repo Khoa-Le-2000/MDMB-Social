@@ -69,7 +69,6 @@ function Login() {
   const countError = useSelector(getErrorCount);
   const messageErrorLogin = useSelector(getErrorMessageLogin);
   const hasError = useSelector(getErrorLogin);
-  const isAuthenticated = useSelector(getAuth)?.accessToken;
   const isRedirectRegister = useSelector(getRedirect);
 
   const [message, setMessage] = useState('');
@@ -89,6 +88,7 @@ function Login() {
       const response = refRecapCha.current.getValue();
       if (response) {
         dispatch(verifyCaptcha(response));
+        refRecapCha.current?.reset();
         setMessage('');
       } else {
         setMessage('Please check the captcha');
@@ -96,6 +96,7 @@ function Login() {
       }
       if (isHuman) {
         dispatch(login(data));
+        refRecapCha.current?.reset();
         navigate('/');
       }
     }
@@ -112,7 +113,7 @@ function Login() {
 
   const handleGoogleLoginSuccess = (googleData) => {
     dispatch(loginByGoogle(googleData.tokenId));
-    if (isRedirectRegister) {
+    if (isRedirectRegister?.register) {
       navigate('register/google');
     }
   };
@@ -142,9 +143,7 @@ function Login() {
     errorMessage = null;
   }
 
-  return isAuthenticated ? (
-    <Navigate to="/dashboard" replace={true} />
-  ) : (
+  return (
     <div className="login__inner">
       <Row
         style={{
@@ -175,13 +174,6 @@ function Login() {
                     placeholder="Email or phone number"
                     {...register('emailorphone')}
                   />
-                  {errors.emailorphone ? (
-                    <Form.Text className="text-danger">
-                      {errors.emailorphone?.message}
-                    </Form.Text>
-                  ) : (
-                    errorMessage
-                  )}
                 </Col>
               </Form.Group>
 
@@ -193,9 +185,9 @@ function Login() {
                     placeholder="Password"
                     {...register('password')}
                   />
-                  {errors.password ? (
+                  {errors.emailorphone ? (
                     <Form.Text className="text-danger">
-                      {errors.password?.message}
+                      {errors.emailorphone?.message}
                     </Form.Text>
                   ) : (
                     errorMessage
@@ -213,6 +205,9 @@ function Login() {
                 <ReCAPTCHA
                   ref={refRecapCha}
                   sitekey={process.env.REACT_APP_GOOGLE_SITE_KEY}
+                  onExpired={() => {
+                    refRecapCha.current?.reset();
+                  }}
                 />
               )}
               <hr />
@@ -293,14 +288,13 @@ function Login() {
           >
             <Carousel
               fade={true}
-              interval={2000}
-              variant="dark"
               className="slider"
               touch={false}
+              slide={true}
               nextIcon=""
               prevIcon=""
             >
-              <Carousel.Item>
+              <Carousel.Item interval={1000}>
                 <div className="hero">
                   <img className="w-100" src={Hero1} alt="icon" />
                 </div>

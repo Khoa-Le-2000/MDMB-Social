@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 import { getRedirect } from 'redux/selectors/authSelector';
 
 function App() {
-  const isRedirectRegister = useSelector(getRedirect);
+  const isRedirectRegister = useSelector(getRedirect).register;
   return (
     <>
       <Routes>

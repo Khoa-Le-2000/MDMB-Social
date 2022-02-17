@@ -7,13 +7,13 @@ function Nav() {
     <nav>
       <ul>
         <li>
-          <Link to="/">Home</Link>
+          <Link to="/">A</Link>
         </li>
         <li>
-          <Link to="/login">Login</Link>
+          <Link to="/login">B</Link>
         </li>
         <li>
-          <Link to="/register">Register</Link>
+          <Link to="/register">C</Link>
         </li>
       </ul>
     </nav>
