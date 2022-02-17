@@ -25,6 +25,7 @@ import {
   getErrorCount,
   getErrorLogin,
   getErrorMessageLogin,
+  getRedirect,
 } from 'redux/selectors/authSelector';
 import * as yup from 'yup';
 import './Login.scss';
@@ -69,6 +70,7 @@ function Login() {
   const messageErrorLogin = useSelector(getErrorMessageLogin);
   const hasError = useSelector(getErrorLogin);
   const isAuthenticated = useSelector(getAuth)?.accessToken;
+  const isRedirectRegister = useSelector(getRedirect)?.register;
 
   const [message, setMessage] = useState('');
 
@@ -108,6 +110,8 @@ function Login() {
 
   const handleGoogleLoginSuccess = (googleData) => {
     dispatch(loginByGoogle(googleData.tokenId));
+    if (isRedirectRegister) {
+    }
   };
 
   const responseFacebook = async (response) => {

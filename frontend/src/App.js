@@ -8,8 +8,13 @@ import Dashboard from 'features/Dashboard/Dashboard';
 import NotFound from 'features/404/NotFound';
 import Home from 'features/Home/Home';
 import MainLayout from 'layouts/MainLayout';
+import Register from 'features/Register/Register';
+import { useSelector } from 'react-redux';
+import { getRedirect } from 'redux/selectors/authSelector';
 
 function App() {
+  const isRedirectRegister = useSelector(getRedirect)?.register;
+
   return (
     <>
       <MainLayout />
@@ -25,6 +30,11 @@ function App() {
           }
         />
         <Route path="/login" element={<Login />} />
+        <Route
+          path="/register/*"
+          element={<Register isRedirectRegister={isRedirectRegister} />}
+        />
+
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
