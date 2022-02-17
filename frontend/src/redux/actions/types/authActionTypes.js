@@ -6,7 +6,7 @@ export const AuthActionTypes = {
   LOGIN_START: 'auth/login/start',
   LOGIN_FAILURE: 'auth/login/failure',
 
-  LOGIN_SUCCESS: 'auth/login',
+  LOGIN_SUCCESS: 'auth/login/success',
   LOGIN_GOOGLE_SUCCESS: 'auth/login/google',
 
   LOGOUT_START: 'auth/logout',

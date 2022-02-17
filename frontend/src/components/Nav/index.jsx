@@ -1,23 +1,8 @@
 import React from 'react';
-import { Button } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
-import { logout } from 'redux/actions/authAction';
+import { Link } from 'react-router-dom';
 import './nav.scss';
-import { getAuth } from 'redux/selectors/authSelector';
 
 function Nav() {
-  const auth = useSelector(getAuth);
-
-  const navigate = useNavigate();
-
-  const dispatch = useDispatch();
-
-  const handleLogout = () => {
-    dispatch(logout(auth?.accessToken));
-    navigate('/');
-  };
-
   return (
     <nav>
       <ul>
@@ -31,7 +16,6 @@ function Nav() {
           <Link to="/register">Register</Link>
         </li>
       </ul>
-      {auth?.accessToken && <Button onClick={handleLogout}>Logout</Button>}
     </nav>
   );
 }

@@ -1,6 +1,21 @@
+import Login from 'features/Login/Login';
+import MainLayout from 'layouts/MainLayout';
 import React from 'react';
+import { Container } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
+import { getAuth } from 'redux/selectors/authSelector';
+import './home.scss';
 
 function Home() {
-  return <h1>Home page (public)</h1>;
+  const auth = useSelector(getAuth);
+
+  return (
+    <Container fluid>
+      <section className="home">
+        <Login />
+      </section>
+      {auth?.accessToken && <MainLayout />}
+    </Container>
+  );
 }
 export default Home;
