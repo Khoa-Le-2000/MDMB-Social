@@ -1,16 +1,23 @@
 export const AuthActionTypes = {
-  LOGIN_START: 'user/login/start',
-  LOGIN_FAILURE: 'user/login/failure',
+  REGISTER_START: 'auth/register/start',
+  REGISTER_FAILURE: 'auth/register/failure',
+  REGISTER_SUCCESS: 'auth/register/success',
 
-  LOGIN_SUCCESS: 'user/login',
-  LOGIN_GOOGLE_SUCCESS: 'user/login/google',
+  LOGIN_START: 'auth/login/start',
+  LOGIN_FAILURE: 'auth/login/failure',
 
-  LOGOUT_START: 'user/logout',
-  LOGOUT_FAILURE: 'user/logout/failure',
-  LOGOUT_SUCCESS: 'user/logout/success',
+  LOGIN_SUCCESS: 'auth/login/success',
+  LOGIN_GOOGLE_SUCCESS: 'auth/login/google',
 
-  REFRESH_TOKEN_SUCCESS: 'user/refreshToken',
+  LOGOUT_START: 'auth/logout',
+  LOGOUT_FAILURE: 'auth/logout/failure',
+  LOGOUT_SUCCESS: 'auth/logout/success',
+
+  REFRESH_TOKEN_SUCCESS: 'auth/refreshToken',
 
   VERIFY_CAPTCHA_SUCCESS: 'auth/verifyCaptcha/success',
   VERIFY_CAPTCHA_FAILURE: 'auth/verifyCaptcha/failure',
+
+  REDIRECT_TO_LOGIN: 'auth/redirect/login',
+  REDIRECT_TO_REGISTER: 'auth/redirect/register',
 };

@@ -1,6 +1,17 @@
 import axiosClient from './axiosClient';
 
 const authApi = {
+  register: async (data) => {
+    const url = 'account/register';
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve({
+          message: 'success',
+        });
+      });
+    });
+  },
+
   login: (data) => {
     const url = 'account/login';
     return axiosClient.post(url, {
@@ -26,6 +37,7 @@ const authApi = {
       refreshToken,
     });
   },
+
   verifyCaptcha: (response) => {
     const url = `auth/captcha?captcha=${response}`;
     return axiosClient.get(url);

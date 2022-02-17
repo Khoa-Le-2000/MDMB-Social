@@ -1,6 +1,37 @@
 import authApi from 'apis/authApi';
 import { AuthActionTypes } from './types/authActionTypes';
 
+export const registerStart = () => {
+  return {
+    type: AuthActionTypes.REGISTER_START,
+  };
+};
+
+export const registerFailure = (message) => {
+  return {
+    type: AuthActionTypes.REGISTER_FAILURE,
+    payload: message,
+  };
+};
+
+export const registerSuccess = () => {
+  return {
+    type: AuthActionTypes.REGISTER_SUCCESS,
+  };
+};
+
+export const register = () => async (dispatch) => {
+  dispatch(registerStart());
+  const { message } = authApi.register();
+  console.log('🚀 :: register :: message', message);
+
+  if (message === 'success') {
+    dispatch(registerSuccess());
+  } else {
+    dispatch(registerFailure(message));
+  }
+};
+
 export const loginStart = () => {
   return {
     type: AuthActionTypes.LOGIN_START,
@@ -10,7 +41,7 @@ export const loginStart = () => {
 export const loginFailure = (message) => {
   return {
     type: AuthActionTypes.LOGIN_FAILURE,
-    payload: message.result,
+    payload: message,
   };
 };
 
@@ -33,8 +64,6 @@ export const login = (user) => async (dispatch) => {
     emailorphone,
     password,
   });
-  console.log('🚀 :: login :: data', data);
-
   if (data?.accessToken && data?.refreshToken) {
     const { accessToken, refreshToken } = data;
     dispatch(
@@ -45,11 +74,7 @@ export const login = (user) => async (dispatch) => {
     );
   } else {
     // const { result } = data;
-    dispatch(
-      loginFailure({
-        result: 'Tài khoản hoặc mật khẩu không chinh xác',
-      })
-    );
+    dispatch(loginFailure('Wrong email or password!'));
   }
 };
 
@@ -60,16 +85,16 @@ export const loginByGoogle = (tokenId) => async (dispatch) => {
 
   if (data?.accessToken && data?.refreshToken) {
     const { accessToken, refreshToken } = data;
-
     dispatch(
       loginSuccess({
         accessToken,
         refreshToken,
       })
     );
+  } else if (data?.result === 'login failure') {
+    dispatch(redirectToRegister());
   } else {
-    const { result } = data;
-    dispatch(loginFailure(result));
+    dispatch(loginFailure(`Can't sign in to your Google Account`));
   }
 };
 
@@ -127,4 +152,16 @@ export const logout = (accessToken) => async (dispatch) => {
   dispatch(logoutStart());
   // const data = await authApi.logout();
   dispatch(logoutSuccess());
+};
+
+export const redirectToLogin = () => {
+  return {
+    type: AuthActionTypes.REDIRECT_TO_LOGIN,
+  };
+};
+
+export const redirectToRegister = () => {
+  return {
+    type: AuthActionTypes.REDIRECT_TO_REGISTER,
+  };
 };

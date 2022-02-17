@@ -1,37 +1,21 @@
 import React from 'react';
-import { Button } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
-import { logout } from 'redux/actions/authAction';
+import { Link } from 'react-router-dom';
 import './nav.scss';
-import { getAuth } from 'redux/selectors/authSelector';
 
 function Nav() {
-  const auth = useSelector(getAuth);
-
-  const navigate = useNavigate();
-
-  const dispatch = useDispatch();
-
-  const handleLogout = () => {
-    dispatch(logout(auth?.accessToken));
-    navigate('/');
-  };
-
   return (
     <nav>
       <ul>
         <li>
-          <Link to="/">Home</Link>
+          <Link to="/">A</Link>
         </li>
         <li>
-          <Link to="/login">Login</Link>
+          <Link to="/login">B</Link>
         </li>
         <li>
-          <Link to="/register">Register</Link>
+          <Link to="/register">C</Link>
         </li>
       </ul>
-      {auth?.accessToken && <Button onClick={handleLogout}>Logout</Button>}
     </nav>
   );
 }

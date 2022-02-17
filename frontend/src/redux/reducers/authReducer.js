@@ -11,6 +11,7 @@ const initialState = {
     success: false,
     message: null,
     errorCount: 0,
+    redirect: false,
   },
   captcha: {
     isFetching: false,
@@ -28,6 +29,10 @@ const initialState = {
     error: false,
     isFetching: false,
     success: false,
+  },
+  redirect: {
+    login: false,
+    register: false,
   },
 };
 
@@ -57,8 +62,14 @@ const authReducer = (state = initialState, action) => {
           errorCount: 0,
           token: action.payload,
         },
+        redirect: {
+          ...state.redirect,
+          login: true,
+          register: false,
+        },
       };
     case AuthActionTypes.LOGIN_FAILURE:
+      console.log(action.payload);
       return {
         ...state,
         login: {
@@ -69,6 +80,11 @@ const authReducer = (state = initialState, action) => {
           message: action.payload,
           errorCount: state.login.errorCount + 1,
           token: null,
+        },
+        redirect: {
+          ...state.redirect,
+          login: false,
+          register: false,
         },
       };
 
@@ -81,6 +97,11 @@ const authReducer = (state = initialState, action) => {
           error: false,
           success: true,
           token: action.payload,
+        },
+        redirect: {
+          ...state.redirect,
+          login: true,
+          register: false,
         },
       };
 
@@ -106,6 +127,11 @@ const authReducer = (state = initialState, action) => {
         login: {
           ...state.login,
           token: null,
+        },
+        redirect: {
+          ...state.redirect,
+          login: false,
+          register: false,
         },
       };
 
@@ -150,6 +176,24 @@ const authReducer = (state = initialState, action) => {
           isFetching: false,
           success: false,
           message: action.payload,
+        },
+      };
+
+    case AuthActionTypes.REDIRECT_TO_LOGIN:
+      return {
+        ...state,
+        redirect: {
+          ...state.redirect,
+          login: true,
+        },
+      };
+
+    case AuthActionTypes.REDIRECT_TO_REGISTER:
+      return {
+        ...state,
+        redirect: {
+          ...state.redirect,
+          register: true,
         },
       };
     default: {
