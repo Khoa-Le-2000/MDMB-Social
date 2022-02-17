@@ -62,6 +62,11 @@ const authReducer = (state = initialState, action) => {
           errorCount: 0,
           token: action.payload,
         },
+        redirect: {
+          ...state.redirect,
+          login: true,
+          register: false,
+        },
       };
     case AuthActionTypes.LOGIN_FAILURE:
       console.log(action.payload);
@@ -76,6 +81,11 @@ const authReducer = (state = initialState, action) => {
           errorCount: state.login.errorCount + 1,
           token: null,
         },
+        redirect: {
+          ...state.redirect,
+          login: false,
+          register: false,
+        },
       };
 
     case AuthActionTypes.LOGIN_GOOGLE_SUCCESS:
@@ -87,6 +97,11 @@ const authReducer = (state = initialState, action) => {
           error: false,
           success: true,
           token: action.payload,
+        },
+        redirect: {
+          ...state.redirect,
+          login: true,
+          register: false,
         },
       };
 

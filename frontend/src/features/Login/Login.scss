@@ -2,7 +2,7 @@
 
 .login {
   &__inner {
-    padding: 10px 40px;
+    padding: 20px 60px;
 
     @include tablet-large {
       padding: 20px 30px;
@@ -47,7 +47,11 @@
 
     .title {
       margin-bottom: 40px;
+      font-size: medium;
+      margin-bottom: 30px;
       margin-top: 20px;
+      margin-bottom: 30px;
+      margin-top: 15px;
       line-height: 1.5;
       font-size: 1rem;
 
@@ -256,7 +260,7 @@
       display: inline-block;
       content: '';
       border-top: 1px solid #68e1fc;
-      width: 5rem;
+      width: 6rem;
       transform: translateY(-5px);
     }
     &:before {
