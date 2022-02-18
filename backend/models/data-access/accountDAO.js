@@ -37,8 +37,8 @@ function getAccountByEmail(Email, Callback) {
       });
   });
 }
-function CreateAccount(Password, Phone, Email, Name, Avatar, Birthday, Gender, CreatedDate) {
 
+function createAccount(Password, Phone, Email, Name, Avatar, Birthday, Gender, CreatedDate, Callback) {
   var con = connection.createConnection();
   con.connect(function (err) {
     if (err) throw err;
@@ -46,12 +46,14 @@ function CreateAccount(Password, Phone, Email, Name, Avatar, Birthday, Gender, C
     con.query(sql, [Password, Phone, Email, Name, Avatar, Birthday, Gender, CreatedDate],
       function (err, result) {
         connection.closeConnection(con);
+        return Callback(result);
         if (err) throw err;
       });
   });
 }
+
 module.exports = {
   getAccount,
   getAccountByEmail,
-  CreateAccount
+  createAccount
 }
