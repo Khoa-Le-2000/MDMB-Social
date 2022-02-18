@@ -14,7 +14,7 @@ import GoogleLogin from 'react-google-login';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   login,
   loginByGoogle,
@@ -22,7 +22,6 @@ import {
   verifyCaptcha,
 } from 'redux/actions/authAction';
 import {
-  getAuth,
   getCaptcha,
   getErrorCount,
   getErrorLogin,
@@ -69,7 +68,6 @@ function Login() {
   const countError = useSelector(getErrorCount);
   const messageErrorLogin = useSelector(getErrorMessageLogin);
   const hasError = useSelector(getErrorLogin);
-  const isRedirectRegister = useSelector(getRedirect);
 
   const [message, setMessage] = useState('');
 
@@ -112,10 +110,7 @@ function Login() {
   };
 
   const handleGoogleLoginSuccess = (googleData) => {
-    dispatch(loginByGoogle(googleData.tokenId));
-    if (isRedirectRegister?.register) {
-      navigate('register/google');
-    }
+    dispatch(loginByGoogle(googleData.tokenId, navigate));
   };
 
   const responseFacebook = async (response) => {
@@ -292,7 +287,7 @@ function Login() {
             sm={12}
           >
             <Carousel
-              fade={true}
+              fade={false}
               className="slider"
               touch={false}
               slide={true}

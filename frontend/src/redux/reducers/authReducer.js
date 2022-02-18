@@ -49,6 +49,11 @@ const authReducer = (state = initialState, action) => {
           message: null,
           token: null,
         },
+        redirect: {
+          ...state.redirect,
+          login: false,
+          register: false,
+        },
       };
     case AuthActionTypes.LOGIN_SUCCESS:
       return {
@@ -97,11 +102,6 @@ const authReducer = (state = initialState, action) => {
           error: false,
           success: true,
           token: action.payload,
-        },
-        redirect: {
-          ...state.redirect,
-          login: true,
-          register: false,
         },
       };
 

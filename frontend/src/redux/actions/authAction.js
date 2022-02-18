@@ -23,7 +23,6 @@ export const registerSuccess = () => {
 export const register = () => async (dispatch) => {
   dispatch(registerStart());
   const { message } = authApi.register();
-  console.log('🚀 :: register :: message', message);
 
   if (message === 'success') {
     dispatch(registerSuccess());
@@ -78,7 +77,7 @@ export const login = (user) => async (dispatch) => {
   }
 };
 
-export const loginByGoogle = (tokenId) => async (dispatch) => {
+export const loginByGoogle = (tokenId, navigate) => async (dispatch) => {
   dispatch(loginStart());
 
   const data = await authApi.loginWithGoogle(tokenId);
@@ -93,6 +92,7 @@ export const loginByGoogle = (tokenId) => async (dispatch) => {
     );
   } else if (data?.result === 'login failure') {
     dispatch(redirectToRegister());
+    navigate('register/google');
   } else {
     dispatch(loginFailure(`Can't sign in to your Google Account`));
   }
