@@ -113,10 +113,7 @@ function Login() {
   };
 
   const handleGoogleLoginSuccess = (googleData) => {
-    dispatch(loginByGoogle(googleData.tokenId));
-    if (isRedirectRegister) {
-      navigate('register/google');
-    }
+    dispatch(loginByGoogle(googleData.tokenId, navigate));
   };
 
   const responseFacebook = async (response) => {

@@ -7,7 +7,6 @@ import './register.scss';
 
 function Register() {
   const isRedirectRegister = useSelector(getRedirect)?.register;
-  console.log('🚀 :: Register :: isRedirectRegister', isRedirectRegister);
 
   return (
     <div className="register">
