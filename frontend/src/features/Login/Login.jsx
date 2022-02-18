@@ -180,9 +180,14 @@ function Login() {
                     placeholder="Password"
                     {...register('password')}
                   />
-                  {errors.emailorphone ? (
+
+                  {errors.emailorphone?.message ? (
                     <Form.Text className="text-danger">
                       {errors.emailorphone?.message}
+                    </Form.Text>
+                  ) : errors.password?.message ? (
+                    <Form.Text className="text-danger">
+                      {errors.password?.message}
                     </Form.Text>
                   ) : (
                     errorMessage
