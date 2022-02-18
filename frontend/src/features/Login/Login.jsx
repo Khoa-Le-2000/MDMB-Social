@@ -7,14 +7,14 @@ import Hero3 from 'assets/images/heros/hero3.svg';
 import FacebookIcon from 'assets/images/icons/facebook.svg';
 import GoogleIcon from 'assets/images/icons/google.svg';
 import { useViewport } from 'hooks';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Button, Carousel, Col, Form, Row } from 'react-bootstrap';
 import FacebookLogin from 'react-facebook-login';
 import GoogleLogin from 'react-google-login';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   login,
   loginByGoogle,
@@ -22,7 +22,6 @@ import {
   verifyCaptcha,
 } from 'redux/actions/authAction';
 import {
-  getAuth,
   getCaptcha,
   getErrorCount,
   getErrorLogin,
@@ -70,8 +69,6 @@ function Login() {
   const messageErrorLogin = useSelector(getErrorMessageLogin);
   const hasError = useSelector(getErrorLogin);
 
-  const isRedirectRegister = useSelector(getRedirect)?.register;
-
   const [message, setMessage] = useState('');
 
   const { width } = useViewport();
@@ -113,10 +110,7 @@ function Login() {
   };
 
   const handleGoogleLoginSuccess = (googleData) => {
-    dispatch(loginByGoogle(googleData.tokenId));
-    if (isRedirectRegister) {
-      navigate('register/google');
-    }
+    dispatch(loginByGoogle(googleData.tokenId, navigate));
   };
 
   const responseFacebook = async (response) => {
