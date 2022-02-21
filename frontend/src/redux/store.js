@@ -4,6 +4,7 @@ import authReducer from './reducers/authReducer';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { interceptor } from 'apis/axiosClient';
+import { createLogger } from 'redux-logger';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -18,6 +19,10 @@ const persistConfig = {
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const middlewares = [thunk];
+
+if (process.env.NODE_ENV !== 'production') {
+  middlewares.push(createLogger());
+}
 const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const store = createStore(
