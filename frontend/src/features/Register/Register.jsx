@@ -77,7 +77,7 @@ function Register() {
                         <Form.Group className="mb-3" controlId="formBasicEmail">
                           <Form.Label>First Name</Form.Label>
                           <Form.Control
-                            type="email"
+                            type="text"
                             placeholder="Enter first name"
                           />
                         </Form.Group>
@@ -86,7 +86,7 @@ function Register() {
                         <Form.Group className="mb-3" controlId="formBasicEmail">
                           <Form.Label>Last Name</Form.Label>
                           <Form.Control
-                            type="email"
+                            type="text"
                             placeholder="Enter last name"
                           />
                         </Form.Group>
@@ -132,7 +132,7 @@ function Register() {
                         <Button
                           type="submit"
                           variant="primary"
-                          size="lg"
+                          size="sm"
                           className="w-100"
                         >
                           Create Account

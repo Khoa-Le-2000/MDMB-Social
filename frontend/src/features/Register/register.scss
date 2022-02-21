@@ -8,7 +8,7 @@
     padding: 0;
   }
   .card-title {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: bold;
     margin-bottom: 30px;
   }
@@ -20,7 +20,7 @@
     padding: 15px 0;
   }
   .card__header {
-    margin-bottom: 30px;
+    margin-bottom: 20px;
   }
 
   &__hero {
@@ -31,11 +31,6 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-
-    // width: calc(100% - 560px);
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
     position: relative;
     z-index: 1;
 
@@ -78,6 +73,7 @@
       box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 
       padding: 30px 20px;
+      padding-bottom: 0;
       input {
         border-radius: 5px;
         box-shadow: 2px 2px 2px hsl(0deg 0% 47% / 10%);
@@ -86,7 +82,7 @@
     &__info {
       display: flex;
       h3 {
-        font-size: 24px;
+        font-size: 20px;
         display: inline-block;
         margin-right: 16px;
       }
@@ -116,12 +112,13 @@
   }
   .text-login {
     margin-top: 1.5rem;
-    font-size: 16px;
+    font-size: 15px;
     line-height: 1.5715;
     font-weight: 600;
+    margin-bottom: 0;
     a {
       color: #80b7f1;
-      font-size: 16px;
+      font-size: 15px;
       line-height: 1.5715;
       font-weight: 600;
       &:hover {
