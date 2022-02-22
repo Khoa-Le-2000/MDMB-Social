@@ -84,25 +84,60 @@ function register(req, res) {
   let Password = req.body.Password;
 
   //regex
-  let regName = /^((?![0-9\~\!\@\#\$\%\^\&\*\(\)\_\+\=\-\[\]\{\}\;\:\"\\\/\<\>\?]).){1,45}/;
+  let regName = /^((?![0-9\~\!\@\#\$\%\^\&\*\(\)\_\+\=\-\[\]\{\}\;\:\"\\\/\<\>\?]).){2,45}/;
   let regEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,45}))$/;
-  let regPhone = /(84|0[3|5|7|8|9])+([0-9]{8,9})$/;
-  let regPass = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{8,45})$/
+  let regPhone = /(84|0[3|5|7|8|9])+([0-9]{8})$/;
+  let regPass = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{6,60})$/
 
-  if (regName.test(Name) && regEmail.test(Email) && regPhone.test(Phone) && regPass.test(Password)) {
-    AccountDAO.getAccountId(Phone, Email, (result) => {
-      if (result) res.status(401).send({ result: 'account existed' })
-      else {
-        bcrypt.hash(Password, 10).then((hash) => {
-          AccountDAO.createAccount(hash, Phone.trim(), Email.trim(), Name.trim(), (rs) => {
-            if (rs) res.status(200).send({ result: 'register succesful' });
-            else res.status(401).send({ result: 'register failed' })
-          })
-        })
-
-      }
+  if (!Name || !Email || !Phone || !Password || Name.trim() == null || Email.trim() == null || Password.trim() == null || Phone.trim() == null) {
+    res.status(401).send({
+      result: "incorrect format for: empty value",
+      description: `Not allow empty value for${(!Name || Name.trim() == null) ? " Name" : ""}${(!Email || Email.trim() == null) ? " Email" : ""}${(!Password || Password.trim() == null) ? " Password" : ""}${(!Phone || Phone.trim() == null) ? " Phone" : ""}`
     })
-  } else res.status(401).send({ result: 'incorrect regex' })
+    return;
+  }
+
+  if (!regName.test(Name)) {
+    res.status(401).send({
+      result: "incorrect format for: Name",
+      description: 2 <= Name.length && Name.length <= 45 ? "Valid name not contain special character such as @-!#..." : "Name length not valid: at least 2 char"
+    })
+    return;
+  }
+  if (!regEmail.test(Email)||Email.length>45) {
+    res.status(401).send({
+      result: "incorrect format for: Email",
+      description: Email.length <= 45 ? "Valid Email look like this: 123@gmail.com" : "Email length < 45"
+    })
+    return;
+  }
+  if (!regPhone.test(Phone)) {
+    res.status(401).send({
+      result: "incorrect format for: Phone",
+      description: `${(10 == Phone.length) ? "Valid Phone look like this: 098333****" : "Phone length 10 char"}`
+    })
+    return;
+  }
+  if (!regPass.test(Password)) {
+    res.status(401).send({
+      result: "incorrect format for: Password",
+      description: `${6 <= Password.length && Password.length <= 45 ? "Valid Password must contains a Uppercase, a lowercase, and a number" : "Password length 6-45 char"}`
+    })
+    return;
+  }
+  AccountDAO.getAccountId( Email,Phone, (result) => {
+    console.log(result)
+    if (result) res.status(401).send({ result: 'account existed', description: "account existed" })
+    else {
+      Email=Email.toLowerCase();
+      bcrypt.hash(Password, 10).then((hash) => {
+        AccountDAO.createAccount(hash, Phone.trim(), Email.trim(), Name.trim(), (rs) => {
+          if (rs) res.status(200).send({ result: 'register succesful',description:'register succesful' });
+          else res.status(401).send({ result: 'register failed', description: "must be some error..." })
+        })
+      })
+    }
+  })
 }
 function update(req, res) {
   let Name = req.body.Name;
@@ -126,19 +161,19 @@ function update(req, res) {
     AccountDAO.getAccountId(Email ? Email.trim() : null, Phone ? Phone.trim() : null, (AccountId) => {
       if (!AccountId) res.status(401).send({ result: "user not found" });
       else {
-        if(Password) bcrypt.hash(Password, 10, function (err, hash) {
+        if (Password) bcrypt.hash(Password, 10, function (err, hash) {
           AccountDAO.updateAccount(AccountId, Password ? hash : null, Phone ? Phone.trim() : null, Email ? Email.trim() : null, Name ? Name.trim() : null, Avatar ? Avatar.trim() : null, Birthday ? Birthday.trim() : null, Gender ? Gender.trim() : null, (result) => {
             if (result) res.status(200).send({ result: 'update succesful' });
             else res.status(401).send({ result: 'update failure' });
           })
         })
-        else{
+        else {
           AccountDAO.updateAccount(AccountId, Password ? Password : null, Phone ? Phone.trim() : null, Email ? Email.trim() : null, Name ? Name.trim() : null, Avatar ? Avatar.trim() : null, Birthday ? Birthday.trim() : null, Gender ? Gender.trim() : null, (result) => {
             if (result) res.status(200).send({ result: 'update succesful' });
             else res.status(401).send({ result: 'update failure' });
           })
         }
-        
+
       }
     })
   } else res.status(401).send({ result: 'incorrect regex' })
