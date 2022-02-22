@@ -3,6 +3,7 @@ const AccountDAO = require("../models/data-access/accountDAO");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { OAuth2Client } = require("google-auth-library");
+const moment = require('moment')
 
 function login(req, res) {
   var Username = req.body.Username;
@@ -104,7 +105,7 @@ function register(req, res) {
     })
     return;
   }
-  if (!regEmail.test(Email)||Email.length>45) {
+  if (!regEmail.test(Email) || Email.length > 45) {
     res.status(401).send({
       result: "incorrect format for: Email",
       description: Email.length <= 45 ? "Valid Email look like this: 123@gmail.com" : "Email length < 45"
@@ -125,20 +126,23 @@ function register(req, res) {
     })
     return;
   }
-  AccountDAO.getAccountId( Email,Phone, (result) => {
-    console.log(result)
+  AccountDAO.getAccountId(Email, Phone, (result) => {
     if (result) res.status(401).send({ result: 'account existed', description: "account existed" })
     else {
-      Email=Email.toLowerCase();
+
+      if (Email) Email = Email.toLowerCase();
+      if (Name) Name = Name.toLowerCase().replace(/(^\w{1})|(\s{1}\w{1})/g, match => match.toUpperCase()); //Capital first letter
+
       bcrypt.hash(Password, 10).then((hash) => {
         AccountDAO.createAccount(hash, Phone.trim(), Email.trim(), Name.trim(), (rs) => {
-          if (rs) res.status(200).send({ result: 'register succesful',description:'register succesful' });
+          if (rs) res.status(200).send({ result: 'register succesful', description: 'register succesful' });
           else res.status(401).send({ result: 'register failed', description: "must be some error..." })
         })
       })
     }
   })
 }
+
 function update(req, res) {
   let Name = req.body.Name;
   let Email = req.body.Email;
@@ -149,34 +153,107 @@ function update(req, res) {
   let Gender = req.body.Gender;
 
   //regex
-  let regName = /^((?![0-9\~\!\@\#\$\%\^\&\*\(\)\_\+\=\-\[\]\{\}\;\:\"\\\/\<\>\?]).){1,45}/;
+  let regName = /^((?![0-9\~\!\@\#\$\%\^\&\*\(\)\_\+\=\-\[\]\{\}\;\:\"\\\/\<\>\?]).){2,45}/;
   let regEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,45}))$/;
-  let regPhone = /(84|0[3|5|7|8|9])+([0-9]{8,9})$/;
-  let regPass = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{8,45})$/;
+  let regPhone = /(84|0[3|5|7|8|9])+([0-9]{8})$/;
+  let regPass = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{6,60})$/;
   let regLink = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
-  let regBirthday = /^(?:0[1-9]|[12]\d|3[01])([\/.-])(?:0[1-9]|1[012])\1(?:19|20)\d\d$/;
+  let regBirthday = /^(?:19|20)\d\d([\/.-])(?:0[1-9]|1[012])\1(?:0[1-9]|[12]\d|3[01])$/;
   let regGender = /^\d$/;
 
-  if ((!Name || regName.test(Name)) && (!Email || regEmail.test(Email)) && (!Phone || regPhone.test(Phone)) && (!Password || regPass.test(Password)) && (!Avatar || regLink.test(Avatar)) && (!Birthday || regBirthday.test(Birthday)) && (!Gender || regGender.test(Gender))) {
-    AccountDAO.getAccountId(Email ? Email.trim() : null, Phone ? Phone.trim() : null, (AccountId) => {
-      if (!AccountId) res.status(401).send({ result: "user not found" });
-      else {
-        if (Password) bcrypt.hash(Password, 10, function (err, hash) {
-          AccountDAO.updateAccount(AccountId, Password ? hash : null, Phone ? Phone.trim() : null, Email ? Email.trim() : null, Name ? Name.trim() : null, Avatar ? Avatar.trim() : null, Birthday ? Birthday.trim() : null, Gender ? Gender.trim() : null, (result) => {
-            if (result) res.status(200).send({ result: 'update succesful' });
-            else res.status(401).send({ result: 'update failure' });
-          })
-        })
-        else {
-          AccountDAO.updateAccount(AccountId, Password ? Password : null, Phone ? Phone.trim() : null, Email ? Email.trim() : null, Name ? Name.trim() : null, Avatar ? Avatar.trim() : null, Birthday ? Birthday.trim() : null, Gender ? Gender.trim() : null, (result) => {
-            if (result) res.status(200).send({ result: 'update succesful' });
-            else res.status(401).send({ result: 'update failure' });
-          })
-        }
-
-      }
+  if (!Email && !Phone) {
+    res.status(401).send({
+      result: "incorrect fields",
+      description: "Must recieved a Phone or Email"
     })
-  } else res.status(401).send({ result: 'incorrect regex' })
+    return;
+  }
+
+  if (!regName.test(Name)) {
+    res.status(401).send({
+      result: "incorrect format for: Name",
+      description: 2 <= Name.length && Name.length <= 45 ? "Valid name not contain special character such as @-!#..." : "Name length not valid: at least 2 char"
+    })
+    return;
+  }
+  if (Email)
+    if (!regEmail.test(Email) || Email.length > 45) {
+      res.status(401).send({
+        result: "incorrect format for: Email",
+        description: Email.length <= 45 ? "Valid Email look like this: 123@gmail.com" : "Email length < 45"
+      })
+      return;
+    }
+  if (Phone)
+    if (!regPhone.test(Phone)) {
+      res.status(401).send({
+        result: "incorrect format for: Phone",
+        description: `${(10 == Phone.length) ? "Valid Phone look like this: 098333****" : "Phone length 10 char"}`
+      })
+      return;
+    }
+  if (Password)
+    if (!regPass.test(Password)) {
+      res.status(401).send({
+        result: "incorrect format for: Password",
+        description: `${6 <= Password.length && Password.length <= 45 ? "Valid Password must contains a Uppercase, a lowercase, and a number" : "Password length 6-45 char"}`
+      })
+      return;
+    }
+  if (Avatar)
+    if (!regLink.test(Avatar) || Avatar.length > 200) {
+      res.status(401).send({
+        result: "incorrect format for: Avatar",
+        description: `${Avatar.length <= 200 ? "invalid Url: incorrect format for url" : "length of link is too long"}`
+      })
+      return;
+    }
+  if (Birthday)
+    if (!regBirthday.test(Birthday)) {
+      res.status(401).send({
+        result: "incorrect format for: Birthday",
+        description: `${10 == Birthday.length ? "Birthday look like this: (yyyy/mm/dd)" : "Birthday length 10 char (yyyy/mm/dd)"}`
+      })
+      return;
+    }
+  if (Birthday)
+    if (!moment(Birthday, 'YYYY.MM.DD').isValid()) {
+      res.status(401).send({
+        result: "incorrect format for: Birthday",
+        description: "Date not exist"
+      })
+      return;
+    }
+  if (Gender)
+    if (!regGender.test(Gender)) {
+      res.status(401).send({
+        result: "incorrect format for: Gender",
+        description: "Gender must be one digit"
+      })
+      return;
+    }
+  AccountDAO.getAccountId(Email ? Email.trim() : null, Phone ? Phone.trim() : null, (AccountId) => {
+
+    if (!AccountId) res.status(401).send({ result: "user not found", description: "Could not find a user by Phone/Email" });
+    else {
+      if (Email) Email = Email.toLowerCase();
+      if (Name) Name = Name.toLowerCase().replace(/(^\w{1})|(\s{1}\w{1})/g, match => match.toUpperCase());//Capital first letter
+
+      if (Password) bcrypt.hash(Password, 10, function (err, hash) {
+        AccountDAO.updateAccount(AccountId, Password ? hash : null, Phone ? Phone.trim() : null, Email ? Email.trim() : null, Name ? Name.trim() : null, Avatar ? Avatar.trim() : null, Birthday ? Birthday.trim() : null, Gender ? Gender.trim() : null, (result) => {
+          if (result) res.status(200).send({ result: 'update succesful', description: "Succesful" });
+          else res.status(401).send({ result: 'update failure', description: "There must be a error..." });
+        })
+      })
+      else {
+        AccountDAO.updateAccount(AccountId, Password ? Password : null, Phone ? Phone.trim() : null, Email ? Email.trim() : null, Name ? Name.trim() : null, Avatar ? Avatar.trim() : null, Birthday ? Birthday.trim() : null, Gender ? Gender.trim() : null, (result) => {
+          if (result) res.status(200).send({ result: 'update succesful' });
+          else res.status(401).send({ result: 'update failure', description: "There must be a error..." });
+        })
+      }
+
+    }
+  })
 }
 
 module.exports = {
