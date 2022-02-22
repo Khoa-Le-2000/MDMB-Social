@@ -5,9 +5,7 @@ import Dashboard from 'features/Dashboard/Dashboard';
 import Home from 'features/Home/Home';
 import Register from 'features/Register/Register';
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { Navigate, Route, Routes } from 'react-router-dom';
-import { getRedirect } from 'redux/selectors/authSelector';
+import { Route, Routes } from 'react-router-dom';
 import './App.scss';
 
 function App() {
