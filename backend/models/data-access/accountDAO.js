@@ -70,7 +70,6 @@ function updateAccount(AccountId, Password, Phone, Email, Name, Avatar, Birthday
     var sql = `UPDATE MDMB.Account SET ${str} where AccountId=?`;
     con.query(sql, Args2,
       function (err, result) {
-        console.log(err)
         connection.closeConnection(con);
         if (err) return Callback(false);
         else return Callback(true);
