@@ -20,15 +20,17 @@ export const registerSuccess = () => {
   };
 };
 
-export const register = () => async (dispatch) => {
+export const registerUser = (user) => async (dispatch) => {
   dispatch(registerStart());
-  const { message } = authApi.register();
+  console.log('🚀 :: registerUser :: user', user);
+  const data = await authApi.register(user);
+  console.log('🚀 :: registerUser :: data', data);
 
-  if (message === 'success') {
-    dispatch(registerSuccess());
-  } else {
-    dispatch(registerFailure(message));
-  }
+  // if (message === 'success') {
+  //   dispatch(registerSuccess());
+  // } else {
+  //   dispatch(registerFailure(message));
+  // }
 };
 
 export const loginStart = () => {
