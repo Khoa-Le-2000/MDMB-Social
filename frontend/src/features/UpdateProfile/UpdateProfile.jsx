@@ -14,7 +14,7 @@ import DatePicker from 'react-datepicker';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import './UpdateProfile.scss';
+import './update_profile.scss';
 
 const Col = styled.div`
   display: inline-flex;
