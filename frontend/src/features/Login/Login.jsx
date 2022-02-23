@@ -26,7 +26,6 @@ import {
   getErrorCount,
   getErrorLogin,
   getErrorMessageLogin,
-  getRedirect,
 } from 'redux/selectors/authSelector';
 import * as yup from 'yup';
 import './login.scss';
@@ -37,7 +36,7 @@ const schema = yup.object().shape({
     .required('Email or phone is required')
     .test(
       'emailorphone',
-      'Email or phone number is not valid',
+      'Email or phone number is invalid',
       function (value) {
         const emailRegex =
           /^([a-zA-Z0-9!#$%&'*+\\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+\\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?)$/;
