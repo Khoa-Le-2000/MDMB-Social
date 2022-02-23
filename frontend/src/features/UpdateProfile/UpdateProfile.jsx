@@ -11,8 +11,6 @@ import {
   Row as BootstrapRow,
 } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
-import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import './update_profile.scss';
 
