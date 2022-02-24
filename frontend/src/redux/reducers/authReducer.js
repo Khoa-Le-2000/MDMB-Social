@@ -38,6 +38,16 @@ const initialState = {
 
 const authReducer = (state = initialState, action) => {
   switch (action.type) {
+    case AuthActionTypes.RESET_LOGIN_ERROR:
+      return {
+        ...state,
+        login: {
+          ...state.login,
+          error: false,
+          message: null,
+        },
+      };
+
     case AuthActionTypes.LOGIN_START:
       return {
         ...state,

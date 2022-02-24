@@ -7,7 +7,7 @@ import Hero3 from 'assets/images/heros/hero3.svg';
 import FacebookIcon from 'assets/images/icons/facebook.svg';
 import GoogleIcon from 'assets/images/icons/google.svg';
 import { useViewport } from 'hooks';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Button, Carousel, Col, Form, Row } from 'react-bootstrap';
 import FacebookLogin from 'react-facebook-login';
 import GoogleLogin from 'react-google-login';
@@ -34,24 +34,20 @@ const schema = yup.object().shape({
   emailorphone: yup
     .string()
     .required('Email or phone is required')
-    .test(
-      'emailorphone',
-      'Email or phone number is invalid',
-      function (value) {
-        const emailRegex =
-          /^([a-zA-Z0-9!#$%&'*+\\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+\\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?)$/;
+    .test('emailorphone', 'Email or phone number is invalid', function (value) {
+      const emailRegex =
+        /^([a-zA-Z0-9!#$%&'*+\\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+\\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?)$/;
 
-        const phoneRegex = /([+84|84|0]+(3|5|7|8|9|1[2|6|8|9]))+([0-9]{8})\b/;
+      const phoneRegex = /([+84|84|0]+(3|5|7|8|9|1[2|6|8|9]))+([0-9]{8})\b/;
 
-        const isValidEmail = emailRegex.test(value);
-        const isValidPhone = phoneRegex.test(value);
+      const isValidEmail = emailRegex.test(value);
+      const isValidPhone = phoneRegex.test(value);
 
-        if (!isValidEmail && !isValidPhone) {
-          return false;
-        }
-        return true;
+      if (!isValidEmail && !isValidPhone) {
+        return false;
       }
-    ),
+      return true;
+    }),
   password: yup
     .string()
     .min(6, 'Passwords must be at least 6 characters in length')
@@ -68,10 +64,19 @@ function Login() {
   const countError = useSelector(getErrorCount);
   const messageErrorLogin = useSelector(getErrorMessageLogin);
   const hasError = useSelector(getErrorLogin);
+  const { width } = useViewport();
 
   const [message, setMessage] = useState('');
 
-  const { width } = useViewport();
+  const [showError, setShowError] = useState(true);
+
+  useEffect(() => {
+    const timerShowError = setTimeout(() => {
+      setShowError(false);
+      console.log('This will run after 1 second!');
+    }, 3000);
+    return () => clearTimeout(timerShowError);
+  }, []);
 
   const {
     register,
@@ -180,13 +185,20 @@ function Login() {
                     placeholder="Password"
                     {...register('password')}
                   />
-                  {errors.emailorphone ? (
-                    <Form.Text className="text-danger">
-                      {errors.emailorphone?.message}
-                    </Form.Text>
-                  ) : (
-                    errorMessage
-                  )}
+
+                  {showError ? (
+                    errors.emailorphone?.message ? (
+                      <Form.Text className="text-danger">
+                        {errors.emailorphone?.message}
+                      </Form.Text>
+                    ) : errors.password?.message ? (
+                      <Form.Text className="text-danger">
+                        {errors.password?.message}
+                      </Form.Text>
+                    ) : (
+                      errorMessage
+                    )
+                  ) : null}
                 </Col>
               </Form.Group>
 
@@ -213,7 +225,13 @@ function Login() {
                     <Form.Check type="checkbox" label="Remember me" />
                   </Form.Group>
                 )}
-                <Button type="submit" className="btn-login">
+                <Button
+                  type="submit"
+                  className="btn-login"
+                  onKeyDown={(event) =>
+                    event.key === 'Enter' && onLoginHandler()
+                  }
+                >
                   Log In
                 </Button>
               </div>
