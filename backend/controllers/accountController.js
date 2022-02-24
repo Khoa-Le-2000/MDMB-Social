@@ -3,6 +3,12 @@ const AccountDAO = require("../models/data-access/accountDAO");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { OAuth2Client } = require("google-auth-library");
+const moment = require('moment')
+const auth = require('../middlewares/auth.middleware')
+
+var api_key = '66aad23f40a1f4a2bc401ff760de2194-b2f5ed24-0f6b6858';
+var domain = 'sandboxbde0393d6c674b8f9999557555cc5e77.mailgun.org';
+var mailgun = require('mailgun-js')({ apiKey: api_key, domain: domain });
 
 function login(req, res) {
   var Username = req.body.Username;
@@ -84,26 +90,67 @@ function register(req, res) {
   let Password = req.body.Password;
 
   //regex
-  let regName = /^((?![0-9\~\!\@\#\$\%\^\&\*\(\)\_\+\=\-\[\]\{\}\;\:\"\\\/\<\>\?]).){1,45}/;
+  let regName = /^((?![0-9\~\!\@\#\$\%\^\&\*\(\)\_\+\=\-\[\]\{\}\;\:\"\\\/\<\>\?]).){2,45}/;
   let regEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,45}))$/;
-  let regPhone = /(84|0[3|5|7|8|9])+([0-9]{8,9})$/;
-  let regPass = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{8,45})$/
+  let regPhone = /(84|0[3|5|7|8|9])+([0-9]{8})$/;
+  let regPass = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{6,60})$/
 
-  if (regName.test(Name) && regEmail.test(Email) && regPhone.test(Phone) && regPass.test(Password)) {
-    AccountDAO.getAccountId(Phone, Email, (result) => {
-      if (result) res.status(401).send({ result: 'account existed' })
-      else {
-        bcrypt.hash(Password, 10).then((hash) => {
-          AccountDAO.createAccount(hash, Phone.trim(), Email.trim(), Name.trim(), (rs) => {
-            if (rs) res.status(200).send({ result: 'register succesful' });
-            else res.status(401).send({ result: 'register failed' })
-          })
-        })
-
-      }
+  if (!Name || !Email || !Phone || !Password || Name.trim() == null || Email.trim() == null || Password.trim() == null || Phone.trim() == null) {
+    res.status(401).send({
+      result: "incorrect format for: empty value",
+      description: `Not allow empty value for${(!Name || Name.trim() == null) ? " Name" : ""}${(!Email || Email.trim() == null) ? " Email" : ""}${(!Password || Password.trim() == null) ? " Password" : ""}${(!Phone || Phone.trim() == null) ? " Phone" : ""}`
     })
-  } else res.status(401).send({ result: 'incorrect regex' })
+    return;
+  }
+
+  if (!regName.test(Name)) {
+    res.status(401).send({
+      result: "incorrect format for: Name",
+      description: 2 <= Name.length && Name.length <= 45 ? "Valid name not contain special character such as @-!#..." : "Name length not valid: at least 2 char"
+    })
+    return;
+  }
+  if (!regEmail.test(Email) || Email.length > 45) {
+    res.status(401).send({
+      result: "incorrect format for: Email",
+      description: Email.length <= 45 ? "Valid Email look like this: 123@gmail.com" : "Email length < 45"
+    })
+    return;
+  }
+  if (!regPhone.test(Phone)) {
+    res.status(401).send({
+      result: "incorrect format for: Phone",
+      description: `${(10 == Phone.length || 11 == Phone.length) ? "Valid Phone look like this: 098333**** or 848333****" : "Phone length 10-11 char"}`
+    })
+    return;
+  }
+  if (!regPass.test(Password)) {
+    res.status(401).send({
+      result: "incorrect format for: Password",
+      description: `${6 <= Password.length && Password.length <= 45 ? "Valid Password must contains a Uppercase, a lowercase, and a number" : "Password length 6-45 char"}`
+    })
+    return;
+  }
+  AccountDAO.getAccountId(Email, Phone, (result) => {
+    if (result) res.status(401).send({ result: 'account existed', description: "account existed" })
+    else {
+
+      if (Email) Email = Email.toLowerCase();
+      if (Name) Name = Name.toLowerCase().replace(/(^\w{1})|(\s{1}\w{1})/g, match => match.toUpperCase()); //Capital first letter
+
+      // bcrypt.hash(Password, 10).then((hash) => {
+      // AccountDAO.createAccount(hash, Phone.trim(), Email.trim(), Name.trim(), (rs) => {
+      //   if (rs) res.status(200).send({ result: 'register succesful', description: 'register succesful' });
+      //   else res.status(401).send({ result: 'register failed', description: "must be some error..." })
+      // })
+      let token = jwt.sign({ Password, Phone, Email, Name }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+      sendVerifyEmail(req, res, Email, token);
+      // })
+    }
+  })
 }
+
+
 function update(req, res) {
   let Name = req.body.Name;
   let Email = req.body.Email;
@@ -114,34 +161,156 @@ function update(req, res) {
   let Gender = req.body.Gender;
 
   //regex
-  let regName = /^((?![0-9\~\!\@\#\$\%\^\&\*\(\)\_\+\=\-\[\]\{\}\;\:\"\\\/\<\>\?]).){1,45}/;
+  let regName = /^((?![0-9\~\!\@\#\$\%\^\&\*\(\)\_\+\=\-\[\]\{\}\;\:\"\\\/\<\>\?]).){2,45}/;
   let regEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,45}))$/;
-  let regPhone = /(84|0[3|5|7|8|9])+([0-9]{8,9})$/;
-  let regPass = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{8,45})$/;
+  let regPhone = /(84|0[3|5|7|8|9])+([0-9]{8})$/;
+  let regPass = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{6,60})$/;
   let regLink = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
-  let regBirthday = /^(?:0[1-9]|[12]\d|3[01])([\/.-])(?:0[1-9]|1[012])\1(?:19|20)\d\d$/;
+  let regBirthday = /^(?:19|20)\d\d([\/.-])(?:0[1-9]|1[012])\1(?:0[1-9]|[12]\d|3[01])$/;
   let regGender = /^\d$/;
 
-  if ((!Name || regName.test(Name)) && (!Email || regEmail.test(Email)) && (!Phone || regPhone.test(Phone)) && (!Password || regPass.test(Password)) && (!Avatar || regLink.test(Avatar)) && (!Birthday || regBirthday.test(Birthday)) && (!Gender || regGender.test(Gender))) {
-    AccountDAO.getAccountId(Email ? Email.trim() : null, Phone ? Phone.trim() : null, (AccountId) => {
-      if (!AccountId) res.status(401).send({ result: "user not found" });
-      else {
-        if(Password) bcrypt.hash(Password, 10, function (err, hash) {
-          AccountDAO.updateAccount(AccountId, Password ? hash : null, Phone ? Phone.trim() : null, Email ? Email.trim() : null, Name ? Name.trim() : null, Avatar ? Avatar.trim() : null, Birthday ? Birthday.trim() : null, Gender ? Gender.trim() : null, (result) => {
-            if (result) res.status(200).send({ result: 'update succesful' });
-            else res.status(401).send({ result: 'update failure' });
-          })
-        })
-        else{
-          AccountDAO.updateAccount(AccountId, Password ? Password : null, Phone ? Phone.trim() : null, Email ? Email.trim() : null, Name ? Name.trim() : null, Avatar ? Avatar.trim() : null, Birthday ? Birthday.trim() : null, Gender ? Gender.trim() : null, (result) => {
-            if (result) res.status(200).send({ result: 'update succesful' });
-            else res.status(401).send({ result: 'update failure' });
-          })
-        }
-        
-      }
+  if (!Email && !Phone) {
+    res.status(401).send({
+      result: "incorrect fields",
+      description: "Must recieved a Phone or Email"
     })
-  } else res.status(401).send({ result: 'incorrect regex' })
+    return;
+  }
+
+  if (!regName.test(Name)) {
+    res.status(401).send({
+      result: "incorrect format for: Name",
+      description: 2 <= Name.length && Name.length <= 45 ? "Valid name not contain special character such as @-!#..." : "Name length not valid: at least 2 char"
+    })
+    return;
+  }
+  if (Email)
+    if (!regEmail.test(Email) || Email.length > 45) {
+      res.status(401).send({
+        result: "incorrect format for: Email",
+        description: Email.length <= 45 ? "Valid Email look like this: 123@gmail.com" : "Email length < 45"
+      })
+      return;
+    }
+  if (Phone)
+    if (!regPhone.test(Phone)) {
+      res.status(401).send({
+        result: "incorrect format for: Phone",
+        description: `${(10 == Phone.length) ? "Valid Phone look like this: 098333****" : "Phone length 10 char"}`
+      })
+      return;
+    }
+  if (Password)
+    if (!regPass.test(Password)) {
+      res.status(401).send({
+        result: "incorrect format for: Password",
+        description: `${6 <= Password.length && Password.length <= 45 ? "Valid Password must contains a Uppercase, a lowercase, and a number" : "Password length 6-45 char"}`
+      })
+      return;
+    }
+  if (Avatar)
+    if (!regLink.test(Avatar) || Avatar.length > 200) {
+      res.status(401).send({
+        result: "incorrect format for: Avatar",
+        description: `${Avatar.length <= 200 ? "invalid Url: incorrect format for url" : "length of link is too long"}`
+      })
+      return;
+    }
+  if (Birthday)
+    if (!regBirthday.test(Birthday)) {
+      res.status(401).send({
+        result: "incorrect format for: Birthday",
+        description: `${10 == Birthday.length ? "Birthday look like this: (yyyy/mm/dd)" : "Birthday length 10 char (yyyy/mm/dd)"}`
+      })
+      return;
+    }
+  if (Birthday)
+    if (!moment(Birthday, 'YYYY.MM.DD').isValid()) {
+      res.status(401).send({
+        result: "incorrect format for: Birthday",
+        description: "Date not exist"
+      })
+      return;
+    }
+  if (Gender)
+    if (!regGender.test(Gender)) {
+      res.status(401).send({
+        result: "incorrect format for: Gender",
+        description: "Gender must be one digit"
+      })
+      return;
+    }
+  AccountDAO.getAccountId(Email ? Email.trim() : null, Phone ? Phone.trim() : null, (AccountId) => {
+
+    if (!AccountId) res.status(401).send({ result: "user not found", description: "Could not find a user by Phone/Email" });
+    else {
+      if (Email) Email = Email.toLowerCase();
+      if (Name) Name = Name.toLowerCase().replace(/(^\w{1})|(\s{1}\w{1})/g, match => match.toUpperCase());//Capital first letter
+
+      if (Password) bcrypt.hash(Password, 10, function (err, hash) {
+        AccountDAO.updateAccount(AccountId, Password ? hash : null, Phone ? Phone.trim() : null, Email ? Email.trim() : null, Name ? Name.trim() : null, Avatar ? Avatar.trim() : null, Birthday ? Birthday.trim() : null, Gender ? Gender.trim() : null, (result) => {
+          if (result) res.status(200).send({ result: 'update succesful', description: "Succesful" });
+          else res.status(401).send({ result: 'update failure', description: "There must be a error..." });
+        })
+      })
+      else {
+        AccountDAO.updateAccount(AccountId, Password ? Password : null, Phone ? Phone.trim() : null, Email ? Email.trim() : null, Name ? Name.trim() : null, Avatar ? Avatar.trim() : null, Birthday ? Birthday.trim() : null, Gender ? Gender.trim() : null, (result) => {
+          if (result) res.status(200).send({ result: 'update succesful' });
+          else res.status(401).send({ result: 'update failure', description: "There must be a error..." });
+        })
+      }
+
+    }
+  })
+}
+function sendVerifyEmail(req, res, Email, token) {
+  var mailgun = require('mailgun-js')({ apiKey: process.env.MAILGUN_API_KEY, domain: process.env.MAILGUN_DOMAIN });
+
+  var data = {
+    from: 'MDMB SOCIAL <mdmbsocial@gmail.com>',
+    to: `${Email}`,
+    subject: 'VERIFY ACCOUNT FOR MDMB SOCIAL',
+    text: `Click the link below to verify your email:
+
+    http://localhost:8080/account/verify?token=${token}
+
+
+    Thank you for your support!
+    -------------------------------------------------------------
+    Contact Email mdmbsocial@gmail.com for more info!
+
+    `
+  };
+
+  mailgun.messages().send(data, function (error, body) {
+    if (error) return res.status(401).send({ result: "Cant send email" })
+    res.status(200).send({ result: "email sent succesful" })
+  });
+}
+
+function verifyEmail(req, res) {
+  var token = req.query.token;
+  //checktoken
+  if (!token) return res.status(401).send({ error: 'No token provided' });
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+    // console.log(decoded);
+    if (err) return res.status(401).send({ error: 'Invalid token' });
+    var dateNow = new Date();
+    if (decoded.exp < dateNow.getTime() / 1000) return res.status(401).send({ error: 'Token expired' });
+  });
+  var payload = auth.parseJwt(token);
+  var Password = payload.Password;
+  var Email = payload.Email;
+  var Phone = payload.Phone;
+  var Name = payload.Name;
+  bcrypt.hash(Password, 10).then((hash) => {
+    AccountDAO.createAccount(hash, Phone, Email, Name, (rs) => {
+      if (rs) res.redirect(process.env.MDMB_SOCIAL_URL);
+      
+      else res.redirect(process.env.MDMB_SOCIAL_URL);  
+    })
+  })
+
 }
 
 module.exports = {
@@ -149,5 +318,7 @@ module.exports = {
   loginByGoogle,
   loginByFaceBook,
   register,
-  update
+  update,
+  verifyEmail
 }
+ 
