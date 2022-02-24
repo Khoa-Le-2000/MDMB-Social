@@ -5,10 +5,7 @@ const bcrypt = require("bcrypt");
 const { OAuth2Client } = require("google-auth-library");
 const moment = require('moment')
 const auth = require('../middlewares/auth.middleware')
-
-var api_key = '66aad23f40a1f4a2bc401ff760de2194-b2f5ed24-0f6b6858';
-var domain = 'sandboxbde0393d6c674b8f9999557555cc5e77.mailgun.org';
-var mailgun = require('mailgun-js')({ apiKey: api_key, domain: domain });
+const nodemailer = require('nodemailer')
 
 function login(req, res) {
   var Username = req.body.Username;
@@ -264,28 +261,32 @@ function update(req, res) {
   })
 }
 function sendVerifyEmail(req, res, Email, token) {
-  var mailgun = require('mailgun-js')({ apiKey: process.env.MAILGUN_API_KEY, domain: process.env.MAILGUN_DOMAIN });
-
-  var data = {
-    from: 'MDMB SOCIAL <mdmbsocial@gmail.com>',
+  let transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "mdmbsocial@gmail.com",
+      pass: "mdmb1234"
+    }, tls: {
+      rejectUnauthorized: false
+    }
+  })
+  let mailOptions = {
+    from: "mdmbsocial@gmail.com",
     to: `${Email}`,
-    subject: 'VERIFY ACCOUNT FOR MDMB SOCIAL',
+    subject: "VERIFY ACCOUNT FOR MDMB SOCIAL",
     text: `Click the link below to verify your email:
-
+  
     http://localhost:8080/account/verify?token=${token}
-
-
+  
+  
     Thank you for your support!
     -------------------------------------------------------------
-    Contact Email mdmbsocial@gmail.com for more info!
-
-    `
-  };
-
-  mailgun.messages().send(data, function (error, body) {
-    if (error) return res.status(401).send({ result: "Cant send email" })
-    res.status(200).send({ result: "email sent succesful" })
-  });
+    Contact Email mdmbsocial@gmail.com for more info!`
+  }
+  transporter.sendMail(mailOptions, (err, succ) => {
+    if (err) return res.status(401).send({ result: "Cant send email" })
+    else res.status(200).send({ result: "email sent succesful" })
+  })
 }
 
 function verifyEmail(req, res) {
