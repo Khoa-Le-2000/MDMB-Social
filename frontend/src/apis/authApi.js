@@ -3,19 +3,28 @@ import axiosClient from './axiosClient';
 const authApi = {
   register: async (data) => {
     const url = 'account/register';
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve({
-          message: 'success',
-        });
-      });
+    return axiosClient.post(url, {
+      Email: data.email.trim().toLowerCase(),
+      Password: data.password,
+      Name: data.name,
+      Phone: data.phone,
+    });
+  },
+
+  updateProfile: async (data) => {
+    const url = 'account/update-profile';
+    return axiosClient.post(url, {
+      Email: data.email.trim().toLowerCase(),
+      Avatar: data.avatar,
+      Gender: data.gender,
+      Birthday: data.birthday,
     });
   },
 
   login: (data) => {
     const url = 'account/login';
     return axiosClient.post(url, {
-      Username: data.emailorphone,
+      Username: data.emailorphone.trim().toLowerCase(),
       Password: data.password,
     });
   },

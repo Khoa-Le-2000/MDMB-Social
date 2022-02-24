@@ -1,11 +1,13 @@
 const express = require('express');
 const accountController = require('../controllers/accountController');
 const passport = require('../middlewares/passport.middleware');
+const authMiddleware = require('../middlewares/auth.middleware');
 const api = express.Router();
 
 api.post("/login", accountController.login);
 api.post("/login-by-google", accountController.loginByGoogle);
-api.get('/login-by-facebook', passport.authenticate('facebook', { scope: 'email' }),accountController.loginByFaceBook);
+api.get('/login-by-facebook', passport.authenticate('facebook', { scope: 'email' }), accountController.loginByFaceBook);
 api.post("/register", accountController.register);
-api.post("/update", accountController.update);
+api.post("/update", authMiddleware.verifyToken, accountController.update);
+api.get("/verify", accountController.verifyEmail)
 module.exports = api;
