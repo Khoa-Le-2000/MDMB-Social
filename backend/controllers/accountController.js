@@ -4,6 +4,11 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { OAuth2Client } = require("google-auth-library");
 const moment = require('moment')
+const auth = require('../middlewares/auth.middleware')
+
+var api_key = '66aad23f40a1f4a2bc401ff760de2194-b2f5ed24-0f6b6858';
+var domain = 'sandboxbde0393d6c674b8f9999557555cc5e77.mailgun.org';
+var mailgun = require('mailgun-js')({ apiKey: api_key, domain: domain });
 
 function login(req, res) {
   var Username = req.body.Username;
@@ -115,7 +120,7 @@ function register(req, res) {
   if (!regPhone.test(Phone)) {
     res.status(401).send({
       result: "incorrect format for: Phone",
-      description: `${(10 == Phone.length) ? "Valid Phone look like this: 098333****" : "Phone length 10 char"}`
+      description: `${(10 == Phone.length || 11 == Phone.length) ? "Valid Phone look like this: 098333**** or 848333****" : "Phone length 10-11 char"}`
     })
     return;
   }
@@ -133,15 +138,18 @@ function register(req, res) {
       if (Email) Email = Email.toLowerCase();
       if (Name) Name = Name.toLowerCase().replace(/(^\w{1})|(\s{1}\w{1})/g, match => match.toUpperCase()); //Capital first letter
 
-      bcrypt.hash(Password, 10).then((hash) => {
-        AccountDAO.createAccount(hash, Phone.trim(), Email.trim(), Name.trim(), (rs) => {
-          if (rs) res.status(200).send({ result: 'register succesful', description: 'register succesful' });
-          else res.status(401).send({ result: 'register failed', description: "must be some error..." })
-        })
-      })
+      // bcrypt.hash(Password, 10).then((hash) => {
+      // AccountDAO.createAccount(hash, Phone.trim(), Email.trim(), Name.trim(), (rs) => {
+      //   if (rs) res.status(200).send({ result: 'register succesful', description: 'register succesful' });
+      //   else res.status(401).send({ result: 'register failed', description: "must be some error..." })
+      // })
+      let token = jwt.sign({ Password, Phone, Email, Name }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+      sendVerifyEmail(req, res, Email, token);
+      // })
     }
   })
 }
+
 
 function update(req, res) {
   let Name = req.body.Name;
@@ -255,11 +263,62 @@ function update(req, res) {
     }
   })
 }
+function sendVerifyEmail(req, res, Email, token) {
+  var mailgun = require('mailgun-js')({ apiKey: process.env.MAILGUN_API_KEY, domain: process.env.MAILGUN_DOMAIN });
+
+  var data = {
+    from: 'MDMB SOCIAL <mdmbsocial@gmail.com>',
+    to: `${Email}`,
+    subject: 'VERIFY ACCOUNT FOR MDMB SOCIAL',
+    text: `Click the link below to verify your email:
+
+    http://localhost:8080/account/verify?token=${token}
+
+
+    Thank you for your support!
+    -------------------------------------------------------------
+    Contact Email mdmbsocial@gmail.com for more info!
+
+    `
+  };
+
+  mailgun.messages().send(data, function (error, body) {
+    if (error) return res.status(401).send({ result: "Cant send email" })
+    res.status(200).send({ result: "email sent succesful" })
+  });
+}
+
+function verifyEmail(req, res) {
+  var token = req.query.token;
+  //checktoken
+  if (!token) return res.status(401).send({ error: 'No token provided' });
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+    // console.log(decoded);
+    if (err) return res.status(401).send({ error: 'Invalid token' });
+    var dateNow = new Date();
+    if (decoded.exp < dateNow.getTime() / 1000) return res.status(401).send({ error: 'Token expired' });
+  });
+  var payload = auth.parseJwt(token);
+  var Password = payload.Password;
+  var Email = payload.Email;
+  var Phone = payload.Phone;
+  var Name = payload.Name;
+  bcrypt.hash(Password, 10).then((hash) => {
+    AccountDAO.createAccount(hash, Phone, Email, Name, (rs) => {
+      if (rs) res.redirect(process.env.MDMB_SOCIAL_URL);
+      
+      else res.redirect(process.env.MDMB_SOCIAL_URL);  
+    })
+  })
+
+}
 
 module.exports = {
   login,
   loginByGoogle,
   loginByFaceBook,
   register,
-  update
+  update,
+  verifyEmail
 }
+ 
