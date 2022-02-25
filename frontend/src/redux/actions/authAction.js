@@ -14,23 +14,29 @@ export const registerFailure = (message) => {
   };
 };
 
-export const registerSuccess = () => {
+export const registerSuccess = (message) => {
   return {
     type: AuthActionTypes.REGISTER_SUCCESS,
+    payload: message,
   };
 };
 
 export const registerUser = (user) => async (dispatch) => {
   dispatch(registerStart());
-  console.log('🚀 :: registerUser :: user', user);
   const data = await authApi.register(user);
-  console.log('🚀 :: registerUser :: data', data);
 
-  // if (message === 'success') {
-  //   dispatch(registerSuccess());
-  // } else {
-  //   dispatch(registerFailure(message));
-  // }
+  if (
+    data?.result === 'email sent succesful' ||
+    data?.result === 'email sent successfully'
+  ) {
+    dispatch(
+      registerSuccess(
+        `We just sent an email to ${user.email} to activate your account.`
+      )
+    );
+  } else {
+    dispatch(registerFailure('Email is already in use'));
+  }
 };
 
 export const loginStart = () => {

@@ -1,24 +1,61 @@
+@use '../../styles/' as *;
+
 .wrapper {
   display: flex;
   background: #fff;
   height: 40px;
-  width: 400px;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: space-between;
   border-radius: 5px;
+  width: 100%;
+
+  @include tablet-large {
+    height: 40px;
+  }
+
+  @include tablet-small {
+    height: 40px;
+  }
+
+  @include mobile-large {
+    height: 45px;
+  }
+
+  @include mobile-small {
+    height: 45px;
+  }
 }
 .wrapper .option {
   background: #fff;
   height: 100%;
   width: 100%;
+  max-width: 130px;
   display: flex;
   align-items: center;
   justify-content: space-evenly;
-  margin-right: 10px;
   border-radius: 5px;
   cursor: pointer;
   border: 1px solid lightgrey;
   transition: all 0.3s ease;
+  :not(:last-child) {
+    margin-right: 10px;
+  }
+
+  @include tablet-large {
+    max-width: 90px;
+  }
+
+  @include tablet-small {
+    max-width: 90px;
+  }
+
+  @include mobile-large {
+    max-width: 90px;
+  }
+
+  @include mobile-small {
+    max-width: 90px;
+  }
 }
 .wrapper .option .dot {
   height: 15px;
@@ -63,6 +100,21 @@ input[type='radio'] {
 .wrapper .option span {
   font-size: 14px;
   color: #808080;
+  @include tablet-large {
+    font-size: 15px;
+  }
+
+  @include tablet-small {
+    font-size: 15px;
+  }
+
+  @include mobile-large {
+    font-size: 15px;
+  }
+
+  @include mobile-small {
+    font-size: 15px;
+  }
 }
 #option-1:checked:checked ~ .option-1 span,
 #option-2:checked:checked ~ .option-2 span,
