@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Bell } from '@styled-icons/heroicons-outline';
 import { Link } from 'react-router-dom';
-import Logo from 'assets/images/logos/logo.png';
+import Logo from 'assets/images/logos/logo.jpg';
 
 const HeaderWrapper = styled.header`
   position: sticky;
