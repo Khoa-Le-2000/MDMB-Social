@@ -22,15 +22,13 @@ export const registerSuccess = () => {
 
 export const registerUser = (user) => async (dispatch) => {
   dispatch(registerStart());
-  console.log('🚀 :: registerUser :: user', user);
   const data = await authApi.register(user);
-  console.log('🚀 :: registerUser :: data', data);
 
-  // if (message === 'success') {
-  //   dispatch(registerSuccess());
-  // } else {
-  //   dispatch(registerFailure(message));
-  // }
+  if (data === 'success') {
+    dispatch(registerSuccess());
+  } else {
+    dispatch(registerFailure('Email is already in use'));
+  }
 };
 
 export const resetLoginError = () => {
