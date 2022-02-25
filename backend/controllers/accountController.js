@@ -276,7 +276,7 @@ function sendVerifyEmail(req, res, Email, token) {
     subject: "VERIFY ACCOUNT FOR MDMB SOCIAL",
     text: `Click the link below to verify your email:
   
-    http://localhost:8080/account/verify?token=${token}
+    ${process.env.MDMB_SOCIAL_PROTOCAL}${process.env.MDMB_SOCIAL_DOMAIN}:8080/account/verify?token=${token}
   
   
     Thank you for your support!
