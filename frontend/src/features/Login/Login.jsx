@@ -174,8 +174,8 @@ function Login() {
                   <InputGroup>
                     <Form.Control
                       type={showPassword ? 'text' : 'password'}
-                      {...register('confirmPassword')}
-                      placeholder="Confirm Password"
+                      {...register('password')}
+                      placeholder="Password"
                     />
                     <InputGroup.Text
                       onClick={() => setShowPassword(!showPassword)}
