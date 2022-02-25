@@ -182,12 +182,9 @@ const authReducer = (state = initialState, action) => {
     case AuthActionTypes.REFRESH_TOKEN_SUCCESS:
       return {
         ...state,
-        login: {
-          ...state.login,
-          token: {
-            ...state.login.token,
-            accessToken: action.payload,
-          },
+        token: {
+          ...state.token,
+          accessToken: action.payload,
         },
       };
 
