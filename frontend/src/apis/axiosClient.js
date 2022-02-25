@@ -54,9 +54,6 @@ export const interceptor = (store) => {
       }
       return response;
     },
-    (next) => {
-      return Promise.resolve(next);
-    },
     (error) => {
       return Promise.reject(error);
     }
