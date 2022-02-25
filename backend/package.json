@@ -25,11 +25,13 @@
     "mailgun-js": "^0.22.0",
     "moment": "^2.29.1",
     "mysql": "^2.18.1",
+    "nodemailer": "^6.7.2",
     "nodemon": "^2.0.15",
     "openssl": "^2.0.0",
     "passport": "^0.5.2",
     "passport-facebook": "^3.0.0",
     "passport-google-oauth20": "^2.0.0",
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "socket.io": "^4.4.1"
   }
 }

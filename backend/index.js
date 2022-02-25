@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const route = require('./routes/index');
+const socket = require('./controllers/socket.index');
 const app = express();
 const PORT = process.env.PORT;
 const cors = require('cors');
@@ -24,11 +25,10 @@ app.use(session({
     saveUninitialized: true
 }));
 
-
-
-
 app.use(cors(corsOptions));
 const server = app.listen(PORT);
 route(app);
 
 console.log(`Server is running on port ${PORT}`);
+
+socket(server);
