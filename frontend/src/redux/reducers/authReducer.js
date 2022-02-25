@@ -79,6 +79,13 @@ const authReducer = (state = initialState, action) => {
           login: true,
           register: false,
         },
+        register: {
+          ...state.register,
+          error: false,
+          isFetching: false,
+          success: false,
+          message: null,
+        },
         captcha: {
           errorCount: 0,
         },
@@ -145,6 +152,13 @@ const authReducer = (state = initialState, action) => {
         },
         login: {
           ...state.login,
+        },
+        register: {
+          ...state.register,
+          error: false,
+          isFetching: false,
+          success: false,
+          message: null,
         },
         redirect: {
           ...state.redirect,
