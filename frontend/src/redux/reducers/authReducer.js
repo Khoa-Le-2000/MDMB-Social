@@ -1,19 +1,19 @@
 import { AuthActionTypes } from '../actions/types/authActionTypes';
 
 const initialState = {
+  token: {
+    accessToken: null,
+    refreshToken: null,
+  },
   login: {
-    token: {
-      accessToken: null,
-      refreshToken: null,
-    },
     error: false,
     isFetching: false,
     success: false,
     message: null,
-    errorCount: 0,
     redirect: false,
   },
   captcha: {
+    errorCount: 0,
     isFetching: false,
     error: false,
     success: false,
@@ -38,80 +38,85 @@ const initialState = {
 
 const authReducer = (state = initialState, action) => {
   switch (action.type) {
-    case AuthActionTypes.RESET_LOGIN_ERROR:
-      return {
-        ...state,
-        login: {
-          ...state.login,
-          error: false,
-          message: null,
-        },
-      };
-
     case AuthActionTypes.LOGIN_START:
       return {
         ...state,
+        token: null,
         login: {
           ...state.login,
           isFetching: true,
           error: false,
           success: false,
           message: null,
-          token: null,
         },
         redirect: {
           ...state.redirect,
           login: false,
           register: false,
         },
+        captcha: {
+          ...state.captcha,
+          errorCount: state?.captcha?.errorCount || 0,
+        },
       };
     case AuthActionTypes.LOGIN_SUCCESS:
       return {
         ...state,
+        token: {
+          ...state.token,
+          accessToken: action.payload.accessToken,
+          refreshToken: action.payload.refreshToken,
+        },
         login: {
           ...state.login,
           isFetching: false,
           error: false,
           success: true,
           message: null,
-          errorCount: 0,
-          token: action.payload,
         },
         redirect: {
           ...state.redirect,
           login: true,
           register: false,
         },
+        captcha: {
+          errorCount: 0,
+        },
       };
     case AuthActionTypes.LOGIN_FAILURE:
-      console.log(action.payload);
       return {
         ...state,
+        token: null,
         login: {
           ...state.login,
           isFetching: false,
           error: true,
           success: false,
           message: action.payload,
-          errorCount: state.login.errorCount + 1,
-          token: null,
         },
         redirect: {
           ...state.redirect,
           login: false,
           register: false,
         },
+        captcha: {
+          errorCount: state.captcha.errorCount + 1,
+        },
       };
 
     case AuthActionTypes.LOGIN_GOOGLE_SUCCESS:
       return {
         ...state,
+        token: {
+          ...state.token,
+          accessToken: action.payload.accessToken,
+          refreshToken: action.payload.refreshToken,
+        },
         login: {
           ...state.login,
           isFetching: false,
           error: false,
           success: true,
-          token: action.payload,
         },
       };
 
@@ -204,6 +209,43 @@ const authReducer = (state = initialState, action) => {
         redirect: {
           ...state.redirect,
           register: true,
+        },
+      };
+    case AuthActionTypes.REGISTER_START:
+      return {
+        ...state,
+        register: {
+          ...state.register,
+          isFetching: true,
+          error: false,
+          success: false,
+          message: null,
+        },
+      };
+    case AuthActionTypes.REGISTER_SUCCESS:
+      return {
+        ...state,
+        register: {
+          ...state.register,
+          isFetching: false,
+          error: false,
+          success: true,
+          message: null,
+        },
+        redirect: {
+          ...state.redirect,
+          login: true,
+        },
+      };
+    case AuthActionTypes.REGISTER_FAILURE:
+      return {
+        ...state,
+        register: {
+          ...state.register,
+          isFetching: false,
+          error: true,
+          success: false,
+          message: action.payload,
         },
       };
     default: {

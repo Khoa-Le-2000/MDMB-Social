@@ -17,6 +17,10 @@ import { registerUser } from 'redux/actions/authAction';
 import { getRedirect } from 'redux/selectors/authSelector';
 import styled from 'styled-components';
 import * as yup from 'yup';
+import {
+  getErrorRegister,
+  getErrorMessageRegister,
+} from 'redux/selectors/authSelector';
 import './register.scss';
 
 const IconEye = styled(Eye)`
@@ -114,6 +118,21 @@ const schema = yup.object().shape({
 function Register() {
   const [showPassword, setShowPassword] = React.useState(false);
 
+  const [showError, setShowError] = React.useState(true);
+
+  const messageErrorRegister = useSelector(getErrorMessageRegister);
+  const hasError = useSelector(getErrorRegister);
+
+  console.log('🚀 :: Register :: showError', showError);
+  console.log('🚀 :: Register :: hasError', hasError);
+
+  React.useEffect(() => {
+    const timerShowError = setTimeout(() => {
+      setShowError(false);
+    }, 3000);
+    return () => clearTimeout(timerShowError);
+  }, [hasError]);
+
   const isRedirectRegister = useSelector(getRedirect)?.register;
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -128,7 +147,7 @@ function Register() {
   const onRegisterHandler = (data, e) => {
     e.preventDefault();
     dispatch(registerUser(data));
-    navigate('/');
+    // navigate('/');
   };
 
   let priorityError = 0;
@@ -142,6 +161,8 @@ function Register() {
     priorityError = 4;
   } else if (errors.confirmPassword?.message) {
     priorityError = 5;
+  } else if (hasError && showError) {
+    priorityError = 6;
   } else priorityError = 0;
 
   return (
@@ -301,6 +322,10 @@ function Register() {
                           errors.confirmPassword?.message ? (
                           <Form.Text className="text-danger">
                             {errors.confirmPassword?.message}
+                          </Form.Text>
+                        ) : priorityError === 6 && hasError ? (
+                          <Form.Text className="text-danger">
+                            {messageErrorRegister}
                           </Form.Text>
                         ) : null}
                       </Col>

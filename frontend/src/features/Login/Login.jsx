@@ -51,7 +51,7 @@ const schema = yup.object().shape({
   password: yup
     .string()
     .min(6, 'Passwords must be at least 6 characters in length')
-    .max(32, 'Passwords must be less than 32 characters in length')
+    .max(60, 'Passwords must be less than 60 characters in length')
     .required('Password is required'),
 });
 
@@ -67,16 +67,6 @@ function Login() {
   const { width } = useViewport();
 
   const [message, setMessage] = useState('');
-
-  const [showError, setShowError] = useState(true);
-
-  useEffect(() => {
-    const timerShowError = setTimeout(() => {
-      setShowError(false);
-      console.log('This will run after 1 second!');
-    }, 3000);
-    return () => clearTimeout(timerShowError);
-  }, []);
 
   const {
     register,
@@ -118,19 +108,11 @@ function Login() {
     dispatch(loginByGoogle(googleData.tokenId, navigate));
   };
 
-  const responseFacebook = async (response) => {
-    console.log(response);
-    const { accessToken } = response;
-    const data = await authApi.loginWithFacebook(accessToken);
-  };
+  const responseFacebook = async (response) => {};
 
-  const handleFacebookLoginFailure = (error) => {
-    console.log(error);
-  };
+  const handleFacebookLoginFailure = (error) => {};
 
-  const componentClicked = (data) => {
-    console.log(data);
-  };
+  const componentClicked = (data) => {};
 
   let errorMessage;
   if (message !== '') {
@@ -186,19 +168,17 @@ function Login() {
                     {...register('password')}
                   />
 
-                  {showError ? (
-                    errors.emailorphone?.message ? (
-                      <Form.Text className="text-danger">
-                        {errors.emailorphone?.message}
-                      </Form.Text>
-                    ) : errors.password?.message ? (
-                      <Form.Text className="text-danger">
-                        {errors.password?.message}
-                      </Form.Text>
-                    ) : (
-                      errorMessage
-                    )
-                  ) : null}
+                  {errors.emailorphone?.message ? (
+                    <Form.Text className="text-danger">
+                      {errors.emailorphone?.message}
+                    </Form.Text>
+                  ) : errors.password?.message ? (
+                    <Form.Text className="text-danger">
+                      {errors.password?.message}
+                    </Form.Text>
+                  ) : (
+                    errorMessage
+                  )}
                 </Col>
               </Form.Group>
 
