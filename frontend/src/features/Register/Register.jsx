@@ -80,15 +80,19 @@ const schema = yup.object().shape({
   username: yup
     .string()
     .min(2, 'Username must be at least 2 characters')
-    .required('Username  is required')
+    .max(45, 'Username must be less than 50 characters')
+    .required('This field is required')
     .matches(
       /^((?![0-9\\~\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)\\_\\+\\=\\-\\[\]\\{\\}\\;\\:\\"\\\\/\\<\\>\\?]).){2,45}/,
       'Username is not contain special characters'
     ),
-  email: yup.string().required('Email is required').email('Email is invalid'),
+  email: yup
+    .string()
+    .required('This field is required')
+    .email('Email is invalid'),
   phone: yup
     .string()
-    .required('Phone is required')
+    .required('This field is required')
     .min(10, 'Phone is invalid')
     .max(10, 'Phone is invalid')
     .matches(
@@ -105,13 +109,13 @@ const schema = yup.object().shape({
     .required('Password is required')
     .matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{6,32})/,
-      'Passwords must contain 6 characters, one uppercase, one lowercase and one number'
+      'Passwords must be at least 6 characters, one uppercase, one lowercase and one number'
     ),
   confirmPassword: yup
     .string()
     .min(6, 'Passwords must be at least 6 characters in length')
     .max(32, 'Passwords must be less than 32 characters in length')
-    .required('Password is required')
+    .required('This field is required')
     .oneOf([yup.ref('password'), null], 'Passwords must match'),
 });
 
@@ -122,9 +126,6 @@ function Register() {
 
   const messageErrorRegister = useSelector(getErrorMessageRegister);
   const hasError = useSelector(getErrorRegister);
-
-  console.log('🚀 :: Register :: showError', showError);
-  console.log('🚀 :: Register :: hasError', hasError);
 
   React.useEffect(() => {
     const timerShowError = setTimeout(() => {

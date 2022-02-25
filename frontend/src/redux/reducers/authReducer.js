@@ -131,17 +131,20 @@ const authReducer = (state = initialState, action) => {
     case AuthActionTypes.LOGOUT_SUCCESS:
       return {
         ...state,
+        token: null,
+        captcha: {
+          ...state.captcha,
+          errorCount: 0,
+        },
         logout: {
           ...state.logout,
           isFetching: false,
           error: false,
           success: true,
-          errorCount: 0,
           message: null,
         },
         login: {
           ...state.login,
-          token: null,
         },
         redirect: {
           ...state.redirect,
