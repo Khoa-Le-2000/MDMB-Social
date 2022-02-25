@@ -20,4 +20,6 @@ export const AuthActionTypes = {
 
   REDIRECT_TO_LOGIN: 'auth/redirect/login',
   REDIRECT_TO_REGISTER: 'auth/redirect/register',
+
+  RESET_LOGIN_ERROR: 'auth/login/resetError',
 };

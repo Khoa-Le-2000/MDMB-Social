@@ -4,10 +4,10 @@ const authApi = {
   register: async (data) => {
     const url = 'account/register';
     return axiosClient.post(url, {
-      Email: data.email.trim().toLowerCase(),
-      Password: data.password,
       Name: data.name,
       Phone: data.phone,
+      Email: data.email.trim().toLowerCase(),
+      Password: data.password,
     });
   },
 
