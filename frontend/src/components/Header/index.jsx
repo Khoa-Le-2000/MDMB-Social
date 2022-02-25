@@ -43,6 +43,14 @@ const HeaderLogoLink = styled(Link)`
     width: 100%;
     height: auto;
     object-fit: cover;
+    transition: all 0.3s ease-in-out;
+    :hover {
+      opacity: 0.8;
+      border-radius: 50%;
+      border: 1px solid #e6e6e6;
+      background-color: #e6e6e6;
+      transform: scale(1.1);
+    }
   }
 `;
 const HeaderLeft = styled.div`
