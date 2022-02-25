@@ -20,15 +20,21 @@ export const registerSuccess = () => {
   };
 };
 
-export const register = () => async (dispatch) => {
+export const registerUser = (user) => async (dispatch) => {
   dispatch(registerStart());
-  const { message } = authApi.register();
+  const data = await authApi.register(user);
 
-  if (message === 'success') {
+  if (data === 'success') {
     dispatch(registerSuccess());
   } else {
-    dispatch(registerFailure(message));
+    dispatch(registerFailure('Email is already in use'));
   }
+};
+
+export const resetLoginError = () => {
+  return {
+    type: AuthActionTypes.RESET_LOGIN_ERROR,
+  };
 };
 
 export const loginStart = () => {

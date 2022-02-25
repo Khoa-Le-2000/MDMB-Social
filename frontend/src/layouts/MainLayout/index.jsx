@@ -2,11 +2,12 @@ import Header from 'components/Header';
 import Nav from 'components/Nav';
 import React from 'react';
 
-function MainLayout() {
+function MainLayout({ children }) {
   return (
     <>
       <Header />
-      <Nav />
+      {/* <Nav /> */}
+      {children}
     </>
   );
 }

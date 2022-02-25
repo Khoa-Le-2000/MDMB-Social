@@ -7,7 +7,7 @@ import Hero3 from 'assets/images/heros/hero3.svg';
 import FacebookIcon from 'assets/images/icons/facebook.svg';
 import GoogleIcon from 'assets/images/icons/google.svg';
 import { useViewport } from 'hooks';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Button, Carousel, Col, Form, Row } from 'react-bootstrap';
 import FacebookLogin from 'react-facebook-login';
 import GoogleLogin from 'react-google-login';
@@ -26,7 +26,6 @@ import {
   getErrorCount,
   getErrorLogin,
   getErrorMessageLogin,
-  getRedirect,
 } from 'redux/selectors/authSelector';
 import * as yup from 'yup';
 import './login.scss';
@@ -35,28 +34,24 @@ const schema = yup.object().shape({
   emailorphone: yup
     .string()
     .required('Email or phone is required')
-    .test(
-      'emailorphone',
-      'Email or phone number is not valid',
-      function (value) {
-        const emailRegex =
-          /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
+    .test('emailorphone', 'Email or phone number is invalid', function (value) {
+      const emailRegex =
+        /^([a-zA-Z0-9!#$%&'*+\\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+\\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?)$/;
 
-        const phoneRegex = /([+84|84|0]+(3|5|7|8|9|1[2|6|8|9]))+([0-9]{8})\b/;
+      const phoneRegex = /([+84|84|0]+(3|5|7|8|9|1[2|6|8|9]))+([0-9]{8})\b/;
 
-        const isValidEmail = emailRegex.test(value);
-        const isValidPhone = phoneRegex.test(value);
+      const isValidEmail = emailRegex.test(value);
+      const isValidPhone = phoneRegex.test(value);
 
-        if (!isValidEmail && !isValidPhone) {
-          return false;
-        }
-        return true;
+      if (!isValidEmail && !isValidPhone) {
+        return false;
       }
-    ),
+      return true;
+    }),
   password: yup
     .string()
     .min(6, 'Passwords must be at least 6 characters in length')
-    .max(32, 'Passwords must be less than 32 characters in length')
+    .max(60, 'Passwords must be less than 60 characters in length')
     .required('Password is required'),
 });
 
@@ -69,10 +64,9 @@ function Login() {
   const countError = useSelector(getErrorCount);
   const messageErrorLogin = useSelector(getErrorMessageLogin);
   const hasError = useSelector(getErrorLogin);
+  const { width } = useViewport();
 
   const [message, setMessage] = useState('');
-
-  const { width } = useViewport();
 
   const {
     register,
@@ -114,19 +108,11 @@ function Login() {
     dispatch(loginByGoogle(googleData.tokenId, navigate));
   };
 
-  const responseFacebook = async (response) => {
-    console.log(response);
-    const { accessToken } = response;
-    const data = await authApi.loginWithFacebook(accessToken);
-  };
+  const responseFacebook = async (response) => {};
 
-  const handleFacebookLoginFailure = (error) => {
-    console.log(error);
-  };
+  const handleFacebookLoginFailure = (error) => {};
 
-  const componentClicked = (data) => {
-    console.log(data);
-  };
+  const componentClicked = (data) => {};
 
   let errorMessage;
   if (message !== '') {
@@ -181,9 +167,14 @@ function Login() {
                     placeholder="Password"
                     {...register('password')}
                   />
-                  {errors.emailorphone ? (
+
+                  {errors.emailorphone?.message ? (
                     <Form.Text className="text-danger">
                       {errors.emailorphone?.message}
+                    </Form.Text>
+                  ) : errors.password?.message ? (
+                    <Form.Text className="text-danger">
+                      {errors.password?.message}
                     </Form.Text>
                   ) : (
                     errorMessage
@@ -214,7 +205,13 @@ function Login() {
                     <Form.Check type="checkbox" label="Remember me" />
                   </Form.Group>
                 )}
-                <Button type="submit" className="btn-login">
+                <Button
+                  type="submit"
+                  className="btn-login"
+                  onKeyDown={(event) =>
+                    event.key === 'Enter' && onLoginHandler()
+                  }
+                >
                   Log In
                 </Button>
               </div>
