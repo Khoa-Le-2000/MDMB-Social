@@ -25,7 +25,10 @@ export const registerUser = (user) => async (dispatch) => {
   dispatch(registerStart());
   const data = await authApi.register(user);
 
-  if (data?.result === 'register succesful') {
+  if (
+    data?.result === 'email sent succesful' ||
+    data?.result === 'email sent successfully'
+  ) {
     dispatch(
       registerSuccess(
         `We just sent an email to ${user.email} to activate your account.`

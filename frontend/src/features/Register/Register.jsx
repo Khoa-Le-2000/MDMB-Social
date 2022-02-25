@@ -181,12 +181,11 @@ function Register() {
     priorityError = 6;
   } else priorityError = 0;
 
-  const [show, setShow] = React.useState(false);
+  const [show, setShow] = React.useState(true);
   const handleClose = () => {
     setShow(false);
     navigate('/');
   };
-  const handleShow = () => setShow(true);
 
   return (
     <div className="register">
@@ -223,7 +222,6 @@ function Register() {
       <Row className="h-100">
         {hasSuccess && (
           <ModalContainer
-            onHide={handleShow}
             show={show}
             size="lg"
             aria-labelledby="contained-modal-title-vcenter"
@@ -236,11 +234,11 @@ function Register() {
               <ModalContent>
                 <Alert variant="success">
                   <p>{messageRegister}</p>
+                  <p>
+                    If you haven't received our email in 3 hours, please check
+                    your spam folder.
+                  </p>
                 </Alert>
-                <p>
-                  If you haven't received our email in 3 hours, please check
-                  your spam folder.
-                </p>
               </ModalContent>
             </ModalContainer.Body>
             <ModalContainer.Footer>
