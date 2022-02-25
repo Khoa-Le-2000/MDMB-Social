@@ -233,7 +233,7 @@ const authReducer = (state = initialState, action) => {
           isFetching: false,
           error: false,
           success: true,
-          message: null,
+          message: action.payload,
         },
         redirect: {
           ...state.redirect,

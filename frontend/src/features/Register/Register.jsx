@@ -2,12 +2,14 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Eye, EyeOff, ArrowNarrowRight } from '@styled-icons/heroicons-solid';
 import React from 'react';
 import {
+  Alert,
   Button,
   Card,
   Col,
   Form,
   FormControl,
   InputGroup,
+  Modal,
   Row,
 } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
@@ -19,7 +21,8 @@ import styled from 'styled-components';
 import * as yup from 'yup';
 import {
   getErrorRegister,
-  getErrorMessageRegister,
+  getSuccessRegister,
+  getMessageRegister,
 } from 'redux/selectors/authSelector';
 import './register.scss';
 
@@ -75,16 +78,31 @@ const IconInner = styled.div`
     right: 0;
   }
 `;
+const ModalContainer = styled(Modal)`
+  .modal-content {
+    width: 80%;
+  }
+`;
+
+const ModalHeader = styled(Modal.Header)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+`;
+
+const ModalContent = styled.div``;
 
 const schema = yup.object().shape({
-  username: yup
+  name: yup
     .string()
-    .min(2, 'Username must be at least 2 characters')
-    .max(45, 'Username must be less than 50 characters')
+    .min(2, 'Name must be at least 2 characters')
+    .max(45, 'Name must be less than 50 characters')
     .required('This field is required')
     .matches(
       /^((?![0-9\\~\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)\\_\\+\\=\\-\\[\]\\{\\}\\;\\:\\"\\\\/\\<\\>\\?]).){2,45}/,
-      'Username is not contain special characters'
+      'Name is not contain special characters'
     ),
   email: yup
     .string()
@@ -121,18 +139,14 @@ const schema = yup.object().shape({
 
 function Register() {
   const [showPassword, setShowPassword] = React.useState(false);
-
-  const [showError, setShowError] = React.useState(true);
-
-  const messageErrorRegister = useSelector(getErrorMessageRegister);
+  const messageRegister = useSelector(getMessageRegister);
+  console.log(
+    '🚀 :: file: Register.jsx :: line 141 :: messageRegister',
+    messageRegister
+  );
   const hasError = useSelector(getErrorRegister);
-
-  React.useEffect(() => {
-    const timerShowError = setTimeout(() => {
-      setShowError(false);
-    }, 3000);
-    return () => clearTimeout(timerShowError);
-  }, [hasError]);
+  const hasSuccess = useSelector(getSuccessRegister);
+  console.log('🚀 :: file: Register.jsx :: line 147 :: hasSuccess', hasSuccess);
 
   const isRedirectRegister = useSelector(getRedirect)?.register;
   const dispatch = useDispatch();
@@ -146,13 +160,14 @@ function Register() {
   } = useForm({ resolver: yupResolver(schema) });
 
   const onRegisterHandler = (data, e) => {
+    console.log('🚀 :: file: Register.jsx :: line 149 :: data', data);
     e.preventDefault();
     dispatch(registerUser(data));
     // navigate('/');
   };
 
   let priorityError = 0;
-  if (errors.username?.message) {
+  if (errors.name?.message) {
     priorityError = 1;
   } else if (errors.email?.message) {
     priorityError = 2;
@@ -162,9 +177,16 @@ function Register() {
     priorityError = 4;
   } else if (errors.confirmPassword?.message) {
     priorityError = 5;
-  } else if (hasError && showError) {
+  } else if (hasError) {
     priorityError = 6;
   } else priorityError = 0;
+
+  const [show, setShow] = React.useState(false);
+  const handleClose = () => {
+    setShow(false);
+    navigate('/');
+  };
+  const handleShow = () => setShow(true);
 
   return (
     <div className="register">
@@ -199,6 +221,34 @@ function Register() {
       )}
 
       <Row className="h-100">
+        {hasSuccess && (
+          <ModalContainer
+            onHide={handleShow}
+            show={show}
+            size="lg"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+          >
+            <ModalContainer.Body>
+              <ModalHeader className="text-center">
+                Awaiting Confirmation
+              </ModalHeader>
+              <ModalContent>
+                <Alert variant="success">
+                  <p>{messageRegister}</p>
+                </Alert>
+                <p>
+                  If you haven't received our email in 3 hours, please check
+                  your spam folder.
+                </p>
+              </ModalContent>
+            </ModalContainer.Body>
+            <ModalContainer.Footer>
+              <Button onClick={handleClose}>Close</Button>
+            </ModalContainer.Footer>
+          </ModalContainer>
+        )}
+
         <Col lg={7} className="register__col">
           <div className="register__hero"></div>
         </Col>
@@ -218,15 +268,15 @@ function Register() {
                     <Row>
                       <Col lg={12}>
                         <Form.Group className="mb-3">
-                          <Form.Label>Username</Form.Label>
+                          <Form.Label>Name</Form.Label>
                           <Form.Control
                             type="text"
-                            {...register('username')}
-                            placeholder="Enter your username"
+                            {...register('name')}
+                            placeholder="Enter your name"
                           />
                           <Form.Text className="text-danger">
-                            {priorityError === 1 && errors.username?.message
-                              ? errors.username?.message
+                            {priorityError === 1 && errors.name?.message
+                              ? errors.name?.message
                               : ''}
                           </Form.Text>
                         </Form.Group>
@@ -326,7 +376,7 @@ function Register() {
                           </Form.Text>
                         ) : priorityError === 6 && hasError ? (
                           <Form.Text className="text-danger">
-                            {messageErrorRegister}
+                            {messageRegister}
                           </Form.Text>
                         ) : null}
                       </Col>

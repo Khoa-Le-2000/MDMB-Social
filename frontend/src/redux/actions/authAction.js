@@ -14,9 +14,10 @@ export const registerFailure = (message) => {
   };
 };
 
-export const registerSuccess = () => {
+export const registerSuccess = (message) => {
   return {
     type: AuthActionTypes.REGISTER_SUCCESS,
+    payload: message,
   };
 };
 
@@ -24,8 +25,12 @@ export const registerUser = (user) => async (dispatch) => {
   dispatch(registerStart());
   const data = await authApi.register(user);
 
-  if (data === 'success') {
-    dispatch(registerSuccess());
+  if (data?.result === 'register succesful') {
+    dispatch(
+      registerSuccess(
+        `We just sent an email to ${user.email} to activate your account.`
+      )
+    );
   } else {
     dispatch(registerFailure('Email is already in use'));
   }

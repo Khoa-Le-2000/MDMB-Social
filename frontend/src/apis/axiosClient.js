@@ -4,7 +4,7 @@ import queryString from 'query-string';
 import { logoutStart, refreshToken } from 'redux/actions/authAction';
 
 const axiosClient = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+  baseURL: 'http:/localhost:8080/',
   headers: {
     'content-type': 'application/json',
   },
