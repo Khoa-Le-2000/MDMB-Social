@@ -298,19 +298,26 @@ function verifyEmail(req, res) {
     if (err) return res.status(401).send({ error: 'Invalid token' });
     var dateNow = new Date();
     if (decoded.exp < dateNow.getTime() / 1000) return res.status(401).send({ error: 'Token expired' });
-  });
-  var payload = auth.parseJwt(token);
-  var Password = payload.Password;
-  var Email = payload.Email;
-  var Phone = payload.Phone;
-  var Name = payload.Name;
-  bcrypt.hash(Password, 10).then((hash) => {
-    AccountDAO.createAccount(hash, Phone, Email, Name, (rs) => {
-      if (rs) res.redirect(process.env.MDMB_SOCIAL_URL);
-      
-      else res.redirect(process.env.MDMB_SOCIAL_URL);  
+
+    var payload = auth.parseJwt(token);
+    var Password = payload.Password;
+    var Email = payload.Email;
+    var Phone = payload.Phone;
+    var Name = payload.Name;
+
+    AccountDAO.getAccountId(Email, Phone, (Account) => {
+      if (Account) return res.status(401).send({ error: 'Account created' });
+      else {
+        bcrypt.hash(Password, 10).then((hash) => {
+          AccountDAO.createAccount(hash, Phone, Email, Name, (rs) => {
+            if (rs) return res.redirect(process.env.MDMB_SOCIAL_URL);
+
+            else return res.redirect(process.env.MDMB_SOCIAL_URL);
+          })
+        })
+      }
     })
-  })
+  });
 
 }
 
@@ -322,4 +329,3 @@ module.exports = {
   update,
   verifyEmail
 }
- 
