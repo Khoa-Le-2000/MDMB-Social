@@ -107,6 +107,7 @@ const ProfileLink = styled(Link)`
   display: flex;
   align-items: center;
   justify-content: center;
+  text-decoration: none;
 `;
 
 const ProfileName = styled.div`
@@ -140,7 +141,7 @@ function Header() {
                 </ProfileAvatar>
               </ProfileAvatarLink>
               <ProfileName>
-                <ProfileLink to={'/'}>Sara</ProfileLink>
+                <ProfileLink to={'/update-profile'}>Sara</ProfileLink>
               </ProfileName>
             </HeaderProfile>
           </HeaderLeft>

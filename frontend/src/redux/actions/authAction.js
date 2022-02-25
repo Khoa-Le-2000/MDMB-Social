@@ -39,12 +39,6 @@ export const registerUser = (user) => async (dispatch) => {
   }
 };
 
-export const resetLoginError = () => {
-  return {
-    type: AuthActionTypes.RESET_LOGIN_ERROR,
-  };
-};
-
 export const loginStart = () => {
   return {
     type: AuthActionTypes.LOGIN_START,
