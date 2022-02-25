@@ -16,7 +16,6 @@ import './update_profile.scss';
 
 const Col = styled.div`
   display: inline-flex;
-  justify-content: center;
   width: 100%;
   .react-datepicker__header {
     button {
@@ -37,6 +36,7 @@ const Col = styled.div`
       height: 40px;
       display: block;
       font-size: 1.2rem;
+      width: 100%;
       :focus {
         border: 1px solid #e6e6e6;
       }
@@ -157,8 +157,12 @@ function UpdateProfile() {
     <MainLayout>
       <BootstrapContainer>
         <BootstrapRow>
-          <Col>
-            <BootstrapCol lg={4}>
+          <Col
+            style={{
+              justifyContent: 'center',
+            }}
+          >
+            <BootstrapCol lg={5}>
               <div>
                 <Card>
                   <div>
@@ -172,7 +176,7 @@ function UpdateProfile() {
                       <Form onSubmit={onUpdateProfileHandler}>
                         <BootstrapRow>
                           <BootstrapCol lg={12}>
-                            <Form.Group className="mb-3">
+                            <Form.Group className="mb-">
                               <AvatarWrapper>
                                 <img
                                   src="https://images.unsplash.com/photo-1645504812848-29c2ebd5cd54?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyOXx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60"
@@ -193,8 +197,13 @@ function UpdateProfile() {
                         </BootstrapRow>
 
                         <BootstrapRow>
-                          <Col lg={12}>
-                            <Form.Group className="mb-3">
+                          <Col
+                            lg={12}
+                            style={{
+                              justifyContent: 'flex-start',
+                            }}
+                          >
+                            <Form.Group className="mb-3 3 w-100">
                               <Form.Label>Birth day </Form.Label>
                               <DatePicker
                                 renderCustomHeader={({
