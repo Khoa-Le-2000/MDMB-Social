@@ -123,7 +123,7 @@ const schema = yup.object().shape({
       6,
       'Passwords must contain 6 characters, one uppercase, one lowercase and one number'
     )
-    .max(32, 'Passwords must be less than 32 characters in length')
+    .max(60, 'Passwords must be less than 60 characters in length')
     .required('Password is required')
     .matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{6,32})/,
@@ -132,7 +132,7 @@ const schema = yup.object().shape({
   confirmPassword: yup
     .string()
     .min(6, 'Passwords must be at least 6 characters in length')
-    .max(32, 'Passwords must be less than 32 characters in length')
+    .max(60, 'Passwords must be less than 60 characters in length')
     .required('This field is required')
     .oneOf([yup.ref('password'), null], 'Passwords must match'),
 });
