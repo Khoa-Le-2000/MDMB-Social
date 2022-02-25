@@ -156,7 +156,6 @@ function Register() {
   const [show, setShow] = React.useState(true);
   const handleClose = () => {
     setShow(false);
-    navigate('/');
   };
 
   const onRegisterHandler = (data, e) => {
