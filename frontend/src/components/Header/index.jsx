@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Bell } from '@styled-icons/heroicons-outline';
 import { Link } from 'react-router-dom';
+import Logo from 'assets/images/logos/logo.png';
 
 const HeaderWrapper = styled.header`
   position: sticky;
@@ -31,7 +32,19 @@ const HeaderInner = styled.div`
   height: 100%;
   padding: 0 10rem;
 `;
-const HeaderLogo = styled.div``;
+
+const HeaderLogoLink = styled(Link)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 100%;
+  img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+`;
 const HeaderLeft = styled.div`
   display: flex;
   align-items: center;
@@ -102,7 +115,9 @@ function Header() {
     <HeaderWrapper>
       <Container>
         <HeaderInner>
-          <HeaderLogo>MDMB Social</HeaderLogo>
+          <HeaderLogoLink to={'/'}>
+            <img src={Logo} alt="MDMB Logo" />
+          </HeaderLogoLink>
           <HeaderLeft>
             <HeaderNotification>
               <NotificationIcon />
