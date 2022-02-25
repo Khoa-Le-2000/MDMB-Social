@@ -1,14 +1,13 @@
-/* eslint-disable no-control-regex */
 import { yupResolver } from '@hookform/resolvers/yup';
-import authApi from 'apis/authApi';
+import { Eye, EyeOff } from '@styled-icons/heroicons-solid';
 import Hero1 from 'assets/images/heros/hero1.svg';
 import Hero2 from 'assets/images/heros/hero2.svg';
 import Hero3 from 'assets/images/heros/hero3.svg';
 import FacebookIcon from 'assets/images/icons/facebook.svg';
 import GoogleIcon from 'assets/images/icons/google.svg';
 import { useViewport } from 'hooks';
-import React, { useRef, useState, useEffect } from 'react';
-import { Button, Carousel, Col, Form, Row } from 'react-bootstrap';
+import React from 'react';
+import { Button, Carousel, Col, Form, InputGroup, Row } from 'react-bootstrap';
 import FacebookLogin from 'react-facebook-login';
 import GoogleLogin from 'react-google-login';
 import ReCAPTCHA from 'react-google-recaptcha';
@@ -27,8 +26,17 @@ import {
   getErrorLogin,
   getErrorMessageLogin,
 } from 'redux/selectors/authSelector';
+import styled from 'styled-components';
 import * as yup from 'yup';
 import './login.scss';
+
+const IconEye = styled(Eye)`
+  width: 1.2rem;
+`;
+
+const IconEyeOff = styled(EyeOff)`
+  width: 1.2rem;
+`;
 
 const schema = yup.object().shape({
   emailorphone: yup
@@ -58,7 +66,7 @@ const schema = yup.object().shape({
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const refRecapCha = useRef();
+  const refRecapCha = React.useRef();
 
   const isHuman = useSelector(getCaptcha)?.success;
   const countError = useSelector(getErrorCount);
@@ -66,7 +74,8 @@ function Login() {
   const hasError = useSelector(getErrorLogin);
   const { width } = useViewport();
 
-  const [message, setMessage] = useState('');
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [message, setMessage] = React.useState('');
 
   const {
     register,
@@ -162,12 +171,25 @@ function Login() {
               <Form.Group className="form-group__input">
                 <Col sm="12" className="form__input">
                   <Form.Label>Password</Form.Label>
-                  <Form.Control
-                    type="password"
-                    placeholder="Password"
-                    {...register('password')}
-                  />
-
+                  <InputGroup>
+                    <Form.Control
+                      type={showPassword ? 'text' : 'password'}
+                      {...register('confirmPassword')}
+                      placeholder="Confirm Password"
+                    />
+                    <InputGroup.Text
+                      onClick={() => setShowPassword(!showPassword)}
+                      style={{
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {showPassword ? <IconEye /> : <IconEyeOff />}
+                    </InputGroup.Text>
+                  </InputGroup>
+                </Col>
+              </Form.Group>
+              <Row>
+                <Col lg={12}>
                   {errors.emailorphone?.message ? (
                     <Form.Text className="text-danger">
                       {errors.emailorphone?.message}
@@ -180,7 +202,7 @@ function Login() {
                     errorMessage
                   )}
                 </Col>
-              </Form.Group>
+              </Row>
 
               <div className="form__forgot">
                 <small className="forgot__title">

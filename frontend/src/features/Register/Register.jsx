@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Eye, EyeOff, ArrowNarrowRight } from '@styled-icons/heroicons-solid';
+import { ArrowNarrowRight, Eye, EyeOff } from '@styled-icons/heroicons-solid';
 import React from 'react';
 import {
   Alert,
@@ -16,14 +16,14 @@ import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, Route, Routes, useNavigate } from 'react-router-dom';
 import { registerUser } from 'redux/actions/authAction';
-import { getRedirect } from 'redux/selectors/authSelector';
-import styled from 'styled-components';
-import * as yup from 'yup';
 import {
   getErrorRegister,
-  getSuccessRegister,
   getMessageRegister,
+  getRedirect,
+  getSuccessRegister,
 } from 'redux/selectors/authSelector';
+import styled from 'styled-components';
+import * as yup from 'yup';
 import './register.scss';
 
 const IconEye = styled(Eye)`
@@ -140,13 +140,8 @@ const schema = yup.object().shape({
 function Register() {
   const [showPassword, setShowPassword] = React.useState(false);
   const messageRegister = useSelector(getMessageRegister);
-  console.log(
-    '🚀 :: file: Register.jsx :: line 141 :: messageRegister',
-    messageRegister
-  );
   const hasError = useSelector(getErrorRegister);
   const hasSuccess = useSelector(getSuccessRegister);
-  console.log('🚀 :: file: Register.jsx :: line 147 :: hasSuccess', hasSuccess);
 
   const isRedirectRegister = useSelector(getRedirect)?.register;
   const dispatch = useDispatch();
@@ -155,15 +150,18 @@ function Register() {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
 
+  const [show, setShow] = React.useState(true);
+  const handleClose = () => {
+    setShow(false);
+    navigate('/');
+  };
+
   const onRegisterHandler = (data, e) => {
-    console.log('🚀 :: file: Register.jsx :: line 149 :: data', data);
     e.preventDefault();
     dispatch(registerUser(data));
-    // navigate('/');
   };
 
   let priorityError = 0;
@@ -180,12 +178,6 @@ function Register() {
   } else if (hasError) {
     priorityError = 6;
   } else priorityError = 0;
-
-  const [show, setShow] = React.useState(true);
-  const handleClose = () => {
-    setShow(false);
-    navigate('/');
-  };
 
   return (
     <div className="register">
