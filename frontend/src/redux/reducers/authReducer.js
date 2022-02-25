@@ -79,6 +79,13 @@ const authReducer = (state = initialState, action) => {
           login: true,
           register: false,
         },
+        register: {
+          ...state.register,
+          error: false,
+          isFetching: false,
+          success: false,
+          message: null,
+        },
         captcha: {
           errorCount: 0,
         },
@@ -146,6 +153,13 @@ const authReducer = (state = initialState, action) => {
         login: {
           ...state.login,
         },
+        register: {
+          ...state.register,
+          error: false,
+          isFetching: false,
+          success: false,
+          message: null,
+        },
         redirect: {
           ...state.redirect,
           login: false,
@@ -168,12 +182,9 @@ const authReducer = (state = initialState, action) => {
     case AuthActionTypes.REFRESH_TOKEN_SUCCESS:
       return {
         ...state,
-        login: {
-          ...state.login,
-          token: {
-            ...state.login.token,
-            accessToken: action.payload,
-          },
+        token: {
+          ...state.token,
+          accessToken: action.payload,
         },
       };
 
@@ -233,7 +244,7 @@ const authReducer = (state = initialState, action) => {
           isFetching: false,
           error: false,
           success: true,
-          message: null,
+          message: action.payload,
         },
         redirect: {
           ...state.redirect,

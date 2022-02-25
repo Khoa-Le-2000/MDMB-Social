@@ -38,7 +38,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 const middlewares = [thunk];
 
 if (process.env.NODE_ENV !== 'production') {
-  middlewares.push(createLogger());
+  // middlewares.push(createLogger());
 }
 const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
