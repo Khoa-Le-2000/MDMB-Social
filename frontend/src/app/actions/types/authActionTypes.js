@@ -19,7 +19,7 @@ export const AuthActionTypes = {
   VERIFY_CAPTCHA_FAILURE: 'auth/verifyCaptcha/failure',
 
   REDIRECT_TO_LOGIN: 'auth/redirect/login',
-  REDIRECT_TO_REGISTER: 'auth/redirect/register',
+  FILL_TO_REGISTER: 'auth/fill/register',
 
   RESET_LOGIN_ERROR: 'auth/login/resetError',
 };

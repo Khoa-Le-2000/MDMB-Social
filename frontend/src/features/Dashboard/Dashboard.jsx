@@ -2,8 +2,8 @@ import React from 'react';
 import { Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { logout, refreshToken } from 'redux/actions/authAction';
-import { getAuth } from 'redux/selectors/authSelector';
+import { logout, refreshToken } from 'app/actions';
+import { getAuth } from 'app/selectors/loginSelector';
 
 function Dashboard() {
   const auth = useSelector(getAuth);

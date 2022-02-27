@@ -4,9 +4,9 @@ import React from 'react';
 import { Button, Container } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { logout, refreshToken } from 'redux/actions/authAction';
-import { getAuth } from 'redux/selectors/authSelector';
+import { logout, refreshToken } from 'app/actions';
 import './home.scss';
+import { getAuth } from 'app/selectors/loginSelector';
 
 function Home() {
   const auth = useSelector(getAuth);
@@ -25,15 +25,14 @@ function Home() {
   return (
     <Container fluid>
       {auth?.accessToken ? (
-        <>
-          <MainLayout />
+        <MainLayout>
           <h5>Access token: {auth?.accessToken}</h5>
           <h5>Refresh Token: {auth?.refreshToken}</h5>
           <Button onClick={onHandleRefreshToken} className="btn">
             Refresh Token
           </Button>
           {auth?.accessToken && <Button onClick={handleLogout}>Logout</Button>}
-        </>
+        </MainLayout>
       ) : (
         <section className="home">
           <Login />

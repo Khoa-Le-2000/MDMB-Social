@@ -1,4 +1,4 @@
-import { AuthActionTypes } from '../actions/types/authActionTypes';
+import { AuthActionTypes } from 'app/actions/types/authActionTypes';
 
 const initialState = {
   token: {
@@ -19,24 +19,14 @@ const initialState = {
     success: false,
     message: null,
   },
-  register: {
-    error: false,
-    isFetching: false,
-    success: false,
-    message: null,
-  },
   logout: {
     error: false,
     isFetching: false,
     success: false,
   },
-  redirect: {
-    login: false,
-    register: false,
-  },
 };
 
-const authReducer = (state = initialState, action) => {
+const loginReducer = (state = initialState, action) => {
   switch (action.type) {
     case AuthActionTypes.LOGIN_START:
       return {
@@ -49,11 +39,7 @@ const authReducer = (state = initialState, action) => {
           success: false,
           message: null,
         },
-        redirect: {
-          ...state.redirect,
-          login: false,
-          register: false,
-        },
+
         captcha: {
           ...state.captcha,
           errorCount: state?.captcha?.errorCount || 0,
@@ -73,11 +59,6 @@ const authReducer = (state = initialState, action) => {
           error: false,
           success: true,
           message: null,
-        },
-        redirect: {
-          ...state.redirect,
-          login: true,
-          register: false,
         },
         register: {
           ...state.register,
@@ -101,11 +82,7 @@ const authReducer = (state = initialState, action) => {
           success: false,
           message: action.payload,
         },
-        redirect: {
-          ...state.redirect,
-          login: false,
-          register: false,
-        },
+
         captcha: {
           errorCount: state.captcha.errorCount + 1,
         },
@@ -160,11 +137,6 @@ const authReducer = (state = initialState, action) => {
           success: false,
           message: null,
         },
-        redirect: {
-          ...state.redirect,
-          login: false,
-          register: false,
-        },
       };
 
     case AuthActionTypes.LOGOUT_FAILURE: {
@@ -207,65 +179,10 @@ const authReducer = (state = initialState, action) => {
           message: action.payload,
         },
       };
-
-    case AuthActionTypes.REDIRECT_TO_LOGIN:
-      return {
-        ...state,
-        redirect: {
-          ...state.redirect,
-          login: true,
-        },
-      };
-
-    case AuthActionTypes.REDIRECT_TO_REGISTER:
-      return {
-        ...state,
-        redirect: {
-          ...state.redirect,
-          register: true,
-        },
-      };
-    case AuthActionTypes.REGISTER_START:
-      return {
-        ...state,
-        register: {
-          ...state.register,
-          isFetching: true,
-          error: false,
-          success: false,
-          message: null,
-        },
-      };
-    case AuthActionTypes.REGISTER_SUCCESS:
-      return {
-        ...state,
-        register: {
-          ...state.register,
-          isFetching: false,
-          error: false,
-          success: true,
-          message: action.payload,
-        },
-        redirect: {
-          ...state.redirect,
-          login: true,
-        },
-      };
-    case AuthActionTypes.REGISTER_FAILURE:
-      return {
-        ...state,
-        register: {
-          ...state.register,
-          isFetching: false,
-          error: true,
-          success: false,
-          message: action.payload,
-        },
-      };
     default: {
       return state;
     }
   }
 };
 
-export default authReducer;
+export default loginReducer;

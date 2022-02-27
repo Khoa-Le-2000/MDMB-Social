@@ -1,15 +1,11 @@
-import { combineReducers, createStore, applyMiddleware, compose } from 'redux';
-import thunk from 'redux-thunk';
-import authReducer from './reducers/authReducer';
-import { persistStore, persistReducer, createTransform } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
 import { interceptor } from 'apis/axiosClient';
-import { createLogger } from 'redux-logger';
+import rootReducer from 'app/reducers';
 import { omit } from 'lodash';
-
-const rootReducer = combineReducers({
-  auth: authReducer,
-});
+import { applyMiddleware, compose, createStore } from 'redux';
+import { createLogger } from 'redux-logger';
+import { createTransform, persistReducer, persistStore } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+import thunk from 'redux-thunk';
 
 const filterTransform = createTransform(
   // inbound
@@ -38,7 +34,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 const middlewares = [thunk];
 
 if (process.env.NODE_ENV !== 'production') {
-  // middlewares.push(createLogger());
+  middlewares.push(createLogger());
 }
 const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 

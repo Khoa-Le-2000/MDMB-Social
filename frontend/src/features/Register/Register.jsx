@@ -1,5 +1,12 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ArrowNarrowRight, Eye, EyeOff } from '@styled-icons/heroicons-solid';
+import { registerUser } from 'app/actions';
+import {
+  getErrorRegister,
+  getFillToRegister,
+  getMessageRegister,
+  getSuccessRegister,
+} from 'app/selectors/registerSelector';
 import React from 'react';
 import {
   Alert,
@@ -14,14 +21,7 @@ import {
 } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, Route, Routes, useNavigate } from 'react-router-dom';
-import { registerUser } from 'redux/actions/authAction';
-import {
-  getErrorRegister,
-  getMessageRegister,
-  getRedirect,
-  getSuccessRegister,
-} from 'redux/selectors/authSelector';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import * as yup from 'yup';
 import './register.scss';
@@ -143,15 +143,22 @@ function Register() {
   const hasError = useSelector(getErrorRegister);
   const hasSuccess = useSelector(getSuccessRegister);
 
-  const isRedirectRegister = useSelector(getRedirect)?.register;
+  const dataFill = useSelector(getFillToRegister);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({ resolver: yupResolver(schema) });
+  } = useForm({
+    defaultValues: {
+      name: dataFill?.name || '',
+      email: dataFill?.email || '',
+      password: dataFill?.password || '',
+      confirmPassword: dataFill?.password || '',
+    },
+    resolver: yupResolver(schema),
+  });
 
   const [show, setShow] = React.useState(true);
   const handleClose = () => {
@@ -160,6 +167,10 @@ function Register() {
 
   const onRegisterHandler = (data, e) => {
     e.preventDefault();
+    if (dataFill) {
+      data['google'] = true;
+      dispatch(registerUser(data));
+    }
     dispatch(registerUser(data));
   };
 
@@ -180,36 +191,6 @@ function Register() {
 
   return (
     <div className="register">
-      {isRedirectRegister && (
-        <Row className="flex justify-content-center">
-          <Col className="col">
-            <Routes>
-              <Route
-                path="/google"
-                element={
-                  <div className="card__wrap-new">
-                    <div className="card__body">
-                      <div className="card__info">
-                        <h3>Google</h3>
-                        <h4>Do you want to create a MDMB Social account for</h4>
-                      </div>
-                      <Form className="card__form-group">
-                        <div>
-                          <Link to={'/'}>
-                            <Button variant="secondary">Cancel</Button>
-                          </Link>
-                          <Button>Create Account</Button>
-                        </div>
-                      </Form>
-                    </div>
-                  </div>
-                }
-              />
-            </Routes>
-          </Col>
-        </Row>
-      )}
-
       <Row className="h-100">
         {hasSuccess && (
           <ModalContainer
@@ -271,7 +252,6 @@ function Register() {
                         </Form.Group>
                       </Col>
                     </Row>
-
                     <Row>
                       <Col lg={12}>
                         <Form.Group className="mb-3">
@@ -289,7 +269,6 @@ function Register() {
                         </Form.Group>
                       </Col>
                     </Row>
-
                     <Row>
                       <Col lg={12}>
                         <Form.Group className="mb-3">
@@ -317,6 +296,7 @@ function Register() {
                             {...register('password')}
                             placeholder="Enter your password"
                           />
+
                           <InputGroup.Text
                             style={{
                               cursor: 'pointer',
@@ -336,6 +316,7 @@ function Register() {
                               {...register('confirmPassword')}
                               placeholder="Confirm Password"
                             />
+
                             <InputGroup.Text
                               onClick={() => setShowPassword(!showPassword)}
                               style={{
