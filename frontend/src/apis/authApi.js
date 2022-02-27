@@ -4,20 +4,10 @@ const authApi = {
   register: async (data) => {
     const url = 'account/register';
     return axiosClient.post(url, {
-      Email: data.email.trim().toLowerCase(),
-      Password: data.password,
       Name: data.name,
       Phone: data.phone,
-    });
-  },
-
-  updateProfile: async (data) => {
-    const url = 'account/update-profile';
-    return axiosClient.post(url, {
       Email: data.email.trim().toLowerCase(),
-      Avatar: data.avatar,
-      Gender: data.gender,
-      Birthday: data.birthday,
+      Password: data.password,
     });
   },
 
