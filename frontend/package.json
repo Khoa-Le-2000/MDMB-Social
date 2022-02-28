@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@hookform/resolvers": "^2.8.8",
+    "@styled-icons/boxicons-solid": "^10.38.0",
     "@styled-icons/heroicons-outline": "^10.36.0",
     "@styled-icons/heroicons-solid": "^10.36.0",
     "@testing-library/jest-dom": "^5.14.1",
@@ -59,6 +60,6 @@
     ]
   },
   "devDependencies": {
-    "sass": "^1.49.8"
+    "sass": "^1.49.9"
   }
 }

@@ -1,7 +1,7 @@
+import { logout, refreshToken } from 'app/actions/login';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
 import queryString from 'query-string';
-import { logoutStart, refreshToken } from 'redux/actions/authAction';
 
 const axiosClient = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
@@ -14,10 +14,10 @@ const axiosClient = axios.create({
 export const interceptor = (store) => {
   axiosClient.interceptors.request.use(
     async (config) => {
-      const user = store?.getState()?.authReducer?.login?.token;
+      const user = store?.getState()?.auth?.token;
 
-      if (!config.headers['Authorization'] && user) {
-        config.headers['x-access-token'] = `${user.accessToken}`;
+      if (!config.headers.Authorization && user) {
+        config.headers.Authorization = `${user.accessToken}`;
       }
 
       if (user?.accessToken && user?.refreshToken) {
@@ -26,18 +26,18 @@ export const interceptor = (store) => {
 
         var currentTime = new Date().getTime() / 1000;
         let isExpiredAT = currentTime > decodedAT;
-        let isExpiredRT = currentTime < decodedRT;
-        console.log('Before: ', isExpiredAT, isExpiredRT);
+        let isExpiredRT = currentTime > decodedRT;
 
         if (isExpiredAT && !isExpiredRT) {
-          console.log('Refresh token success');
+          console.log('Refresh token start');
           await store.dispatch(refreshToken(user?.refreshToken));
+          console.log('Refresh token success');
           if (config?.headers) {
-            config.headers['authorization'] =
+            config.headers.Authorization =
               store?.getState()?.authReducer?.token?.accessToken;
           }
-        } else if (isExpiredAT && !isExpiredRT) {
-          store.dispatch(logoutStart());
+        } else if (isExpiredAT && isExpiredRT) {
+          store.dispatch(logout());
         }
         console.log('After: ', isExpiredAT, isExpiredRT);
       }

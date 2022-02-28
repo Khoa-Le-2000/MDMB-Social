@@ -11,13 +11,12 @@ const authApi = {
     });
   },
 
-  updateProfile: async (data) => {
-    const url = 'account/update-profile';
+  registerByGoogle: async (data) => {
+    const url = '/account/register-by-google';
     return axiosClient.post(url, {
+      Name: data.name,
       Email: data.email.trim().toLowerCase(),
-      Avatar: data.avatar,
-      Gender: data.gender,
-      Birthday: data.birthday,
+      Phone: data.phone,
     });
   },
 

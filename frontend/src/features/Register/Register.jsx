@@ -1,5 +1,13 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ArrowNarrowRight, Eye, EyeOff } from '@styled-icons/heroicons-solid';
+import { registerUser, resetRegister } from 'app/actions/register';
+import {
+  getErrorRegister,
+  getFillToRegister,
+  getMessageRegister,
+  getSuccessRegister,
+  getTypeRegister,
+} from 'app/selectors/registerSelector';
 import React from 'react';
 import {
   Alert,
@@ -14,17 +22,11 @@ import {
 } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, Route, Routes, useNavigate } from 'react-router-dom';
-import { registerUser } from 'redux/actions/authAction';
-import {
-  getErrorRegister,
-  getMessageRegister,
-  getRedirect,
-  getSuccessRegister,
-} from 'redux/selectors/authSelector';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import * as yup from 'yup';
 import './register.scss';
+import { useNavigate } from 'react-router-dom';
 
 const IconEye = styled(Eye)`
   width: 1.2rem;
@@ -124,7 +126,7 @@ const schema = yup.object().shape({
       'Passwords must contain 6 characters, one uppercase, one lowercase and one number'
     )
     .max(60, 'Passwords must be less than 60 characters in length')
-    .required('Password is required')
+    .required('This field is required')
     .matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{6,32})/,
       'Passwords must be at least 6 characters, one uppercase, one lowercase and one number'
@@ -142,24 +144,41 @@ function Register() {
   const messageRegister = useSelector(getMessageRegister);
   const hasError = useSelector(getErrorRegister);
   const hasSuccess = useSelector(getSuccessRegister);
-
-  const isRedirectRegister = useSelector(getRedirect)?.register;
-  const dispatch = useDispatch();
+  const isLocalType = useSelector(getTypeRegister)?.local;
   const navigate = useNavigate();
+  const dataFill = useSelector(getFillToRegister);
+  const dispatch = useDispatch();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({ resolver: yupResolver(schema) });
+  } = useForm({
+    defaultValues: {
+      email: dataFill?.email || '',
+      name: dataFill?.name || '',
+      password: dataFill?.password || '',
+      confirmPassword: dataFill?.password || '',
+    },
+    resolver: yupResolver(schema),
+  });
 
   const [show, setShow] = React.useState(true);
   const handleClose = () => {
-    setShow(false);
+    if (isLocalType) {
+      setShow(false);
+    } else {
+      dispatch(resetRegister());
+      navigate('/');
+    }
   };
 
   const onRegisterHandler = (data, e) => {
     e.preventDefault();
+    if (dataFill) {
+      data['google'] = true;
+      dispatch(registerUser(data, navigate));
+    }
     dispatch(registerUser(data));
   };
 
@@ -180,36 +199,6 @@ function Register() {
 
   return (
     <div className="register">
-      {isRedirectRegister && (
-        <Row className="flex justify-content-center">
-          <Col className="col">
-            <Routes>
-              <Route
-                path="/google"
-                element={
-                  <div className="card__wrap-new">
-                    <div className="card__body">
-                      <div className="card__info">
-                        <h3>Google</h3>
-                        <h4>Do you want to create a MDMB Social account for</h4>
-                      </div>
-                      <Form className="card__form-group">
-                        <div>
-                          <Link to={'/'}>
-                            <Button variant="secondary">Cancel</Button>
-                          </Link>
-                          <Button>Create Account</Button>
-                        </div>
-                      </Form>
-                    </div>
-                  </div>
-                }
-              />
-            </Routes>
-          </Col>
-        </Row>
-      )}
-
       <Row className="h-100">
         {hasSuccess && (
           <ModalContainer
@@ -220,15 +209,17 @@ function Register() {
           >
             <ModalContainer.Body>
               <ModalHeader className="text-center">
-                Awaiting Confirmation
+                {isLocalType ? 'Awaiting Confirmation' : 'Message'}
               </ModalHeader>
               <ModalContent>
                 <Alert variant="success">
                   <p>{messageRegister}</p>
-                  <p>
-                    If you haven't received our email in 3 hours, please check
-                    your spam folder.
-                  </p>
+                  {isLocalType && (
+                    <p>
+                      If you haven't received our email in 3 hours, please check
+                      your spam folder.
+                    </p>
+                  )}
                 </Alert>
               </ModalContent>
             </ModalContainer.Body>
@@ -250,7 +241,9 @@ function Register() {
                   <div className="card__header">
                     <Card.Title>Register</Card.Title>
                     <Card.Subtitle className="mb-2 text-muted title">
-                      Let's create your account!
+                      {dataFill
+                        ? ' Update your profile to complete your registration.'
+                        : "Let's create your account!"}
                     </Card.Subtitle>
                   </div>
                   <Form onSubmit={handleSubmit(onRegisterHandler)}>
@@ -260,7 +253,7 @@ function Register() {
                           <Form.Label>Name</Form.Label>
                           <Form.Control
                             type="text"
-                            {...register('name')}
+                            {...register('name', { required: true })}
                             placeholder="Enter your name"
                           />
                           <Form.Text className="text-danger">
@@ -271,14 +264,16 @@ function Register() {
                         </Form.Group>
                       </Col>
                     </Row>
-
                     <Row>
                       <Col lg={12}>
                         <Form.Group className="mb-3">
                           <Form.Label>Email</Form.Label>
                           <Form.Control
                             type="email"
-                            {...register('email')}
+                            {...register('email', {
+                              required: true,
+                            })}
+                            disabled={dataFill}
                             placeholder="Enter your email"
                           />
                           <Form.Text className="text-danger">
@@ -289,7 +284,6 @@ function Register() {
                         </Form.Group>
                       </Col>
                     </Row>
-
                     <Row>
                       <Col lg={12}>
                         <Form.Group className="mb-3">
@@ -307,47 +301,49 @@ function Register() {
                         </Form.Group>
                       </Col>
                     </Row>
-
-                    <Row>
-                      <Col lg={6}>
-                        <Form.Label>Password</Form.Label>
-                        <InputGroup>
-                          <FormControl
-                            type={showPassword ? 'text' : 'password'}
-                            {...register('password')}
-                            placeholder="Enter your password"
-                          />
-                          <InputGroup.Text
-                            style={{
-                              cursor: 'pointer',
-                            }}
-                            onClick={() => setShowPassword(!showPassword)}
-                          >
-                            {showPassword ? <IconEye /> : <IconEyeOff />}
-                          </InputGroup.Text>
-                        </InputGroup>
-                      </Col>
-                      <Col lg={6}>
-                        <Form.Group className="mb-3">
-                          <Form.Label>Confirm Password</Form.Label>
+                    {!dataFill && (
+                      <Row>
+                        <Col lg={6}>
+                          <Form.Label>Password</Form.Label>
                           <InputGroup>
-                            <Form.Control
+                            <FormControl
                               type={showPassword ? 'text' : 'password'}
-                              {...register('confirmPassword')}
-                              placeholder="Confirm Password"
+                              {...register('password')}
+                              placeholder="Enter your password"
                             />
                             <InputGroup.Text
-                              onClick={() => setShowPassword(!showPassword)}
                               style={{
                                 cursor: 'pointer',
                               }}
+                              onClick={() => setShowPassword(!showPassword)}
                             >
                               {showPassword ? <IconEye /> : <IconEyeOff />}
                             </InputGroup.Text>
                           </InputGroup>
-                        </Form.Group>
-                      </Col>
-                    </Row>
+                        </Col>
+                        <Col lg={6}>
+                          <Form.Group className="mb-3">
+                            <Form.Label>Confirm Password</Form.Label>
+                            <InputGroup>
+                              <Form.Control
+                                type={showPassword ? 'text' : 'password'}
+                                {...register('confirmPassword')}
+                                placeholder="Confirm Password"
+                              />
+
+                              <InputGroup.Text
+                                onClick={() => setShowPassword(!showPassword)}
+                                style={{
+                                  cursor: 'pointer',
+                                }}
+                              >
+                                {showPassword ? <IconEye /> : <IconEyeOff />}
+                              </InputGroup.Text>
+                            </InputGroup>
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                    )}
                     <Row
                       style={{
                         marginBottom: '15px',
@@ -371,11 +367,10 @@ function Register() {
                       </Col>
                     </Row>
                     <Row>
-                      <Col lg={7}>
+                      <Col lg={5}>
                         <ButtonCreateAccount
                           type="submit"
                           variant="primary"
-                          size="sm"
                           className="w-100"
                         >
                           <ButtonContent>Create Account</ButtonContent>
