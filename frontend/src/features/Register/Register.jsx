@@ -273,7 +273,7 @@ function Register() {
                             {...register('email', {
                               required: true,
                             })}
-                            disabled={dataFill}
+                            disabled={dataFill?.email}
                             placeholder="Enter your email"
                           />
                           <Form.Text className="text-danger">
@@ -301,7 +301,7 @@ function Register() {
                         </Form.Group>
                       </Col>
                     </Row>
-                    {!dataFill && (
+                    {!dataFill?.email && (
                       <Row>
                         <Col lg={6}>
                           <Form.Label>Password</Form.Label>
