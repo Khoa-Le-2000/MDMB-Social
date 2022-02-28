@@ -14,7 +14,12 @@ import ReCAPTCHA from 'react-google-recaptcha';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { login, loginByGoogle, loginFailure, verifyCaptcha } from 'app/actions';
+import {
+  login,
+  loginByGoogle,
+  loginFailure,
+  verifyCaptcha,
+} from 'app/actions/login';
 import {
   getCaptcha,
   getErrorCount,

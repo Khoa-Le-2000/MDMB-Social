@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ArrowNarrowRight, Eye, EyeOff } from '@styled-icons/heroicons-solid';
-import { registerUser } from 'app/actions';
+import { registerUser } from 'app/actions/register';
 import {
   getErrorRegister,
   getFillToRegister,
@@ -21,7 +21,7 @@ import {
 } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import * as yup from 'yup';
 import './register.scss';
@@ -124,7 +124,7 @@ const schema = yup.object().shape({
       'Passwords must contain 6 characters, one uppercase, one lowercase and one number'
     )
     .max(60, 'Passwords must be less than 60 characters in length')
-    .required('Password is required')
+    .required('This field is required')
     .matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{6,32})/,
       'Passwords must be at least 6 characters, one uppercase, one lowercase and one number'
@@ -152,8 +152,8 @@ function Register() {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      name: dataFill?.name || '',
       email: dataFill?.email || '',
+      name: dataFill?.name || '',
       password: dataFill?.password || '',
       confirmPassword: dataFill?.password || '',
     },
@@ -241,7 +241,7 @@ function Register() {
                           <Form.Label>Name</Form.Label>
                           <Form.Control
                             type="text"
-                            {...register('name')}
+                            {...register('name', { required: true })}
                             placeholder="Enter your name"
                           />
                           <Form.Text className="text-danger">
@@ -258,7 +258,10 @@ function Register() {
                           <Form.Label>Email</Form.Label>
                           <Form.Control
                             type="email"
-                            {...register('email')}
+                            {...register('email', {
+                              required: true,
+                            })}
+                            disabled={dataFill}
                             placeholder="Enter your email"
                           />
                           <Form.Text className="text-danger">
@@ -286,49 +289,49 @@ function Register() {
                         </Form.Group>
                       </Col>
                     </Row>
-
-                    <Row>
-                      <Col lg={6}>
-                        <Form.Label>Password</Form.Label>
-                        <InputGroup>
-                          <FormControl
-                            type={showPassword ? 'text' : 'password'}
-                            {...register('password')}
-                            placeholder="Enter your password"
-                          />
-
-                          <InputGroup.Text
-                            style={{
-                              cursor: 'pointer',
-                            }}
-                            onClick={() => setShowPassword(!showPassword)}
-                          >
-                            {showPassword ? <IconEye /> : <IconEyeOff />}
-                          </InputGroup.Text>
-                        </InputGroup>
-                      </Col>
-                      <Col lg={6}>
-                        <Form.Group className="mb-3">
-                          <Form.Label>Confirm Password</Form.Label>
+                    {!dataFill && (
+                      <Row>
+                        <Col lg={6}>
+                          <Form.Label>Password</Form.Label>
                           <InputGroup>
-                            <Form.Control
+                            <FormControl
                               type={showPassword ? 'text' : 'password'}
-                              {...register('confirmPassword')}
-                              placeholder="Confirm Password"
+                              {...register('password')}
+                              placeholder="Enter your password"
                             />
-
                             <InputGroup.Text
-                              onClick={() => setShowPassword(!showPassword)}
                               style={{
                                 cursor: 'pointer',
                               }}
+                              onClick={() => setShowPassword(!showPassword)}
                             >
                               {showPassword ? <IconEye /> : <IconEyeOff />}
                             </InputGroup.Text>
                           </InputGroup>
-                        </Form.Group>
-                      </Col>
-                    </Row>
+                        </Col>
+                        <Col lg={6}>
+                          <Form.Group className="mb-3">
+                            <Form.Label>Confirm Password</Form.Label>
+                            <InputGroup>
+                              <Form.Control
+                                type={showPassword ? 'text' : 'password'}
+                                {...register('confirmPassword')}
+                                placeholder="Confirm Password"
+                              />
+
+                              <InputGroup.Text
+                                onClick={() => setShowPassword(!showPassword)}
+                                style={{
+                                  cursor: 'pointer',
+                                }}
+                              >
+                                {showPassword ? <IconEye /> : <IconEyeOff />}
+                              </InputGroup.Text>
+                            </InputGroup>
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                    )}
                     <Row
                       style={{
                         marginBottom: '15px',
@@ -352,11 +355,10 @@ function Register() {
                       </Col>
                     </Row>
                     <Row>
-                      <Col lg={7}>
+                      <Col lg={5}>
                         <ButtonCreateAccount
                           type="submit"
                           variant="primary"
-                          size="sm"
                           className="w-100"
                         >
                           <ButtonContent>Create Account</ButtonContent>

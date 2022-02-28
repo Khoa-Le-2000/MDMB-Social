@@ -11,6 +11,15 @@ const authApi = {
     });
   },
 
+  registerByGoogle: async (data) => {
+    const url = '/account/register-by-google';
+    return axiosClient.post(url, {
+      Name: data.name,
+      Email: data.email.trim().toLowerCase(),
+      Phone: data.phone,
+    });
+  },
+
   login: (data) => {
     const url = 'account/login';
     return axiosClient.post(url, {

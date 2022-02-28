@@ -1,7 +1,7 @@
+import { logout, refreshToken } from 'app/actions/login';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
 import queryString from 'query-string';
-import { logout, refreshToken } from 'app/actions';
 
 const axiosClient = axios.create({
   baseURL: process.env.REACT_APP_API_URL,

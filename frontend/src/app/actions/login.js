@@ -1,44 +1,6 @@
 import authApi from 'apis/authApi';
 import { AuthActionTypes } from 'app/actions/types/authActionTypes';
 
-export const registerStart = () => {
-  return {
-    type: AuthActionTypes.REGISTER_START,
-  };
-};
-
-export const registerFailure = (message) => {
-  return {
-    type: AuthActionTypes.REGISTER_FAILURE,
-    payload: message,
-  };
-};
-
-export const registerSuccess = (message) => {
-  return {
-    type: AuthActionTypes.REGISTER_SUCCESS,
-    payload: message,
-  };
-};
-
-export const registerUser = (user) => async (dispatch) => {
-  dispatch(registerStart());
-  const data = await authApi.register(user);
-
-  if (
-    data?.result === 'email sent succesful' ||
-    data?.result === 'email sent successfully'
-  ) {
-    dispatch(
-      registerSuccess(
-        `We just sent an email to ${user.email} to activate your account.`
-      )
-    );
-  } else {
-    dispatch(registerFailure('Email is already in use'));
-  }
-};
-
 export const loginStart = () => {
   return {
     type: AuthActionTypes.LOGIN_START,
@@ -95,7 +57,13 @@ export const loginByGoogle = (googleData, navigate) => async (dispatch) => {
       })
     );
   } else if (data?.result === 'login failure') {
-    dispatch(fillToRegister({ email, name, password: 'AbCdEf1234' }));
+    dispatch(
+      fillToRegister({
+        email,
+        name,
+        password: 'Abcd123',
+      })
+    );
     navigate('register');
   } else {
     dispatch(loginFailure(`Can't sign in to your Google Account`));
