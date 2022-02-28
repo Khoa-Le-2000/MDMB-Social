@@ -2,13 +2,16 @@
 
 .login {
   &__inner {
-    //override css bootstrap
+    //override css bootstrap\
+    height: 100vh;
+
     .form-check {
       margin-bottom: 0;
     }
 
     .carousel-caption {
-      position: initial;
+      position: absolute;
+      bottom: 0;
     }
     .form-label {
       font-weight: 500;
@@ -49,10 +52,9 @@
     }
 
     .hero {
-      height: 50vh;
+      height: 60vh;
       display: flex;
       padding: 20px;
-      background-color: $bg-color;
     }
     .slider {
       height: 100%;
@@ -68,6 +70,8 @@
 
   &__wrap {
     padding: 15px 60px;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
 
     @include tablet-large {
       padding: 15px 30px;
@@ -131,8 +135,8 @@
   }
 
   &__column {
-    background-color: #e6e5ed;
-    border-radius: 10px;
+    padding: 20px;
+    background-color: $bg-color;
   }
 }
 
