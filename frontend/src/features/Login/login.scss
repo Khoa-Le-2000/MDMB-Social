@@ -2,24 +2,6 @@
 
 .login {
   &__inner {
-    padding: 20px 60px;
-
-    @include tablet-large {
-      padding: 20px 30px;
-    }
-
-    @include tablet-small {
-      padding: 15px;
-    }
-
-    @include mobile-large {
-      padding: 10px 20px;
-    }
-
-    @include mobile-small {
-      padding: 10px;
-    }
-
     //override css bootstrap
     .form-check {
       margin-bottom: 0;
@@ -85,10 +67,10 @@
   }
 
   &__wrap {
-    padding: 10px 80px;
+    padding: 15px 60px;
 
     @include tablet-large {
-      padding: 20px 30px;
+      padding: 15px 30px;
     }
 
     @include tablet-small {

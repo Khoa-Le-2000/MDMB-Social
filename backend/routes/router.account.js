@@ -8,6 +8,7 @@ api.post("/login", accountController.login);
 api.post("/login-by-google", accountController.loginByGoogle);
 api.get('/login-by-facebook', passport.authenticate('facebook', { scope: 'email' }), accountController.loginByFaceBook);
 api.post("/register", accountController.register);
+api.post("/register-by-google", authMiddleware.verifyToken, accountController.registerByGoogle);
 api.post("/update", authMiddleware.verifyToken, accountController.update);
 api.get("/verify", accountController.verifyEmail)
 module.exports = api;
