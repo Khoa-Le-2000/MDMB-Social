@@ -9,6 +9,3 @@ node_modules/
 
 # test file
 test.ejs
-
-#routes
-routes/
