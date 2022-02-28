@@ -1,11 +1,12 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ArrowNarrowRight, Eye, EyeOff } from '@styled-icons/heroicons-solid';
-import { registerUser } from 'app/actions/register';
+import { registerUser, resetRegister } from 'app/actions/register';
 import {
   getErrorRegister,
   getFillToRegister,
   getMessageRegister,
   getSuccessRegister,
+  getTypeRegister,
 } from 'app/selectors/registerSelector';
 import React from 'react';
 import {
@@ -25,6 +26,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import * as yup from 'yup';
 import './register.scss';
+import { useNavigate } from 'react-router-dom';
 
 const IconEye = styled(Eye)`
   width: 1.2rem;
@@ -142,7 +144,8 @@ function Register() {
   const messageRegister = useSelector(getMessageRegister);
   const hasError = useSelector(getErrorRegister);
   const hasSuccess = useSelector(getSuccessRegister);
-
+  const isLocalType = useSelector(getTypeRegister)?.local;
+  const navigate = useNavigate();
   const dataFill = useSelector(getFillToRegister);
   const dispatch = useDispatch();
 
@@ -162,14 +165,19 @@ function Register() {
 
   const [show, setShow] = React.useState(true);
   const handleClose = () => {
-    setShow(false);
+    if (isLocalType) {
+      setShow(false);
+    } else {
+      dispatch(resetRegister());
+      navigate('/');
+    }
   };
 
   const onRegisterHandler = (data, e) => {
     e.preventDefault();
     if (dataFill) {
       data['google'] = true;
-      dispatch(registerUser(data));
+      dispatch(registerUser(data, navigate));
     }
     dispatch(registerUser(data));
   };
@@ -201,15 +209,17 @@ function Register() {
           >
             <ModalContainer.Body>
               <ModalHeader className="text-center">
-                Awaiting Confirmation
+                {isLocalType ? 'Awaiting Confirmation' : 'Message'}
               </ModalHeader>
               <ModalContent>
                 <Alert variant="success">
                   <p>{messageRegister}</p>
-                  <p>
-                    If you haven't received our email in 3 hours, please check
-                    your spam folder.
-                  </p>
+                  {isLocalType && (
+                    <p>
+                      If you haven't received our email in 3 hours, please check
+                      your spam folder.
+                    </p>
+                  )}
                 </Alert>
               </ModalContent>
             </ModalContainer.Body>
@@ -231,7 +241,9 @@ function Register() {
                   <div className="card__header">
                     <Card.Title>Register</Card.Title>
                     <Card.Subtitle className="mb-2 text-muted title">
-                      Let's create your account!
+                      {dataFill
+                        ? ' Update your profile to complete your registration.'
+                        : "Let's create your account!"}
                     </Card.Subtitle>
                   </div>
                   <Form onSubmit={handleSubmit(onRegisterHandler)}>
