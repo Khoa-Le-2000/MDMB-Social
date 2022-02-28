@@ -1,16 +1,14 @@
 import { AuthActionTypes } from 'app/actions/types/authActionTypes';
 
 const initialState = {
+  error: false,
+  isFetching: false,
+  success: false,
+  message: null,
+  redirect: false,
   token: {
     accessToken: null,
     refreshToken: null,
-  },
-  login: {
-    error: false,
-    isFetching: false,
-    success: false,
-    message: null,
-    redirect: false,
   },
   captcha: {
     errorCount: 0,
@@ -31,15 +29,10 @@ const loginReducer = (state = initialState, action) => {
     case AuthActionTypes.LOGIN_START:
       return {
         ...state,
-        token: null,
-        login: {
-          ...state.login,
-          isFetching: true,
-          error: false,
-          success: false,
-          message: null,
-        },
-
+        isFetching: true,
+        error: false,
+        success: false,
+        message: null,
         captcha: {
           ...state.captcha,
           errorCount: state?.captcha?.errorCount || 0,
@@ -48,24 +41,14 @@ const loginReducer = (state = initialState, action) => {
     case AuthActionTypes.LOGIN_SUCCESS:
       return {
         ...state,
+        isFetching: false,
+        error: false,
+        success: true,
+        message: null,
         token: {
           ...state.token,
           accessToken: action.payload.accessToken,
           refreshToken: action.payload.refreshToken,
-        },
-        login: {
-          ...state.login,
-          isFetching: false,
-          error: false,
-          success: true,
-          message: null,
-        },
-        register: {
-          ...state.register,
-          error: false,
-          isFetching: false,
-          success: false,
-          message: null,
         },
         captcha: {
           errorCount: 0,
@@ -74,15 +57,14 @@ const loginReducer = (state = initialState, action) => {
     case AuthActionTypes.LOGIN_FAILURE:
       return {
         ...state,
-        token: null,
-        login: {
-          ...state.login,
-          isFetching: false,
-          error: true,
-          success: false,
-          message: action.payload,
+        isFetching: false,
+        error: true,
+        success: false,
+        message: action.payload,
+        token: {
+          accessToken: null,
+          refreshToken: null,
         },
-
         captcha: {
           errorCount: state.captcha.errorCount + 1,
         },
@@ -91,16 +73,13 @@ const loginReducer = (state = initialState, action) => {
     case AuthActionTypes.LOGIN_GOOGLE_SUCCESS:
       return {
         ...state,
+        isFetching: false,
+        error: false,
+        success: true,
         token: {
           ...state.token,
           accessToken: action.payload.accessToken,
           refreshToken: action.payload.refreshToken,
-        },
-        login: {
-          ...state.login,
-          isFetching: false,
-          error: false,
-          success: true,
         },
       };
 
@@ -115,7 +94,11 @@ const loginReducer = (state = initialState, action) => {
     case AuthActionTypes.LOGOUT_SUCCESS:
       return {
         ...state,
-        token: null,
+        token: {
+          ...state.token,
+          accessToken: null,
+          refreshToken: null,
+        },
         captcha: {
           ...state.captcha,
           errorCount: 0,
@@ -125,16 +108,6 @@ const loginReducer = (state = initialState, action) => {
           isFetching: false,
           error: false,
           success: true,
-          message: null,
-        },
-        login: {
-          ...state.login,
-        },
-        register: {
-          ...state.register,
-          error: false,
-          isFetching: false,
-          success: false,
           message: null,
         },
       };

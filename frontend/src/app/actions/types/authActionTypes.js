@@ -2,6 +2,7 @@ export const AuthActionTypes = {
   REGISTER_START: 'auth/register/start',
   REGISTER_FAILURE: 'auth/register/failure',
   REGISTER_SUCCESS: 'auth/register/success',
+  RESET_REGISTER: 'auth/register/reset',
 
   LOGIN_START: 'auth/login/start',
   LOGIN_FAILURE: 'auth/login/failure',

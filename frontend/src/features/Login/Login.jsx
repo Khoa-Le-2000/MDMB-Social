@@ -114,7 +114,6 @@ function Login() {
   };
 
   const handleGoogleLoginSuccess = (googleData) => {
-    console.log('🚀 :: file: Login.jsx :: line 117 :: googleData', googleData);
     dispatch(loginByGoogle(googleData, navigate));
   };
 

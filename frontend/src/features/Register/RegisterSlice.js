@@ -1,21 +1,36 @@
 import { AuthActionTypes } from 'app/actions/types/authActionTypes';
 
 const initialState = {
+  error: false,
+  isFetching: false,
+  success: false,
+  message: null,
+  type: {
+    local: false,
+    google: false,
+  },
   fillRegister: {
     email: null,
     name: null,
     phone: null,
   },
-  register: {
-    error: false,
-    isFetching: false,
-    success: false,
-    message: null,
-  },
 };
 
 const registerReducer = (state = initialState, action) => {
   switch (action.type) {
+    case AuthActionTypes.RESET_REGISTER:
+      return {
+        ...state,
+        fillRegister: {
+          email: null,
+          name: null,
+          phone: null,
+        },
+        error: false,
+        isFetching: false,
+        success: false,
+      };
+
     case AuthActionTypes.FILL_TO_REGISTER:
       return {
         ...state,
@@ -29,35 +44,29 @@ const registerReducer = (state = initialState, action) => {
     case AuthActionTypes.REGISTER_START:
       return {
         ...state,
-        register: {
-          ...state.register,
-          isFetching: true,
-          error: false,
-          success: false,
-          message: null,
-        },
+        isFetching: true,
+        error: false,
+        success: false,
       };
     case AuthActionTypes.REGISTER_SUCCESS:
       return {
         ...state,
-        register: {
-          ...state.register,
-          isFetching: false,
-          error: false,
-          success: true,
-          message: action.payload,
+        isFetching: false,
+        error: false,
+        success: true,
+        message: action.payload.message,
+        type: {
+          local: action.payload?.type === 'local',
+          google: action.payload?.type === 'google',
         },
       };
     case AuthActionTypes.REGISTER_FAILURE:
       return {
         ...state,
-        register: {
-          ...state.register,
-          isFetching: false,
-          error: true,
-          success: false,
-          message: action.payload,
-        },
+        isFetching: false,
+        error: true,
+        success: false,
+        message: action.payload,
       };
     default: {
       return state;
