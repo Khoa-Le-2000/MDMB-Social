@@ -2,6 +2,7 @@ export const AuthActionTypes = {
   REGISTER_START: 'auth/register/start',
   REGISTER_FAILURE: 'auth/register/failure',
   REGISTER_SUCCESS: 'auth/register/success',
+  RESET_REGISTER: 'auth/register/reset',
 
   LOGIN_START: 'auth/login/start',
   LOGIN_FAILURE: 'auth/login/failure',
@@ -19,7 +20,7 @@ export const AuthActionTypes = {
   VERIFY_CAPTCHA_FAILURE: 'auth/verifyCaptcha/failure',
 
   REDIRECT_TO_LOGIN: 'auth/redirect/login',
-  REDIRECT_TO_REGISTER: 'auth/redirect/register',
+  FILL_TO_REGISTER: 'auth/fill/register',
 
   RESET_LOGIN_ERROR: 'auth/login/resetError',
 };

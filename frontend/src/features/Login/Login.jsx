@@ -19,13 +19,13 @@ import {
   loginByGoogle,
   loginFailure,
   verifyCaptcha,
-} from 'redux/actions/authAction';
+} from 'app/actions/login';
 import {
   getCaptcha,
   getErrorCount,
   getErrorLogin,
   getErrorMessageLogin,
-} from 'redux/selectors/authSelector';
+} from 'app/selectors/loginSelector';
 import styled from 'styled-components';
 import * as yup from 'yup';
 import './login.scss';
@@ -114,7 +114,7 @@ function Login() {
   };
 
   const handleGoogleLoginSuccess = (googleData) => {
-    dispatch(loginByGoogle(googleData.tokenId, navigate));
+    dispatch(loginByGoogle(googleData, navigate));
   };
 
   const responseFacebook = async (response) => {};
