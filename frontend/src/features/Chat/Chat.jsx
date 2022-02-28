@@ -9,14 +9,18 @@ const Wrapper = styled(Container)`
 const RowBS = styled(Row)`
   height: inherit;
 `;
+const ColBS = styled(Col)`
+  padding-left: 0;
+  padding-right: 0;
+`;
 
 function Chat() {
   return (
     <Wrapper fluid>
       <RowBS>
-        <Col lg={4}>
+        <ColBS lg={4}>
           <SideBarRight />
-        </Col>
+        </ColBS>
         <Col lg={8}>
           <ChatContent />
         </Col>
