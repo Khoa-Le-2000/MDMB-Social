@@ -4,7 +4,7 @@ import React from 'react';
 import { Button, Container } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { logout, refreshToken } from 'app/actions';
+import { logout, refreshToken } from 'app/actions/login';
 import './home.scss';
 import { getAuth } from 'app/selectors/loginSelector';
 
