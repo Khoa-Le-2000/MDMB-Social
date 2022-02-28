@@ -9,12 +9,14 @@ import { Route, Routes } from 'react-router-dom';
 import './App.scss';
 import 'react-datepicker/dist/react-datepicker.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Chat from 'features/Chat/Chat';
 
 function App() {
   return (
     <>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/chat" element={<Chat />} />
         <Route
           path="/dashboard"
           element={
