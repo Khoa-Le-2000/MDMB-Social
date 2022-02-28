@@ -10,4 +10,5 @@ api.get('/login-by-facebook', passport.authenticate('facebook', { scope: 'email'
 api.post("/register", accountController.register);
 api.post("/update", authMiddleware.verifyToken, accountController.update);
 api.get("/verify", accountController.verifyEmail)
+api.get("/list-friend", authMiddleware.verifyToken, accountController.getListFriend);
 module.exports = api;

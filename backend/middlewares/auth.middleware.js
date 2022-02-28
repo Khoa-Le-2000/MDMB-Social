@@ -21,7 +21,7 @@ function verifyToken(req, res, next) {
     });
 }
 
-async function verifyToken(accessToken) {
+async function verifyTokenOnly(accessToken) {
     let result = {statusVerify: false, res: ''};
     console.log('verifyToken...');
     const res = await jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET,
@@ -72,5 +72,6 @@ function parseJwt (token) {
 module.exports = {
     verifyToken,
     verifyRefreshToken,
-    parseJwt
+    parseJwt,
+    verifyTokenOnly
 };

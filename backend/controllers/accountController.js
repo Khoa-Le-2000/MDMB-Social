@@ -314,12 +314,21 @@ function verifyEmail(req, res) {
 
 }
 
+function getListFriend(req, res) {
+  var accountId = req.query.accountId;
+  AccountDAO.getListFriend(accountId, (result) => {
+    if (result) res.status(200).send({ result: result });
+    else res.status(401).send({ result: "failure" });
+  });
+}
+
 module.exports = {
   login,
   loginByGoogle,
   loginByFaceBook,
   register,
   update,
-  verifyEmail
+  verifyEmail,
+  getListFriend
 }
  
