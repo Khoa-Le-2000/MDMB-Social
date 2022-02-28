@@ -1,29 +1,57 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Row, Col } from 'react-bootstrap';
-import { Photograph, PaperClip } from '@styled-icons/heroicons-solid';
+import { Photograph, PaperClip, ChevronRight } from '@styled-icons/heroicons-solid';
+import { EmojiHappy } from '@styled-icons/heroicons-outline';
+import { Sticky } from '@styled-icons/bootstrap';
 
+const iconHover = `&:hover {
+  transform: scale(1.5);
+  transition: all 0.3s linear;
+}`
 const Wrapper = styled.div`
   height: 100%;
   width: 100%;
   padding: 10px;
+  margin: 0 auto;
 `;
 const WrapperInput = styled.div`
   display: flex;
   height: 100%;
   width: 100%;
 `;
-const FeaturesTop = styled.div``;
+const FeaturesTop = styled.div`
+  display: flex;
+  height: 50px;
+  width: 100%;
+  `;
 
-const IconSticker = styled.div``;
 const IConUploadImage = styled(Photograph)`
-  width: 1.2rem;
+  width: 2rem;
+  ${iconHover};
 `;
 const IconUploadFile = styled(PaperClip)`
-  width: 1.2rem;
+  width: 2rem;
+  ${iconHover};
 `;
+const IconSticker = styled(Sticky)`
+  width: 1.7rem;
+  ${iconHover};
+`;
+const SendMessenger = styled(ChevronRight)`
+  width: 2rem;
+  ${iconHover};
+`
+const Emoji = styled(EmojiHappy)`
+  width: 2rem;
+  ${iconHover};
+`
 
-const FeaturesRight = styled.div``;
+const FeaturesRight = styled.div`
+display: flex;
+justify-content: center;
+margin-left: 10px;
+`;
 const Input = styled.textarea`
   height: 50px;
   padding: 10px 140px 10px 10px;
@@ -31,7 +59,7 @@ const Input = styled.textarea`
   resize: none;
   border: 1px solid #ccc;
   display: block;
-  width: 80%;
+  width: 90%;
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
@@ -50,6 +78,7 @@ function ChatInput() {
       <Row>
         <Col lg={12}>
           <FeaturesTop>
+            <IconSticker />
             <IConUploadImage />
             <IconUploadFile />
           </FeaturesTop>
@@ -59,7 +88,10 @@ function ChatInput() {
         <Col lg={12}>
           <WrapperInput>
             <Input />
-            <FeaturesRight>fsdfsd</FeaturesRight>
+            <FeaturesRight>
+              <Emoji />
+              <SendMessenger />
+            </FeaturesRight>
           </WrapperInput>
         </Col>
       </Row>

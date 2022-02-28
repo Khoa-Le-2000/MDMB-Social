@@ -2,6 +2,9 @@ import { DotsVertical, VideoCamera } from '@styled-icons/heroicons-solid';
 import React from 'react';
 import { Col } from 'react-bootstrap';
 import styled from 'styled-components';
+import { CircleFill } from '@styled-icons/bootstrap';
+
+
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
@@ -74,7 +77,7 @@ const FeatureOther = styled(Feature)``;
 const IconOther = styled(DotsVertical)`
   width: 1.4rem;
 `;
-
+const Online =
 function ChatHeader() {
   return (
     <Wrapper>
