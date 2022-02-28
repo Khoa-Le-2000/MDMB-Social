@@ -19,10 +19,13 @@ const WrapperMessageContent = styled.div`
   display: flex;
   flex-direction: column-reverse;
   align-items: flex-start;
+  padding: 0;
 `;
 const RowBS = styled(Row)`
   height: inherit;
+  background-color: red;
 `;
+const ColBS = styled(Col)``;
 
 function ChatContent() {
   return (
@@ -49,9 +52,9 @@ function ChatContent() {
         </WrapperMessageContent>
       </Row>
       <RowBS>
-        <Col>
+        <ColBS>
           <ChatInput />
-        </Col>
+        </ColBS>
       </RowBS>
     </Wrapper>
   );
