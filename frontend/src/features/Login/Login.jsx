@@ -14,18 +14,13 @@ import ReCAPTCHA from 'react-google-recaptcha';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import {
-  login,
-  loginByGoogle,
-  loginFailure,
-  verifyCaptcha,
-} from 'redux/actions/authAction';
+import { login, loginByGoogle, loginFailure, verifyCaptcha } from 'app/actions';
 import {
   getCaptcha,
   getErrorCount,
   getErrorLogin,
   getErrorMessageLogin,
-} from 'redux/selectors/authSelector';
+} from 'app/selectors/loginSelector';
 import styled from 'styled-components';
 import * as yup from 'yup';
 import './login.scss';
@@ -114,7 +109,8 @@ function Login() {
   };
 
   const handleGoogleLoginSuccess = (googleData) => {
-    dispatch(loginByGoogle(googleData.tokenId, navigate));
+    console.log('🚀 :: file: Login.jsx :: line 117 :: googleData', googleData);
+    dispatch(loginByGoogle(googleData, navigate));
   };
 
   const responseFacebook = async (response) => {};

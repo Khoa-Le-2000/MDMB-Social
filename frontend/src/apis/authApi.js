@@ -11,16 +11,6 @@ const authApi = {
     });
   },
 
-  updateProfile: async (data) => {
-    const url = 'account/update-profile';
-    return axiosClient.post(url, {
-      Email: data.email.trim().toLowerCase(),
-      Avatar: data.avatar,
-      Gender: data.gender,
-      Birthday: data.birthday,
-    });
-  },
-
   login: (data) => {
     const url = 'account/login';
     return axiosClient.post(url, {

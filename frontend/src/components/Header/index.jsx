@@ -49,7 +49,7 @@ const HeaderLogoLink = styled(Link)`
       border-radius: 50%;
       border: 1px solid #e6e6e6;
       background-color: #e6e6e6;
-      transform: scale(1.1);
+      transform: scale(0.9);
     }
   }
 `;
