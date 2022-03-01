@@ -26,7 +26,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import * as yup from 'yup';
 import './register.scss';
-import { useNavigate } from 'react-router-dom';
 
 const IconEye = styled(Eye)`
   width: 1.2rem;
