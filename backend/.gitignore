@@ -5,10 +5,10 @@ node_modules/
 .npm
 
 # dotenv environment variables file
-# .env
+.env
 
 # test file
 test.ejs
 
 #routes
-routes/
+# routes/

@@ -1,15 +1,15 @@
 const users = [];
 
 const getUserByAccountId = (accountId) => {
-    return users.find(user => user.accountId === accountId);
+    return Promise.resolve(users.find(user => user.accountId == accountId));
 };
 
 const getUserBySocketId = (socketId) => {
     return users.find(user => user.socketId.includes(socketId));
 };
 
-const addUser = ({ accountId, socketId }) => {
-    var user = getUserByAccountId(accountId);
+const addUser = async ({ accountId, socketId }) => {
+    var user = await getUserByAccountId(accountId);
     if (!user) {
         user = { accountId, socketId: [socketId] };
         users.push(user);
@@ -23,7 +23,7 @@ const removeUser = (socketId) => {
     if (index !== -1) {
         const socketIndex = users[index].socketId.indexOf(socketId);
         users[index].socketId.splice(socketIndex, 1);
-        if (users[index].socketId.length === 0) {
+        if (users[index].socketId.length == 0) {
             users.splice(index, 1);
         }
     }

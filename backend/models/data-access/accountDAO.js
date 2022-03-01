@@ -55,16 +55,16 @@ function updateAccount(AccountId, Password, Phone, Email, Name, Avatar, Birthday
   con.connect(function (err) {
     if (err) throw err;
     let str = ""
-    let Args = [Name, Phone, Gender,Birthday, Avatar, Email, Password];
+    let Args = [Name, Phone, Gender, Birthday, Avatar, Email, Password];
     let Args2 = [];
-    item=Args.pop();
-    if (Password) { str += Args.length != 0 ? 'Password = ? ,' : 'Password = ? ';Args2.push(item) }   item=Args.pop();
-    if (Email) { str += Args.length != 0 ? 'Email = ? ,' : 'Email = ? '; Args2.push(item)}            item=Args.pop();
-    if (Avatar) { str += Args.length != 0 ? 'Avatar = ? ,' : 'Avatar = ? '; Args2.push(item)}         item=Args.pop();
-    if (Birthday) { str += Args.length != 0 ? 'Birthday = ? ,' : 'Birthday = ? ';Args2.push(item) }   item=Args.pop();
-    if (Gender) { str += Args.length != 0 ? 'Gender = ? ,' : 'Gender = ? '; Args2.push(item)}         item=Args.pop();
-    if (Phone) { str += Args.length != 0 ? 'Phone = ? ,' : 'Phone = ? ';Args2.push(item) }            item=Args.pop();
-    if (Name) { str += Args.length != 0 ? 'Name = ? ,' : 'Name = ? '; Args2.push(item)}
+    item = Args.pop();
+    if (Password) { str += Args.length != 0 ? 'Password = ? ,' : 'Password = ? '; Args2.push(item) } item = Args.pop();
+    if (Email) { str += Args.length != 0 ? 'Email = ? ,' : 'Email = ? '; Args2.push(item) } item = Args.pop();
+    if (Avatar) { str += Args.length != 0 ? 'Avatar = ? ,' : 'Avatar = ? '; Args2.push(item) } item = Args.pop();
+    if (Birthday) { str += Args.length != 0 ? 'Birthday = ? ,' : 'Birthday = ? '; Args2.push(item) } item = Args.pop();
+    if (Gender) { str += Args.length != 0 ? 'Gender = ? ,' : 'Gender = ? '; Args2.push(item) } item = Args.pop();
+    if (Phone) { str += Args.length != 0 ? 'Phone = ? ,' : 'Phone = ? '; Args2.push(item) } item = Args.pop();
+    if (Name) { str += Args.length != 0 ? 'Name = ? ,' : 'Name = ? '; Args2.push(item) }
 
     Args2.push(AccountId);
     var sql = `UPDATE MDMB.Account SET ${str} where AccountId=?`;
@@ -92,11 +92,41 @@ function getAccountId(Email, Phone, Callback) {
       });
   });
 }
+function getListFriend(AccountId, Callback) {
+  console.log('====================================');
+  var con = connection.createConnection();
+  con.connect(function (err) {
+    if (err) throw err;
+    var sql = `select * 
+    from MDMB.Account
+    where AccountId in (
+      select RelatedAccountId
+        from MDMB.AccountRelationship
+        where RelatingAccountId = ? and Type = 'friend'
+    )`;
+    con.query(sql, [AccountId],
+      function (err, result) {
+        connection.closeConnection(con);
+        if (err) throw err;
+        let accounts = [];
+        // console.log(result);
+        // console.log('accounr ' + accounts);
+        for (let i = 0; i < result.length; i++) {
+          let account = new Account.Account(result[i].AccountId, null,
+            result[i].Phone, result[i].Email, result[i].Name, result[i].Avatar, result[i].Birthday, result[i].Gender, result[i].CreatedDate);
+          accounts.push(account);
+        }
+        // console.log('accounr ' + accounts);
+        return Callback(accounts);
+      });
+  });
+}
 
 module.exports = {
   getAccount,
   getAccountByEmail,
   createAccount,
   getAccountId,
-  updateAccount
+  updateAccount,
+  getListFriend
 }

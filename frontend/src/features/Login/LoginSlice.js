@@ -37,6 +37,16 @@ const loginReducer = (state = initialState, action) => {
           ...state.captcha,
           errorCount: state?.captcha?.errorCount || 0,
         },
+        token: {
+          ...state.token,
+          accessToken: null,
+          refreshToken: null,
+        },
+        logout: {
+          ...state.logout,
+          error: false,
+          isFetching: false,
+        },
       };
     case AuthActionTypes.LOGIN_SUCCESS:
       return {
