@@ -76,7 +76,8 @@ function sendToken(req, res, Account) {
   let refreshToken = jwt.sign({ id: Account.AccountId }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
   res.status(200).send({
     accessToken: accessToken,
-    refreshToken: refreshToken
+    refreshToken: refreshToken,
+    accountId: Account.AccountId
   });
 }
 //register
