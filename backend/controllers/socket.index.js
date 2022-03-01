@@ -12,17 +12,23 @@ function socket(server) {
         console.log("socketio connected with socket id: " + socket.id);
         socket.auth = false;
 
-        socket.on('disconnect', () => {
+        socket.on('disconnect', async () => {
+            console.log('-----disconnect-----');
             console.log(`socket ${socket.id} disconnected`);
             if (socket.auth) {
-                if (socketUser.getUserBySocketId(socket.id).socketId.lenght == 1) {
-                    let friend = acccountDao.getListFriend(socket.accountId);
+                let user = await socketUser.getUserBySocketId(socket.id);
+                if (user.socketId.length == 1) {
+                    let friend = [];
+                    let listFriend = await acccountDao.getListFriend(socket.accountId);
+                    console.log('list friend :')
+                    console.log(listFriend);
                     friend.forEach(friend => {
                         let socketIds = socketUser.getSocketIdByAccountId(friend.accountId);
                         socketIds.forEach(socketId => {
                             io.to(socketId).emit('user-offline', socket.accountId);
                         });
                     });
+                    acccountDao.updateLastOnline(socket.accountId);
                 }
                 socketUser.removeUser(socket.id);
             }
@@ -34,10 +40,9 @@ function socket(server) {
 
         socket.on('authentiaction', async (accountId, token) => {
             console.log("authentication...");
-            // const {statusVerify, res} = await authMiddleware.verifyToken(token);
-            const { statusVerify, res } = await authMiddleware.verifyTokenOnly(token);
+            // const { statusVerify, res } = await authMiddleware.verifyTokenOnly(token);
             // console.log(aaa);
-            if (statusVerify) {
+            // if (statusVerify) {
                 socket.auth = true;
                 socket.accountId = accountId;
                 socket.join(accountId);
@@ -46,7 +51,7 @@ function socket(server) {
                 socketUser.addUser({ accountId, socketId: socket.id });
                 console.log(socketUser.getUserBySocketId(socket.id));
 
-                
+
                 acccountDao.getListFriend(accountId, (result) => {
                     result.forEach(async friend => {
                         let socketIds = await socketUser.getUserByAccountId(friend.AccountId);
@@ -57,11 +62,11 @@ function socket(server) {
                         }
                     });
                 });
-            } else {
-                console.log("socketio authentication failed: " + res);
-                socket.emit('authentication failed', { res });
-                socket.disconnect();
-            }
+            // } else {
+            //     console.log("socketio authentication failed: " + res);
+            //     socket.emit('authentication failed', { res });
+            //     socket.disconnect();
+            // }
         });
 
         socketChatController(io, socket);

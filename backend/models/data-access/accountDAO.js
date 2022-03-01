@@ -92,6 +92,7 @@ function getAccountId(Email, Phone, Callback) {
       });
   });
 }
+
 function getListFriend(AccountId, Callback) {
   console.log('====================================');
   var con = connection.createConnection();
@@ -122,11 +123,60 @@ function getListFriend(AccountId, Callback) {
   });
 }
 
+function getListFriend(AccountId) {
+  let sql = `select * 
+  from MDMB.Account
+  where AccountId in (
+    select RelatedAccountId
+      from MDMB.AccountRelationship
+      where RelatingAccountId = ? and Type = 'friend'
+  )`;
+  return new Promise((resolve, reject) => {
+    var con = connection.createConnection();
+    con.connect(function (err) {
+      if (err) throw err;
+      con.query(sql, [AccountId],
+        function (err, result) {
+          connection.closeConnection(con);
+          if (err) return reject(err);
+          let accounts = [];
+          // console.log(result);
+          // console.log('accounr ' + accounts);
+          for (let i = 0; i < result.length; i++) {
+            let account = new Account.Account(result[i].AccountId, null,
+              result[i].Phone, result[i].Email, result[i].Name, result[i].Avatar, result[i].Birthday, result[i].Gender, result[i].CreatedDate);
+            accounts.push(account);
+          }
+          resolve(accounts);
+        });
+    });
+  });
+}
+
+function updateLastOnline(AccountId) {
+  let res;
+  var con = connection.createConnection();
+  return new Promise((resolve, reject) => {
+    con.connect(function (err) {
+      if (err) throw err;
+      var sql = `UPDATE MDMB.Account SET LastOnline = NOW() where AccountId=?`;
+      con.query(sql, [AccountId],
+        function (err, result) {
+          connection.closeConnection(con);
+          if (err) reject(err);
+          res = result;
+          resolve(res);
+        });
+    });
+  });
+}
+
 module.exports = {
   getAccount,
   getAccountByEmail,
   createAccount,
   getAccountId,
   updateAccount,
-  getListFriend
+  getListFriend,
+  updateLastOnline
 }
