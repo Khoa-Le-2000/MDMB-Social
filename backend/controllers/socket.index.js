@@ -8,9 +8,35 @@ function socket(server) {
     const io = new Server(server);
     console.log("socketio created");
 
-    io.on('connection', (socket) => {
+    io.on('connection', async (socket) => {
+        let token = socket.handshake.auth.token;
+        const { statusVerify, res } = await authMiddleware.verifyTokenOnly(token);
+        if (statusVerify) {
+            let accountId = socket.handshake.query.accountId;
+            socket.accountId = accountId;
+            console.log("socketio authenticated");
+            socket.emit('authenticated');
+            socketUser.addUser({ accountId, socketId: socket.id });
+            console.log(socketUser.getUserBySocketId(socket.id));
+
+
+            acccountDao.getListFriend(accountId, (result) => {
+                result.forEach(async friend => {
+                    let socketIds = await socketUser.getUserByAccountId(friend.AccountId);
+                    if (socketIds) {
+                        socketIds.socketId.forEach(socketId => {
+                            io.to(socketId).emit('user-online', accountId);
+                        });
+                    }
+                });
+            });
+        } else {
+            console.log("socketio not authenticated");
+            socket.emit('close-reason', res);
+            socket.disconnect();
+        }
+
         console.log("socketio connected with socket id: " + socket.id);
-        socket.auth = false;
 
         socket.on('disconnect', async () => {
             console.log('-----disconnect-----');
@@ -32,41 +58,6 @@ function socket(server) {
                 }
                 socketUser.removeUser(socket.id);
             }
-        });
-
-        socket.emit('request authentication', {
-            message: 'Authentication request'
-        });
-
-        socket.on('authentiaction', async (accountId, token) => {
-            console.log("authentication...");
-            // const { statusVerify, res } = await authMiddleware.verifyTokenOnly(token);
-            // console.log(aaa);
-            // if (statusVerify) {
-                socket.auth = true;
-                socket.accountId = accountId;
-                socket.join(accountId);
-                console.log("socketio authenticated");
-                socket.emit('authenticated');
-                socketUser.addUser({ accountId, socketId: socket.id });
-                console.log(socketUser.getUserBySocketId(socket.id));
-
-
-                acccountDao.getListFriend(accountId, (result) => {
-                    result.forEach(async friend => {
-                        let socketIds = await socketUser.getUserByAccountId(friend.AccountId);
-                        if (socketIds) {
-                            socketIds.socketId.forEach(socketId => {
-                                io.to(socketId).emit('user-online', accountId);
-                            });
-                        }
-                    });
-                });
-            // } else {
-            //     console.log("socketio authentication failed: " + res);
-            //     socket.emit('authentication failed', { res });
-            //     socket.disconnect();
-            // }
         });
 
         socketChatController(io, socket);
