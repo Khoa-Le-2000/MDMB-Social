@@ -1,14 +1,13 @@
-/* eslint-disable no-control-regex */
 import { yupResolver } from '@hookform/resolvers/yup';
-import authApi from 'apis/authApi';
+import { Eye, EyeOff } from '@styled-icons/heroicons-solid';
 import Hero1 from 'assets/images/heros/hero1.svg';
 import Hero2 from 'assets/images/heros/hero2.svg';
 import Hero3 from 'assets/images/heros/hero3.svg';
 import FacebookIcon from 'assets/images/icons/facebook.svg';
 import GoogleIcon from 'assets/images/icons/google.svg';
 import { useViewport } from 'hooks';
-import React, { useRef, useState } from 'react';
-import { Button, Carousel, Col, Form, Row } from 'react-bootstrap';
+import React from 'react';
+import { Button, Carousel, Col, Form, InputGroup, Row } from 'react-bootstrap';
 import FacebookLogin from 'react-facebook-login';
 import GoogleLogin from 'react-google-login';
 import ReCAPTCHA from 'react-google-recaptcha';
@@ -20,58 +19,63 @@ import {
   loginByGoogle,
   loginFailure,
   verifyCaptcha,
-} from 'redux/actions/authAction';
+} from 'app/actions/login';
 import {
   getCaptcha,
   getErrorCount,
   getErrorLogin,
   getErrorMessageLogin,
-} from 'redux/selectors/authSelector';
+} from 'app/selectors/loginSelector';
+import styled from 'styled-components';
 import * as yup from 'yup';
 import './login.scss';
+
+const IconEye = styled(Eye)`
+  width: 1.2rem;
+`;
+
+const IconEyeOff = styled(EyeOff)`
+  width: 1.2rem;
+`;
 
 const schema = yup.object().shape({
   emailorphone: yup
     .string()
     .required('Email or phone is required')
-    .test(
-      'emailorphone',
-      'Email or phone number is invalid',
-      function (value) {
-        const emailRegex =
-          /^([a-zA-Z0-9!#$%&'*+\\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+\\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?)$/;
+    .test('emailorphone', 'Email or phone number is invalid', function (value) {
+      const emailRegex =
+        /^([a-zA-Z0-9!#$%&'*+\\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+\\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?)$/;
 
-        const phoneRegex = /([+84|84|0]+(3|5|7|8|9|1[2|6|8|9]))+([0-9]{8})\b/;
+      const phoneRegex = /([+84|84|0]+(3|5|7|8|9|1[2|6|8|9]))+([0-9]{8})\b/;
 
-        const isValidEmail = emailRegex.test(value);
-        const isValidPhone = phoneRegex.test(value);
+      const isValidEmail = emailRegex.test(value);
+      const isValidPhone = phoneRegex.test(value);
 
-        if (!isValidEmail && !isValidPhone) {
-          return false;
-        }
-        return true;
+      if (!isValidEmail && !isValidPhone) {
+        return false;
       }
-    ),
+      return true;
+    }),
   password: yup
     .string()
     .min(6, 'Passwords must be at least 6 characters in length')
-    .max(32, 'Passwords must be less than 32 characters in length')
+    .max(60, 'Passwords must be less than 60 characters in length')
     .required('Password is required'),
 });
 
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const refRecapCha = useRef();
+  const refRecapCha = React.useRef();
 
   const isHuman = useSelector(getCaptcha)?.success;
   const countError = useSelector(getErrorCount);
   const messageErrorLogin = useSelector(getErrorMessageLogin);
   const hasError = useSelector(getErrorLogin);
-
-  const [message, setMessage] = useState('');
-
   const { width } = useViewport();
+
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [message, setMessage] = React.useState('');
 
   const {
     register,
@@ -110,22 +114,14 @@ function Login() {
   };
 
   const handleGoogleLoginSuccess = (googleData) => {
-    dispatch(loginByGoogle(googleData.tokenId, navigate));
+    dispatch(loginByGoogle(googleData, navigate));
   };
 
-  const responseFacebook = async (response) => {
-    console.log(response);
-    const { accessToken } = response;
-    const data = await authApi.loginWithFacebook(accessToken);
-  };
+  const responseFacebook = async (response) => {};
 
-  const handleFacebookLoginFailure = (error) => {
-    console.log(error);
-  };
+  const handleFacebookLoginFailure = (error) => {};
 
-  const componentClicked = (data) => {
-    console.log(data);
-  };
+  const componentClicked = (data) => {};
 
   let errorMessage;
   if (message !== '') {
@@ -143,6 +139,7 @@ function Login() {
       <Row
         style={{
           flexDirection: 'row-reverse',
+          height: '100%',
         }}
       >
         <Col
@@ -175,20 +172,38 @@ function Login() {
               <Form.Group className="form-group__input">
                 <Col sm="12" className="form__input">
                   <Form.Label>Password</Form.Label>
-                  <Form.Control
-                    type="password"
-                    placeholder="Password"
-                    {...register('password')}
-                  />
-                  {errors.emailorphone ? (
+                  <InputGroup>
+                    <Form.Control
+                      type={showPassword ? 'text' : 'password'}
+                      {...register('password')}
+                      placeholder="Password"
+                    />
+                    <InputGroup.Text
+                      onClick={() => setShowPassword(!showPassword)}
+                      style={{
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {showPassword ? <IconEye /> : <IconEyeOff />}
+                    </InputGroup.Text>
+                  </InputGroup>
+                </Col>
+              </Form.Group>
+              <Row>
+                <Col lg={12}>
+                  {errors.emailorphone?.message ? (
                     <Form.Text className="text-danger">
                       {errors.emailorphone?.message}
+                    </Form.Text>
+                  ) : errors.password?.message ? (
+                    <Form.Text className="text-danger">
+                      {errors.password?.message}
                     </Form.Text>
                   ) : (
                     errorMessage
                   )}
                 </Col>
-              </Form.Group>
+              </Row>
 
               <div className="form__forgot">
                 <small className="forgot__title">
@@ -213,7 +228,13 @@ function Login() {
                     <Form.Check type="checkbox" label="Remember me" />
                   </Form.Group>
                 )}
-                <Button type="submit" className="btn-login">
+                <Button
+                  type="submit"
+                  className="btn-login"
+                  onKeyDown={(event) =>
+                    event.key === 'Enter' && onLoginHandler()
+                  }
+                >
                   Log In
                 </Button>
               </div>
@@ -289,7 +310,7 @@ function Login() {
               nextIcon=""
               prevIcon=""
             >
-              <Carousel.Item interval={1000}>
+              <Carousel.Item interval={1000} className="h-100">
                 <div className="hero">
                   <img className="w-100" src={Hero1} alt="icon" />
                 </div>
@@ -300,7 +321,7 @@ function Login() {
                   </p>
                 </Carousel.Caption>
               </Carousel.Item>
-              <Carousel.Item>
+              <Carousel.Item className="h-100">
                 <div className="hero">
                   <img className="w-100" src={Hero2} alt="icon" />
                 </div>
@@ -311,7 +332,7 @@ function Login() {
                   </p>
                 </Carousel.Caption>
               </Carousel.Item>
-              <Carousel.Item>
+              <Carousel.Item className="h-100">
                 <div className="hero">
                   <img className="w-100" src={Hero3} alt="icon" />
                 </div>

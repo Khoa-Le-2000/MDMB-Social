@@ -110,7 +110,7 @@ function register(req, res) {
       result: "incorrect format for: Email",
       description: Email.length <= 45 ? "Valid Email look like this: 123@gmail.com" : "Email length < 45"
     })
-    
+
   }
   if (!regPhone.test(Phone)) {
     return res.status(401).send({
@@ -168,7 +168,7 @@ function update(req, res) {
       result: "incorrect fields",
       description: "Must recieved a Phone or Email"
     })
-    
+
   }
 
   if (!regName.test(Name)) {
@@ -211,7 +211,7 @@ function update(req, res) {
         result: "incorrect format for: Birthday",
         description: `${10 == Birthday.length ? "Birthday look like this: (yyyy/mm/dd)" : "Birthday length 10 char (yyyy/mm/dd)"}`
       })
-      
+
     }
   if (Birthday)
     if (!moment(Birthday, 'YYYY.MM.DD').isValid()) {
@@ -219,7 +219,7 @@ function update(req, res) {
         result: "incorrect format for: Birthday",
         description: "Date not exist"
       })
-      
+
     }
   if (Gender)
     if (!regGender.test(Gender)) {
@@ -301,7 +301,7 @@ function verifyEmail(req, res) {
     var Name = payload.Name;
 
     AccountDAO.getAccountId(Email, Phone, (Account) => {
-      
+
       if (Account) return res.status(401).send({ error: 'Account created' });
       else {
         bcrypt.hash(Password, 10).then((hash) => {
@@ -330,7 +330,7 @@ function registerByGoogle(req, res) {
       result: "incorrect format for: empty value",
       description: `Not allow empty value for${(!Name || Name.trim() == null) ? " Name" : ""}${(!Email || Email.trim() == null) ? " Email" : ""}${(!Phone || Phone.trim() == null) ? " Phone" : ""}`
     })
-    
+
   }
 
   if (!regName.test(Name)) {
@@ -338,21 +338,21 @@ function registerByGoogle(req, res) {
       result: "incorrect format for: Name",
       description: 2 <= Name.length && Name.length <= 45 ? "Valid name not contain special character such as @-!#..." : "Name length not valid: at least 2 char"
     })
-    
+
   }
   if (!regEmail.test(Email) || Email.length > 45) {
     return res.status(401).send({
       result: "incorrect format for: Email",
       description: Email.length <= 45 ? "Valid Email look like this: 123@gmail.com" : "Email length < 45"
     })
-    
+
   }
   if (!regPhone.test(Phone)) {
     return res.status(401).send({
       result: "incorrect format for: Phone",
       description: `${(10 == Phone.length || 11 == Phone.length) ? "Valid Phone look like this: 098333**** or 848333****" : "Phone length 10-11 char"}`
     })
-    
+
   }
   AccountDAO.getAccountId(Email, Phone, (result) => {
     if (result) res.status(401).send({ result: 'account existed', description: "account existed" })
@@ -369,6 +369,14 @@ function registerByGoogle(req, res) {
   })
 }
 
+function getListFriend(req, res) {
+  var accountId = req.query.accountId;
+  AccountDAO.getListFriend(accountId, (result) => {
+    if (result) res.status(200).send({ result: result });
+    else res.status(401).send({ result: "failure" });
+  });
+}
+
 module.exports = {
   login,
   loginByGoogle,
@@ -376,5 +384,6 @@ module.exports = {
   register,
   update,
   verifyEmail,
+  getListFriend,
   registerByGoogle
 }

@@ -11,4 +11,5 @@ api.post("/register", accountController.register);
 api.post("/register-by-google", accountController.registerByGoogle);
 api.post("/update", authMiddleware.verifyToken, accountController.update);
 api.get("/verify", accountController.verifyEmail)
+api.get("/list-friend", authMiddleware.verifyToken, accountController.getListFriend);
 module.exports = api;
