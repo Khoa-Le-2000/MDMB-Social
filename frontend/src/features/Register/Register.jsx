@@ -148,10 +148,6 @@ function Register() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const dataFill = useSelector(getFillToRegister);
-  const isLocalType = useSelector(getTypeRegister)?.local;
-  const navigate = useNavigate();
-  const dataFill = useSelector(getFillToRegister);
-  const dispatch = useDispatch();
 
   const {
     register,
