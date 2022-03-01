@@ -16,8 +16,8 @@ const WrapperContent = styled.div`
   border-bottom: 3px solid #d0bddc;
 
   background: #e7e5f2;
-  color: #434354;
-  max-width: 350px;
+  color: #434354;  
+  max-width: 800px;
   font-size: 14px;
   min-width: 20px;
   margin-right: 10px;
@@ -53,9 +53,7 @@ function MessageSender() {
       <WrapperContent>
         <WrapperMessage>
           <Message>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam sed neque corporis eius voluptas.
-            Nostrum tenetur laudantium quisquam quaerat provident soluta modi hic aliquid quod?
-            Temporibus culpa sequi architecto itaque?
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae dolorem dolores veniam quasi beatae nihil, quaerat dicta ipsum laboriosam modi, cumque illum quae quam pariatur dolor. Tenetur recusandae dignissimos quia soluta sit ipsum consequatur facilis, illo vel laudantium voluptatem voluptas inventore esse quam. Ex omnis soluta sequi accusantium sint ut.
           </Message>
           <SeenStatus />
         </WrapperMessage>

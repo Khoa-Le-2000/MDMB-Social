@@ -14,7 +14,7 @@ const WrapperContent = styled.div`
 
   background: #6049cd;
   color: #ebf0ff;
-  max-width: 350px;
+  max-width: 800px;
   font-size: 14px;
   min-width: 200px;
   position: relative;
