@@ -5,21 +5,28 @@ const Wrapper = styled.div`
   flex-direction: column;
   flex-shrink: 0;
   transition-duration: 0.2s;
-  overflow-y: auto;
+  overflow-y: hidden;
   overflow-x: hidden;
   padding: 10px;
   padding-left: 0;
   &:hover {
     background: linear-gradient(to right, #f5f5f5, #f5f5f5);
   }
+  
+  background: ${props=> props.texting?'linear-gradient(90deg, #ffffff 0%, #dfcee1 100%)':"none"};
+  border-right: ${props=> props.texting?'3px solid #82135f':'none'};
 `;
 const Card = styled.div`
   display: flex;
-  justify-content: flex-start;
+  /* justify-content: flex-start; */
+  max-height: 52px;
+  width: 100%;
+  /* overflow: hidden; */
 `;
 const CardContent = styled.div`
   display: flex;
   flex-direction: column;
+  width:100%;
 `;
 
 const Avatar = styled.div`
@@ -41,9 +48,13 @@ const Name = styled.h4`
 const Message = styled.p`
   font-size: 14px;
   margin-bottom: 8px;
+  display:inline-block;
+  overflow:hidden;
 `;
-const Time = styled.p`
+const Time = styled.div`
   font-size: 0.8rem;
+  display:inline-block;
+  min-width: 80px;
 `;
 
 function ChatCard() {
@@ -58,7 +69,7 @@ function ChatCard() {
         </Avatar>
         <CardContent>
           <Name>Flo Stein</Name>
-          <Message>Good morning, how are you?</Message>
+          <Message> Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab dolore consequuntur, placeat maiores impedit inventore totam rem repellendus praesentium voluptas enim eveniet dolor perspiciatis labore architecto voluptatem sit ratione fugiat, quod dolores laudantium vitae itaque nesciunt asperiores! Rem, veniam sapiente. Repellendus cumque reprehenderit eum excepturi aspernatur sapiente labore hic earum.</Message>
         </CardContent>
         <Time>2 hour ago</Time>
       </Card>

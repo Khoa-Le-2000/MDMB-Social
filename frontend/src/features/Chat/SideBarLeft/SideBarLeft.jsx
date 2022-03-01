@@ -8,26 +8,31 @@ import {
   InputGroup as BsInputGroup,
   Row,
 } from 'react-bootstrap';
+import LogoImg from 'assets/images/logos/logo.jpg';
+
+
 
 import ChatCard from 'features/Chat/ChatCardConversation/ChatCard';
 import { Search } from '@styled-icons/heroicons-solid';
 
 const SideBar = styled.div`
   width: 100%;
-  height: 100%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
   transition-duration: 0.2s;
-  overflow-y: auto;
-  overflow-x: hidden;
+  
   padding: 0 5px;
   border-right: 1px solid rgba(24, 23, 23, 0.75);
 `;
-const Logo = styled.h2`
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 10px;
+const Logo = styled.img`
+  content:url(${LogoImg});
+  width:  100px;
+  height: 75px;
+  justify-content: center;
+  align-self:center;
+
 `;
 const InputGroup = styled(BsInputGroup)`
   margin-bottom: 10px;
@@ -43,10 +48,19 @@ const Wrapper = styled.div`
   margin-top: 10px;
   display: flex;
   flex-direction: column;
+  overflow-y: scroll;
+  overflow-x: hidden;
+
+  ::-webkit-scrollbar{
+    display: none;
+  }
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  //Firefox
+
 `;
 const Tabs = styled.div`
   display: flex;
-  justify-content: space-between;
+  /* justify-content: space-between; */
 `;
 const Tab = styled.div`
   font-size: 0.8rem;
@@ -70,28 +84,30 @@ const Tab = styled.div`
   }
 `;
 
-function SideBarRight() {
+function SideBarLeft() {
   return (
     <SideBar>
-      <Logo>MDMB Social</Logo>
+      <Logo>
+      </Logo>
       <InputGroup>
-        <Form.Control placeholder="Password" />
+        <Form.Control placeholder="Searching" />
         <InputSearch>
           <IconSearch />
         </InputSearch>
       </InputGroup>
       <Tabs>
-        <Tab>All Convention</Tab>
-        <Tab>All Convention</Tab>
+        <Tab>All Message</Tab>
+        <Tab>Message unread</Tab>
       </Tabs>
       <Wrapper>
         <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
+        {Array(12)
+          .fill(0)
+          .map((index) => (
+            <ChatCard key={index} />
+          ))}
       </Wrapper>
     </SideBar>
   );
 }
-export default SideBarRight;
+export default SideBarLeft;

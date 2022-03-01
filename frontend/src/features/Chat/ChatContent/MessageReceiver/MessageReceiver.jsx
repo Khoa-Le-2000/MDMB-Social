@@ -10,14 +10,13 @@ const Wrapper = styled.div`
 const WrapperContent = styled.div`
   transition: 0s;
   border-radius: 25px 25px 25px 0;
-  border-top: 3px solid #81f9e2;
+  border-top: 3px solid #9b527e;
 
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  background: #6049cd;
   color: #ebf0ff;
   max-width: 350px;
   font-size: 14px;
   min-width: 200px;
-
   position: relative;
 `;
 
@@ -45,11 +44,11 @@ const Message = styled.div`
   font-size: 14px;
 `;
 const Time = styled(Form.Text)`
-  font-size: 0.8rem;
-  margin-bottom: 0px;
-  position: absolute;
-  bottom: 0;
+  font-size: 0.7rem;
+  position: flex;
   transform: translateY(100%);
+  margin-left: 8px;
+  
 `;
 
 function MessageReceiver() {
@@ -63,9 +62,10 @@ function MessageReceiver() {
       </Avatar>
       <Row>
         <Col lg={12}>
+            
+              <Name>Loran nata <Time muted>16:00</Time></Name>
           <WrapperContent>
             <WrapperMessage>
-              <Name>Loran nata</Name>
               <Message>
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam
                 sed neque corporis eius voluptas. Nostrum tenetur laudantium
@@ -73,7 +73,6 @@ function MessageReceiver() {
                 Temporibus culpa sequi architecto itaque?
               </Message>
             </WrapperMessage>
-            <Time muted>1 hour ago</Time>
           </WrapperContent>
         </Col>
       </Row>

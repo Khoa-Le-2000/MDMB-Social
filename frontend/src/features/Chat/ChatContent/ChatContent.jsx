@@ -15,7 +15,7 @@ const Wrapper = styled.div`
 
 const WrapperMessageContent = styled.div`
   overflow: auto;
-  height: calc(100vh - 150px);
+  height: calc(100vh - 170px);
   display: flex;
   flex-direction: column-reverse;
   align-items: flex-start;
@@ -23,9 +23,10 @@ const WrapperMessageContent = styled.div`
 `;
 const RowBS = styled(Row)`
   height: inherit;
-  background-color: red;
+  padding-bottom: 10px;
 `;
-const ColBS = styled(Col)``;
+const ColBS = styled(Col)`
+`;
 
 function ChatContent() {
   return (
@@ -39,6 +40,9 @@ function ChatContent() {
             ))}
             {Array.from({ length: 4 }).map((item, index) => (
               <MessageReceiver key={index} />
+            ))}
+            {Array.from({ length: 2 }).map((item, index) => (
+              <MessageSender key={index} />
             ))}
           </Col>
           <Col lg={12}>

@@ -21,6 +21,7 @@ const FeaturesTop = styled.div`
   width: 15%;
   height: 100%;
   padding: 5px;
+  
 `;
 
 const IConUploadImage = styled(Photograph)`
@@ -47,9 +48,10 @@ const FeaturesRight = styled.div`
   position: relative;
 `;
 const SendMessenger = styled(Send)`
-  width: 2rem;
-  height: 2rem;
+  width: 2.5rem;
+  height: 2.5rem;
   padding: 5px;
+  margin-top: 10%;
   ${HoverMixin.default};
 `;
 const Emoji = styled(EmojiHappy)`

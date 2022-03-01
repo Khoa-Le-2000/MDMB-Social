@@ -28,10 +28,6 @@ export const registerSuccess = (data) => {
 };
 
 export const registerUser = (user, navigate) => async (dispatch) => {
-<<<<<<< HEAD
-=======
-  console.log('🚀 :: file: register.js :: line 31 :: user', user);
->>>>>>> main
   dispatch(registerStart());
 
   let data = null;
@@ -40,10 +36,6 @@ export const registerUser = (user, navigate) => async (dispatch) => {
   } else {
     data = await authApi.register(user);
   }
-<<<<<<< HEAD
-=======
-
->>>>>>> main
   if (data?.result === 'register successful') {
     dispatch(
       registerSuccess({

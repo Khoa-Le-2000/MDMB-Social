@@ -76,8 +76,15 @@ const FeatureOther = styled(Feature)``;
 const IconOther = styled(DotsVertical)`
   width: 1.4rem;
 `;
-const Online = styled(Circle)``;
+const Online = styled(Circle)`
+  width: 0.5rem;
+  vertical-align: middle;
+  margin-right:5px;
+  color:#8025d5;
+`;
 
+const StatusText = styled.span`
+`
 function ChatHeader() {
   return (
     <Wrapper>
@@ -92,7 +99,10 @@ function ChatHeader() {
             </Avatar>
             <WrapperText>
               <Name>UI Art Design</Name>
-              <Status>Online</Status>
+              <Status>
+                <Online />
+                <StatusText>Online</StatusText>
+              </Status>
             </WrapperText>
           </WrapperInfo>
         </WrapperInfoPadding>
