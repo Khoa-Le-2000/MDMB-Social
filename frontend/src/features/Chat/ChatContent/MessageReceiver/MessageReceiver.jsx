@@ -9,8 +9,8 @@ const Wrapper = styled.div`
 `;
 const WrapperContent = styled.div`
   transition: 0s;
-  border-radius: 25px 25px 25px 0;
-  border-top: 3px solid #9b527e;
+  border-radius: 0px 25px 25px 25px;
+  border-bottom: 3px solid #9b527e;
 
   background: #6049cd;
   color: #ebf0ff;
@@ -29,7 +29,7 @@ const Avatar = styled.div`
   img {
     width: 52px;
     height: 52px;
-    border: 1px solid rgba(255, 255, 255, 0.75);
+    /* border: 1px solid rgba(255, 255, 255, 0.75); */
     padding: 4px;
     border-radius: 50%;
     object-fit: cover;
@@ -48,6 +48,7 @@ const Time = styled(Form.Text)`
   position: flex;
   transform: translateY(100%);
   margin-left: 8px;
+  color:#d4d3eb;
   
 `;
 
@@ -62,8 +63,8 @@ function MessageReceiver() {
       </Avatar>
       <Row>
         <Col lg={12}>
-            
-              <Name>Loran nata <Time muted>16:00</Time></Name>
+
+          <Name>Loran nata <Time >16:00</Time></Name>
           <WrapperContent>
             <WrapperMessage>
               <Message>

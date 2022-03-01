@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Form } from 'react-bootstrap';
-import { Circle } from '@styled-icons/boxicons-solid';
+import { Circle, CheckCircle } from '@styled-icons/boxicons-solid';
 
 
 const Wrapper = styled.div`
@@ -14,7 +14,6 @@ const WrapperContent = styled.div`
   transition: 0s;
   border-radius: 25px 25px 0 25px;
   border-bottom: 3px solid #d0bddc;
-
   background: #e7e5f2;
   color: #434354;  
   max-width: 800px;
@@ -39,13 +38,16 @@ const Time = styled(Form.Text)`
   right: 2%;
   transform: translateY(100%);
   padding-top: 4px;
+  color:#d4d3eb;
+
 `;
-const SeenStatus = styled(Circle)`
+const SeenStatus = styled(CheckCircle)`
   width:0.7rem;
   height:0.7rem;
   position: absolute;
   display:block;
   right: -20px;
+  color:${props=>props.color?props.color:"none"};
 `
 function MessageSender() {
   return (
@@ -55,9 +57,9 @@ function MessageSender() {
           <Message>
             Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae dolorem dolores veniam quasi beatae nihil, quaerat dicta ipsum laboriosam modi, cumque illum quae quam pariatur dolor. Tenetur recusandae dignissimos quia soluta sit ipsum consequatur facilis, illo vel laudantium voluptatem voluptas inventore esse quam. Ex omnis soluta sequi accusantium sint ut.
           </Message>
-          <SeenStatus />
+          <SeenStatus color="#551ecc"/>
         </WrapperMessage>
-        <Time muted>16:00</Time>
+        <Time >16:00</Time>
 
       </WrapperContent>
     </Wrapper>

@@ -28,10 +28,18 @@ const SideBar = styled.div`
 `;
 const Logo = styled.img`
   content:url(${LogoImg});
-  width:  100px;
-  height: 75px;
+  width: 4rem;
   justify-content: center;
   align-self:center;
+  transition: all 0.3s ease-in-out;
+
+  :hover {
+      opacity: 0.8;
+      border-radius: 50%;
+      border: 1px solid #e6e6e6;
+      background-color: #e6e6e6;
+      transform: scale(0.9);
+    }
 
 `;
 const InputGroup = styled(BsInputGroup)`
@@ -60,7 +68,6 @@ const Wrapper = styled.div`
 `;
 const Tabs = styled.div`
   display: flex;
-  /* justify-content: space-between; */
 `;
 const Tab = styled.div`
   font-size: 0.8rem;
@@ -82,13 +89,13 @@ const Tab = styled.div`
       left: 0;
     }
   }
+  background-color:  ${props=> props.selected?"#eae1eb":"none"};
 `;
 
 function SideBarLeft() {
   return (
     <SideBar>
-      <Logo>
-      </Logo>
+      <Logo/>
       <InputGroup>
         <Form.Control placeholder="Searching" />
         <InputSearch>
@@ -96,14 +103,14 @@ function SideBarLeft() {
         </InputSearch>
       </InputGroup>
       <Tabs>
-        <Tab>All Message</Tab>
+        <Tab selected>All Message</Tab>
         <Tab>Message unread</Tab>
       </Tabs>
       <Wrapper>
-        <ChatCard />
+        <ChatCard texting="data"/>
         {Array(12)
-          .fill(0)
-          .map((index) => (
+          .fill(1,1,13)
+          .map((item,index) => (
             <ChatCard key={index} />
           ))}
       </Wrapper>

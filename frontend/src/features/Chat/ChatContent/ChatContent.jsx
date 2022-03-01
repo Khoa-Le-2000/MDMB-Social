@@ -21,9 +21,15 @@ const WrapperMessageContent = styled.div`
   align-items: flex-start;
   padding: 0;
 `;
+const RowContent = styled(Row)`
+background: linear-gradient(90deg, rgba(133,123,231,1) 0%, rgba(211,140,242,1) 35%, rgba(243,81,175,1) 100%);
+
+
+`
 const RowBS = styled(Row)`
   height: inherit;
   padding-bottom: 10px;
+
 `;
 const ColBS = styled(Col)`
 `;
@@ -32,7 +38,7 @@ function ChatContent() {
   return (
     <Wrapper>
       <ChatHeader />
-      <Row>
+      <RowContent>
         <WrapperMessageContent>
           <Col lg={12}>
             {Array.from({ length: 2 }).map((item, index) => (
@@ -54,7 +60,7 @@ function ChatContent() {
             ))}
           </Col>
         </WrapperMessageContent>
-      </Row>
+      </RowContent>
       <RowBS>
         <ColBS>
           <ChatInput />

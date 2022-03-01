@@ -61,7 +61,6 @@ const Feature = styled.div`
   display: flex;
   justify-content: center;
   cursor: pointer;
-
   :hover {
     background: #fff;
     transition: all 0.3s ease-in;
@@ -80,8 +79,11 @@ const Online = styled(Circle)`
   width: 0.5rem;
   vertical-align: middle;
   margin-right:5px;
+  margin-bottom: 0.2rem;
+
   color:#8025d5;
 `;
+
 
 const StatusText = styled.span`
 `

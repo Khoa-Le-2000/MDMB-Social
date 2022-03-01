@@ -5,6 +5,8 @@ import { Photograph, PaperClip } from '@styled-icons/heroicons-solid';
 import { EmojiHappy } from '@styled-icons/heroicons-outline';
 import { Send, Sticker } from '@styled-icons/boxicons-solid';
 import { HoverMixin } from 'styles/MixinStyles';
+import { ReactComponent as StickerTest } from 'assets/images/icons/sticker.svg';
+
 
 const Wrapper = styled.div`
   height: 100%;
@@ -29,19 +31,17 @@ const IConUploadImage = styled(Photograph)`
   height: 2rem;
   padding: 5px;
   ${HoverMixin.default};
+  border-radius: 50%;
+
 `;
 const IconUploadFile = styled(PaperClip)`
   width: 2rem;
   height: 2rem;
   padding: 5px;
   ${HoverMixin.default};
+  border-radius: 50%;
 `;
-const IconSticker = styled(Sticker)`
-  width: 2rem;
-  height: 2rem;
-  padding: 5px;
-  ${HoverMixin.default};
-`;
+
 const FeaturesRight = styled.div`
   display: flex;
   justify-content: center;
@@ -52,7 +52,12 @@ const SendMessenger = styled(Send)`
   height: 2.5rem;
   padding: 5px;
   margin-top: 10%;
-  ${HoverMixin.default};
+  transition: all 0.3s ease-in-out;
+  &:hover{
+    transform: rotate(-90deg);
+  cursor: pointer;
+
+  }
 `;
 const Emoji = styled(EmojiHappy)`
   width: 2rem;
@@ -61,6 +66,7 @@ const Emoji = styled(EmojiHappy)`
   position: absolute;
   right: 100%;
   ${HoverMixin.default};
+  border-radius: 50%;
 `;
 
 const Input = styled.p`
@@ -82,7 +88,13 @@ const Input = styled.p`
     border-color: #80bdff;
   }
 `;
-
+const IconSticker = styled(StickerTest)`
+  width: 2rem;
+  height: 2rem;
+  padding: 5px;   
+  border-radius: 50%;
+  ${HoverMixin.default};
+`
 function ChatInput() {
   return (
     <Wrapper>

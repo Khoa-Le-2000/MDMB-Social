@@ -12,16 +12,16 @@ const Wrapper = styled.div`
   &:hover {
     background: linear-gradient(to right, #f5f5f5, #f5f5f5);
   }
-  
-  background: ${props=> props.texting?'linear-gradient(90deg, #ffffff 0%, #dfcee1 100%)':"none"};
+  border-radius: 10px;
+  background: ${props=> props.texting?'#eae1eb':"none"};
   border-right: ${props=> props.texting?'3px solid #82135f':'none'};
 `;
 const Card = styled.div`
   display: flex;
-  /* justify-content: flex-start; */
   max-height: 52px;
   width: 100%;
   /* overflow: hidden; */
+
 `;
 const CardContent = styled.div`
   display: flex;
@@ -34,7 +34,7 @@ const Avatar = styled.div`
   img {
     width: 52px;
     height: 52px;
-    border: 1px solid rgba(255, 255, 255, 0.75);
+    /* border: 1px solid rgba(255, 255, 255, 0.75); */
     padding: 4px;
     border-radius: 50%;
     object-fit: cover;
@@ -57,9 +57,10 @@ const Time = styled.div`
   min-width: 80px;
 `;
 
-function ChatCard() {
+function ChatCard(props) {
+  
   return (
-    <Wrapper>
+    <Wrapper texting={props.texting}>
       <Card>
         <Avatar>
           <img
