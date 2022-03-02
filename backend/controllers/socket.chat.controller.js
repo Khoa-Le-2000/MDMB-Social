@@ -29,12 +29,12 @@ function chat(io, socket) {
         });
     });
 
-    socket.on('typing', async (accountIdFrom, accountIdTo) => {
-        console.log("typing: " + accountIdFrom + " to accountId: " + accountIdTo);
+    socket.on('typing', async (accountIdTo) => {
+        console.log("typing: " + socket.accountId + " to accountId: " + accountIdTo);
         let user = await socketUser.getUserByAccountId(accountIdTo);
         if (user) {
             user.socketId.forEach(socketId => {
-                io.to(socketId).emit('typing', accountIdFrom);
+                io.to(socketId).emit('typing', socket.accountId);
             });
         }
     });
