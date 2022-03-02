@@ -30,6 +30,8 @@ function socket(server) {
                     }
                 });
             });
+
+            console.log(socketUser.getUsers());
         } else {
             console.log("socketio not authenticated");
             socket.emit('close-reason', res);

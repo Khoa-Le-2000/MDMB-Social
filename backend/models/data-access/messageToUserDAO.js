@@ -57,7 +57,8 @@ function addMessage(fromAccount, toAccount, content, type, Callback) {
     con.connect(function (err) {
         if (err) throw err;
         // console.log("Connected!");
-        var sql = `insert into MDMB.MessageToUser(FromAccount, ToAccount, Content, Type) values(?,?,?,?)`;
+        var sql = `SET TIME_ZONE = '+07:00';
+        insert into MDMB.MessageToUser(FromAccount, ToAccount, Content, Type) values(?,?,?,?);`;
         con.query(sql, [fromAccount, toAccount, content, type],
             function (err, result) {
                 connection.closeConnection(con);
