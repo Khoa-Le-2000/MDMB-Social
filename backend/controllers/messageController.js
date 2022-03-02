@@ -43,15 +43,12 @@ function getChatList(req, res) {
         for (let i = 0; i < AccountReceived.length; i++) {
             chatDao.getChatList(AccountId, AccountReceived[i], (ChatList) => {
                 List.push(ChatList);
-
                 if (AccountReceived.length == List.length) {
                     return res.send(List)
                 }
             })
-
         }
     })
-
 }
 
 module.exports = {
