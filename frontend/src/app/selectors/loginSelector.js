@@ -1,4 +1,4 @@
-export const getAuth = (state) => state?.login?.token;
+export const getAuth = (state) => state?.login?.auth;
 
 export const getCaptcha = (state) => state?.login?.captcha;
 export const getErrorCount = (state) => state?.login?.captcha?.errorCount;
