@@ -6,9 +6,10 @@ const initialState = {
   success: false,
   message: null,
   redirect: false,
-  token: {
+  auth: {
     accessToken: null,
     refreshToken: null,
+    accountId: null,
   },
   captcha: {
     errorCount: 0,
@@ -55,10 +56,11 @@ const loginReducer = (state = initialState, action) => {
         error: false,
         success: true,
         message: null,
-        token: {
-          ...state.token,
+        auth: {
+          ...state.auth,
           accessToken: action.payload.accessToken,
           refreshToken: action.payload.refreshToken,
+          accountId: action.payload.accountId,
         },
         captcha: {
           errorCount: 0,
@@ -71,9 +73,10 @@ const loginReducer = (state = initialState, action) => {
         error: true,
         success: false,
         message: action.payload,
-        token: {
+        auth: {
           accessToken: null,
           refreshToken: null,
+          accountId: null,
         },
         captcha: {
           errorCount: state.captcha.errorCount + 1,
@@ -86,10 +89,11 @@ const loginReducer = (state = initialState, action) => {
         isFetching: false,
         error: false,
         success: true,
-        token: {
-          ...state.token,
+        auth: {
+          ...state.auth,
           accessToken: action.payload.accessToken,
           refreshToken: action.payload.refreshToken,
+          accountId: action.payload.accountId,
         },
       };
 
@@ -104,10 +108,11 @@ const loginReducer = (state = initialState, action) => {
     case AuthActionTypes.LOGOUT_SUCCESS:
       return {
         ...state,
-        token: {
-          ...state.token,
+        auth: {
+          ...state.auth,
           accessToken: null,
           refreshToken: null,
+          accountId: null,
         },
         captcha: {
           ...state.captcha,
@@ -137,8 +142,8 @@ const loginReducer = (state = initialState, action) => {
     case AuthActionTypes.REFRESH_TOKEN_SUCCESS:
       return {
         ...state,
-        token: {
-          ...state.token,
+        auth: {
+          ...state.auth,
           accessToken: action.payload,
         },
       };

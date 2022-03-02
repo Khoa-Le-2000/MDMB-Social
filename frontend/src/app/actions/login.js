@@ -14,12 +14,13 @@ export const loginFailure = (message) => {
   };
 };
 
-export const loginSuccess = (token) => {
+export const loginSuccess = (auth) => {
   return {
     type: AuthActionTypes.LOGIN_SUCCESS,
     payload: {
-      accessToken: token.accessToken,
-      refreshToken: token.refreshToken,
+      accessToken: auth.accessToken,
+      refreshToken: auth.refreshToken,
+      accountId: auth.accountId,
     },
   };
 };
@@ -28,11 +29,12 @@ export const login = (user) => async (dispatch) => {
   dispatch(loginStart());
   const data = await authApi.login(user);
   if (data?.accessToken && data?.refreshToken) {
-    const { accessToken, refreshToken } = data;
+    const { accessToken, refreshToken, accountId } = data;
     dispatch(
       loginSuccess({
         accessToken,
         refreshToken,
+        accountId,
       })
     );
   } else {
@@ -49,11 +51,12 @@ export const loginByGoogle = (googleData, navigate) => async (dispatch) => {
   const data = await authApi.loginWithGoogle(tokenId);
 
   if (data?.accessToken && data?.refreshToken) {
-    const { accessToken, refreshToken } = data;
+    const { accessToken, refreshToken, accountId } = data;
     dispatch(
       loginSuccess({
         accessToken,
         refreshToken,
+        accountId,
       })
     );
   } else if (data?.result === 'login failure') {
