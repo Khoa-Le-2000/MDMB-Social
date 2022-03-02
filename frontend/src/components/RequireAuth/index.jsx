@@ -2,7 +2,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { getAuth } from 'redux/selectors/authSelector';
+import { getAuth } from 'app/selectors/loginSelector';
 
 function RequireAuth({ children }) {
   const location = useLocation();

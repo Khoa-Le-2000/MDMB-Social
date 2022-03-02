@@ -4,20 +4,19 @@ const authApi = {
   register: async (data) => {
     const url = 'account/register';
     return axiosClient.post(url, {
-      Email: data.email.trim().toLowerCase(),
-      Password: data.password,
       Name: data.name,
       Phone: data.phone,
+      Email: data.email.trim().toLowerCase(),
+      Password: data.password,
     });
   },
 
-  updateProfile: async (data) => {
-    const url = 'account/update-profile';
+  registerByGoogle: async (data) => {
+    const url = '/account/register-by-google';
     return axiosClient.post(url, {
+      Name: data.name,
       Email: data.email.trim().toLowerCase(),
-      Avatar: data.avatar,
-      Gender: data.gender,
-      Birthday: data.birthday,
+      Phone: data.phone,
     });
   },
 

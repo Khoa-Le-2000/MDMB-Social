@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Bell } from '@styled-icons/heroicons-outline';
 import { Link } from 'react-router-dom';
+import Logo from 'assets/images/logos/logo.jpg';
 
 const HeaderWrapper = styled.header`
   position: sticky;
@@ -31,7 +32,27 @@ const HeaderInner = styled.div`
   height: 100%;
   padding: 0 10rem;
 `;
-const HeaderLogo = styled.div``;
+
+const HeaderLogoLink = styled(Link)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 100%;
+  img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    transition: all 0.3s ease-in-out;
+    :hover {
+      opacity: 0.8;
+      border-radius: 50%;
+      border: 1px solid #e6e6e6;
+      background-color: #e6e6e6;
+      transform: scale(0.9);
+    }
+  }
+`;
 const HeaderLeft = styled.div`
   display: flex;
   align-items: center;
@@ -86,6 +107,7 @@ const ProfileLink = styled(Link)`
   display: flex;
   align-items: center;
   justify-content: center;
+  text-decoration: none;
 `;
 
 const ProfileName = styled.div`
@@ -102,7 +124,9 @@ function Header() {
     <HeaderWrapper>
       <Container>
         <HeaderInner>
-          <HeaderLogo>MDMB Social</HeaderLogo>
+          <HeaderLogoLink to={'/'}>
+            <img src={Logo} alt="MDMB Logo" />
+          </HeaderLogoLink>
           <HeaderLeft>
             <HeaderNotification>
               <NotificationIcon />
@@ -117,7 +141,7 @@ function Header() {
                 </ProfileAvatar>
               </ProfileAvatarLink>
               <ProfileName>
-                <ProfileLink to={'/'}>Sara</ProfileLink>
+                <ProfileLink to={'/update-profile'}>Sara</ProfileLink>
               </ProfileName>
             </HeaderProfile>
           </HeaderLeft>

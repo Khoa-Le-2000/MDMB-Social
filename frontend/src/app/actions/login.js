@@ -1,37 +1,5 @@
 import authApi from 'apis/authApi';
-import { AuthActionTypes } from './types/authActionTypes';
-
-export const registerStart = () => {
-  return {
-    type: AuthActionTypes.REGISTER_START,
-  };
-};
-
-export const registerFailure = (message) => {
-  return {
-    type: AuthActionTypes.REGISTER_FAILURE,
-    payload: message,
-  };
-};
-
-export const registerSuccess = () => {
-  return {
-    type: AuthActionTypes.REGISTER_SUCCESS,
-  };
-};
-
-export const registerUser = (user) => async (dispatch) => {
-  dispatch(registerStart());
-  console.log('🚀 :: registerUser :: user', user);
-  const data = await authApi.register(user);
-  console.log('🚀 :: registerUser :: data', data);
-
-  // if (message === 'success') {
-  //   dispatch(registerSuccess());
-  // } else {
-  //   dispatch(registerFailure(message));
-  // }
-};
+import { AuthActionTypes } from 'app/actions/types/authActionTypes';
 
 export const loginStart = () => {
   return {
@@ -46,55 +14,60 @@ export const loginFailure = (message) => {
   };
 };
 
-export const loginSuccess = (token) => {
+export const loginSuccess = (auth) => {
   return {
     type: AuthActionTypes.LOGIN_SUCCESS,
     payload: {
-      accessToken: token.accessToken,
-      refreshToken: token.refreshToken,
+      accessToken: auth.accessToken,
+      refreshToken: auth.refreshToken,
+      accountId: auth.accountId,
     },
   };
 };
 
 export const login = (user) => async (dispatch) => {
   dispatch(loginStart());
-
-  const { emailorphone, password } = user;
-
-  const data = await authApi.login({
-    emailorphone,
-    password,
-  });
+  const data = await authApi.login(user);
   if (data?.accessToken && data?.refreshToken) {
-    const { accessToken, refreshToken } = data;
+    const { accessToken, refreshToken, accountId } = data;
     dispatch(
       loginSuccess({
         accessToken,
         refreshToken,
+        accountId,
       })
     );
   } else {
-    // const { result } = data;
     dispatch(loginFailure('Wrong email or password!'));
   }
 };
 
-export const loginByGoogle = (tokenId, navigate) => async (dispatch) => {
+export const loginByGoogle = (googleData, navigate) => async (dispatch) => {
   dispatch(loginStart());
-
+  const {
+    tokenId,
+    profileObj: { email, name },
+  } = googleData;
   const data = await authApi.loginWithGoogle(tokenId);
 
   if (data?.accessToken && data?.refreshToken) {
-    const { accessToken, refreshToken } = data;
+    const { accessToken, refreshToken, accountId } = data;
     dispatch(
       loginSuccess({
         accessToken,
         refreshToken,
+        accountId,
       })
     );
   } else if (data?.result === 'login failure') {
-    dispatch(redirectToRegister());
-    navigate('register/google');
+    dispatch(
+      fillToRegister({
+        email,
+        name,
+        password: 'Abcd123',
+      })
+    );
+    navigate('register');
   } else {
     dispatch(loginFailure(`Can't sign in to your Google Account`));
   }
@@ -152,7 +125,6 @@ export const verifyCaptchaFailure = (data) => {
 
 export const logout = (accessToken) => async (dispatch) => {
   dispatch(logoutStart());
-  // const data = await authApi.logout();
   dispatch(logoutSuccess());
 };
 
@@ -162,8 +134,9 @@ export const redirectToLogin = () => {
   };
 };
 
-export const redirectToRegister = () => {
+export const fillToRegister = (data) => {
   return {
-    type: AuthActionTypes.REDIRECT_TO_REGISTER,
+    type: AuthActionTypes.FILL_TO_REGISTER,
+    payload: data,
   };
 };
