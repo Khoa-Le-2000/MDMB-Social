@@ -54,15 +54,17 @@ function getOlderMessage(fromAccount, toAccount, messageId, Callback) {
 
 function addMessage(fromAccount, toAccount, content, type, Callback) {
     var con = connection.createConnection();
-    con.connect(function (err) {
+    con.connect(async function (err) {
         if (err) throw err;
-        // console.log("Connected!");
-        var sql = `SET TIME_ZONE = '+07:00';
-        insert into MDMB.MessageToUser(FromAccount, ToAccount, Content, Type) values(?,?,?,?);`;
+        await connection.setTimeZone(con);
+        var sql = `insert into MDMB.MessageToUser(FromAccount, ToAccount, Content, Type) values(?,?,?,?);`;
         con.query(sql, [fromAccount, toAccount, content, type],
             function (err, result) {
                 connection.closeConnection(con);
-                if (err) return Callback(false);
+                if (err) {
+                    console.log(err);
+                    return Callback(false);
+                }
                 else return Callback(true);
             });
     });

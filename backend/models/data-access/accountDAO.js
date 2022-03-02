@@ -39,10 +39,10 @@ function getAccountByEmail(Email, Callback) {
 
 function createAccount(Password, Phone, Email, Name, Callback) {
   var con = connection.createConnection();
-  con.connect(function (err) {
+  con.connect(async function (err) {
     if (err) throw err;
-    var sql = `SET TIME_ZONE = '+07:00';
-    insert into MDMB.Account(Password, Phone, Email, Name) values(?,?,?,?);`;
+    await connection.setTimeZone(con);
+    var sql = `insert into MDMB.Account(Password, Phone, Email, Name) values(?,?,?,?);`;
     con.query(sql, [Password, Phone, Email, Name],
       function (err, result) {
         connection.closeConnection(con);
@@ -158,10 +158,10 @@ function updateLastOnline(AccountId) {
   let res;
   var con = connection.createConnection();
   return new Promise((resolve, reject) => {
-    con.connect(function (err) {
+    con.connect(async function (err) {
       if (err) throw err;
-      var sql = `SET TIME_ZONE = '+07:00';
-      UPDATE MDMB.Account SET LastOnline = NOW() where AccountId=?;`;
+      await connection.setTimeZone(con);
+      var sql = `UPDATE MDMB.Account SET LastOnline = NOW() where AccountId=?;`;
       con.query(sql, [AccountId],
         function (err, result) {
           connection.closeConnection(con);

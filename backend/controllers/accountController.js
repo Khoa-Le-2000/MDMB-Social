@@ -311,7 +311,7 @@ function verifyEmail(req, res) {
     var Name = payload.Name;
 
     AccountDAO.getAccountId(Email, Phone, (Account) => {
-      
+
       if (Account) return res.status(401).send({ error: 'Account created' });
       else {
         bcrypt.hash(Password, 10).then((hash) => {
@@ -379,12 +379,15 @@ function registerByGoogle(req, res) {
   })
 }
 
-function getListFriend(req, res) {
+async function getListFriend(req, res) {
   var accountId = req.query.accountId;
-  AccountDAO.getListFriend(accountId, (result) => {
-    if (result) res.status(200).send({ result: result });
-    else res.status(401).send({ result: "failure" });
-  });
+  let listFriend = await AccountDAO.getListFriend(accountId);
+  if (listFriend) res.status(200).send({ result: listFriend });
+  else res.status(401).send({ result: "get list friend failed" });
+  // , (result) => {
+  //   if (result) res.status(200).send({ result: result });
+  //   else res.status(401).send({ result: "failure" });
+  // });
 }
 
 module.exports = {

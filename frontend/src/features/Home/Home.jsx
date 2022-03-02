@@ -23,6 +23,7 @@ function Home() {
       query: { accountId: auth?.accountId },
     });
     socket.on('chat message', (data) => {
+      console.log(data);
       setChat([...chat, data]);
     });
   }, [auth?.accessToken, auth?.refreshToken, chat, auth?.accountId]);
@@ -30,12 +31,16 @@ function Home() {
 
   const handleMessageChange = (e) => {
     setMessage(e.target.value);
-    socket.emit('typing', '4');
+    if (e.target.value.length > 0) {
+      socket.emit('typing', '4');
+    } else {
+      socket.emit('stop typing', '4');
+    }
   };
 
   const handleSendMessage = (e) => {
     e.preventDefault();
-    socket.emit('chat message', message, '4', (res) => {});
+    socket.emit('chat message', message, '4', (res) => { });
   };
   const onHandleRefreshToken = () => {
     dispatch(refreshToken(auth.refreshToken));
