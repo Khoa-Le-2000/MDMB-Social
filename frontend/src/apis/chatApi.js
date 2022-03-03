@@ -5,5 +5,10 @@ const chatApi = {
     const url = `/account/list-friend?accountId=${user.accountId}`;
     return axiosClient.get(url);
   },
+
+  getListMessage: async (myAccountId, yourAccountId) => {
+    const url = `/chat/old-message?accountId=${myAccountId}&friendId=${yourAccountId}`;
+    return axiosClient.get(url);
+  },
 };
 export default chatApi;

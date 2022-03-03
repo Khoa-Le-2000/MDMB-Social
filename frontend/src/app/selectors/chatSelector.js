@@ -1,1 +1,1 @@
-export const getListFriend = (state) => state.chat.listFriend;
+export const getListMessageLatest = (state) => state.chat.listMessage;

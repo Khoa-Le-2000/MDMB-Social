@@ -1,13 +1,9 @@
 import { Search } from '@styled-icons/heroicons-solid';
 import LogoImg from 'assets/images/logos/logo.jpg';
-import CardConvention from 'features/ChatOverView/ChatConversations/CardConversation/CardConversation';
+import CardConvention from 'features/ChatOverView/CardConversation/CardConversation';
 import { Form, InputGroup as BsInputGroup } from 'react-bootstrap';
 import styled from 'styled-components';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getListConversation } from 'app/actions/conversations';
-import { getAuth } from 'app/selectors/loginSelector';
-import { getConversations } from 'app/selectors/conversations';
 
 const SideBar = styled.div`
   width: 100%;
@@ -84,14 +80,8 @@ const Tab = styled.div`
   background-color: ${(props) => (props.selected ? '#eae1eb' : 'none')};
 `;
 
-function ChatConversations({ onSelectRoom }) {
-  const dispatch = useDispatch();
-  const accountId = useSelector(getAuth)?.accountId;
-  const listConversation = useSelector(getConversations);
-
-  React.useEffect(() => {
-    dispatch(getListConversation(accountId));
-  }, [accountId, dispatch]);
+function SideBarLeft({ onSelectRoom }) {
+  React.useEffect(() => {});
 
   return (
     <SideBar>
@@ -107,15 +97,17 @@ function ChatConversations({ onSelectRoom }) {
         <Tab>Message unread</Tab>
       </Tabs>
       <Wrapper>
-        {listConversation?.map((item, index) => (
-          <CardConvention
-            key={index}
-            onSelectRoom={onSelectRoom}
-            conversation={item}
-          />
-        ))}
+        {Array(12)
+          .fill(1, 1, 13)
+          .map((item, index) => (
+            <CardConvention
+              key={index}
+              id={index}
+              onSelectRoom={onSelectRoom}
+            />
+          ))}
       </Wrapper>
     </SideBar>
   );
 }
-export default ChatConversations;
+export default SideBarLeft;

@@ -7,9 +7,10 @@ export const getListConversationStart = () => {
   };
 };
 
-export const getListConversationSuccess = (payload) => {
+export const getListConversationSuccess = (listConversation) => {
   return {
     type: ConversationActionTypes.GET_LIST_CONVERSATION_SUCCESS,
+    payload: listConversation,
   };
 };
 
@@ -23,8 +24,12 @@ export const getListConversationFailure = (message) => {
 export const getListConversation = (myAccountId) => async (dispatch) => {
   dispatch(getListConversationStart());
   const data = await conversationApi.getListConversation(myAccountId);
-  if (data?.listConversation) {
-    dispatch(getListConversationSuccess(data));
+  if (data?.result[0]) {
+    dispatch(
+      getListConversationSuccess({
+        listConversation: data?.result[0],
+      })
+    );
   } else {
     dispatch(getListConversationFailure('Cannot get list conversation!'));
   }

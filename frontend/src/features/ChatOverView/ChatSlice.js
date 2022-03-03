@@ -5,9 +5,7 @@ const initialState = {
   error: false,
   success: false,
   message: null,
-  listConversation: [],
-  listFriend: [],
-  room: null,
+  listMessage: [],
 };
 
 const chatReducer = (state = initialState, action) => {

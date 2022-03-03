@@ -26,7 +26,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import * as yup from 'yup';
 import './register.scss';
-// import { useNavigate } from 'react-router-dom';
 
 const IconEye = styled(Eye)`
   width: 1.2rem;
@@ -168,7 +167,6 @@ function Register() {
     if (isLocalType) {
       setShow(false);
     } else {
-      console.log('show');
       dispatch(resetRegister());
       navigate('/');
     }
@@ -176,10 +174,11 @@ function Register() {
 
   const onRegisterHandler = (data, e) => {
     e.preventDefault();
-    if (dataFill?.email) {
+    if (dataFill) {
       data['google'] = true;
+      dispatch(registerUser(data, navigate));
     }
-    dispatch(registerUser(data, navigate));
+    dispatch(registerUser(data));
   };
 
   let priorityError = 0;

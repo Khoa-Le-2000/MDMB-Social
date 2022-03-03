@@ -7,7 +7,7 @@ const initialState = {
   message: null,
   listConversation: [],
 };
-const chatConversationReducer = (state = initialState, action) => {
+const conversationsReducer = (state = initialState, action) => {
   switch (action.type) {
     case ConversationActionTypes.GET_LIST_CONVERSATION_START:
       return {
@@ -39,4 +39,4 @@ const chatConversationReducer = (state = initialState, action) => {
   }
 };
 
-export default chatConversationReducer;
+export default conversationsReducer;

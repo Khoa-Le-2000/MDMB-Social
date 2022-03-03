@@ -68,18 +68,7 @@ const SeenStatus = styled(CheckCircle)`
   color: ${({ seen }) => (seen ? '#551ecc' : 'none')};
 `;
 function Card(props) {
-  const { messageId, name, avatar, content, sentDate, seenDate, owner, type } =
-    props;
-  console.log('prosp: ', {
-    messageId,
-    name,
-    avatar,
-    content,
-    sentDate,
-    seenDate,
-    owner,
-    type,
-  });
+  const { name, avatar, content, sentDate, seenDate, owner, type } = props;
 
   return (
     <Wrapper owner={owner ? 1 : 0}>

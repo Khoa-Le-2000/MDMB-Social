@@ -5,7 +5,8 @@ import styled from 'styled-components';
 import io from 'socket.io-client';
 import React from 'react';
 import { getAuth } from 'app/selectors/loginSelector';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getMessagesLatest } from 'app/actions/chat';
 
 const Wrapper = styled(Container)`
   height: 100vh;
@@ -22,6 +23,7 @@ const ColBS = styled(Col)`
 let socket;
 function ChatOverView() {
   const auth = useSelector(getAuth);
+  const dispatch = useDispatch();
   const [currentWindow, setCurrentWindow] = React.useState(false);
 
   React.useEffect(() => {
@@ -47,8 +49,9 @@ function ChatOverView() {
     // });
   };
 
-  const handleSelectRoomClick = (roomId) => {
-    setCurrentWindow(roomId);
+  const handleSelectRoomClick = (yourAccountId) => {
+    setCurrentWindow(yourAccountId);
+    dispatch(getMessagesLatest(auth?.accountId, yourAccountId));
   };
 
   const messages = [

@@ -56,33 +56,30 @@ const Time = styled.div`
   min-width: 80px;
 `;
 
-function CardConvention({ onSelectRoom, id }) {
-  const onRoomChange = (room) => {
-    onSelectRoom(id);
+function CardConvention({ onSelectRoom, conversation }) {
+  const {
+    AccountId: yourAccountId,
+    Name: name,
+    Avatar: avatar,
+    LastMessage: lastMessage,
+    LastOnline: lastOnline,
+  } = conversation;
+
+  const onRoomChange = () => {
+    onSelectRoom(yourAccountId);
   };
 
   return (
     <Wrapper>
       <Card onClick={onRoomChange}>
         <Avatar>
-          <img
-            src="https://images.unsplash.com/photo-1645947124804-4824d2621a17?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwzNnx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60"
-            alt=""
-          />
+          <img src={avatar} alt="" />
         </Avatar>
         <CardContent>
-          <Name>Flo Stein</Name>
-          <Message>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab dolore
-            consequuntur, placeat maiores impedit inventore totam rem
-            repellendus praesentium voluptas enim eveniet dolor perspiciatis
-            labore architecto voluptatem sit ratione fugiat, quod dolores
-            laudantium vitae itaque nesciunt asperiores! Rem, veniam sapiente.
-            Repellendus cumque reprehenderit eum excepturi aspernatur sapiente
-            labore hic earum.
-          </Message>
+          <Name>{name}</Name>
+          <Message>{lastMessage}</Message>
         </CardContent>
-        <Time>2 hour ago</Time>
+        <Time>{lastOnline}</Time>
       </Card>
     </Wrapper>
   );

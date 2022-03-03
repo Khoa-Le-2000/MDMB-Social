@@ -13,6 +13,7 @@ const initialState = {
     email: null,
     name: null,
     password: null,
+    phone: null,
   },
 };
 
@@ -25,6 +26,7 @@ const registerReducer = (state = initialState, action) => {
           email: null,
           name: null,
           password: null,
+          phone: null,
         },
         error: false,
         isFetching: false,
