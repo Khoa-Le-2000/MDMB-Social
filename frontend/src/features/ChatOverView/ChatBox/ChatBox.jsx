@@ -1,12 +1,11 @@
-import React from 'react';
-import styled from 'styled-components';
-import { Row, Col } from 'react-bootstrap';
-import { Photograph, PaperClip } from '@styled-icons/heroicons-solid';
+import { Send } from '@styled-icons/boxicons-solid';
 import { EmojiHappy } from '@styled-icons/heroicons-outline';
-import { Send, Sticker } from '@styled-icons/boxicons-solid';
-import { HoverMixin } from 'styles/MixinStyles';
+import { PaperClip, Photograph } from '@styled-icons/heroicons-solid';
 import { ReactComponent as StickerTest } from 'assets/images/icons/sticker.svg';
-
+import React from 'react';
+import { Col, Row } from 'react-bootstrap';
+import styled from 'styled-components';
+import { HoverMixin } from 'styles/MixinStyles';
 
 const Wrapper = styled.div`
   height: 100%;
@@ -23,7 +22,6 @@ const FeaturesTop = styled.div`
   width: 15%;
   height: 100%;
   padding: 5px;
-  
 `;
 
 const IConUploadImage = styled(Photograph)`
@@ -32,7 +30,6 @@ const IConUploadImage = styled(Photograph)`
   padding: 5px;
   ${HoverMixin.default};
   border-radius: 50%;
-
 `;
 const IconUploadFile = styled(PaperClip)`
   width: 2rem;
@@ -53,10 +50,9 @@ const SendMessenger = styled(Send)`
   padding: 5px;
   margin-top: 10%;
   transition: all 0.3s ease-in-out;
-  &:hover{
+  &:hover {
     transform: rotate(-90deg);
-  cursor: pointer;
-
+    cursor: pointer;
   }
 `;
 const Emoji = styled(EmojiHappy)`
@@ -69,7 +65,7 @@ const Emoji = styled(EmojiHappy)`
   border-radius: 50%;
 `;
 
-const Input = styled.p`
+const Input = styled.input`
   white-space: pre-wrap;
   margin-bottom: 0;
   padding: 10px;
@@ -91,11 +87,25 @@ const Input = styled.p`
 const IconSticker = styled(StickerTest)`
   width: 2rem;
   height: 2rem;
-  padding: 5px;   
+  padding: 5px;
   border-radius: 50%;
   ${HoverMixin.default};
-`
-function ChatInput() {
+`;
+
+function ChatBox({ onSendMessage, onChangeMessage }) {
+  const [message, setMessage] = React.useState('');
+
+  const handleChangeMessage = (e) => {
+    setMessage(e.target.value);
+    onChangeMessage(e.target.value);
+  };
+
+  const onSendClick = (e) => {
+    e.preventDefault();
+    onSendMessage(message);
+    setMessage('');
+  };
+
   return (
     <Wrapper>
       <Row>
@@ -110,10 +120,10 @@ function ChatInput() {
       <Row>
         <Col lg={12}>
           <WrapperInput>
-            <Input contentEditable />
+            <Input contentEditable onChange={handleChangeMessage} />
             <FeaturesRight>
               <Emoji />
-              <SendMessenger />
+              <SendMessenger onClick={onSendClick} />
             </FeaturesRight>
           </WrapperInput>
         </Col>
@@ -121,4 +131,4 @@ function ChatInput() {
     </Wrapper>
   );
 }
-export default ChatInput;
+export default ChatBox;

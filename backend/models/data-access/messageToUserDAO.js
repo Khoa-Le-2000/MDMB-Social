@@ -54,15 +54,54 @@ function getOlderMessage(fromAccount, toAccount, messageId, Callback) {
 
 function addMessage(fromAccount, toAccount, content, type, Callback) {
     var con = connection.createConnection();
-    con.connect(function (err) {
+    con.connect(async function (err) {
         if (err) throw err;
-        // console.log("Connected!");
-        var sql = `insert into MDMB.MessageToUser(FromAccount, ToAccount, Content, Type) values(?,?,?,?)`;
+        await connection.setTimeZone(con);
+        var sql = `insert into MDMB.MessageToUser(FromAccount, ToAccount, Content, Type) values(?,?,?,?);`;
         con.query(sql, [fromAccount, toAccount, content, type],
             function (err, result) {
                 connection.closeConnection(con);
-                if (err) return Callback(false);
+                if (err) {
+                    console.log(err);
+                    return Callback(false);
+                }
                 else return Callback(true);
+            });
+    });
+}
+
+async function seenMessage(messageId) {
+    var con = connection.createConnection();
+    return new Promise((resolve, reject) => {
+        con.connect(async function (err) {
+            if (err) throw err;
+            await connection.setTimeZone(con);
+            var sql = `UPDATE MDMB.MessageToUser SET SeenDate = NOW() WHERE MessageId = ?`;
+            con.query(sql, [messageId],
+                function (err, result) {
+                    connection.closeConnection(con);
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    }
+                    else resolve(true);
+                });
+        });
+    });
+}
+
+function getMessageById(messageId) {
+    var con = connection.createConnection();
+    return new Promise((resolve, reject) => {
+        let sql = `SELECT * FROM MDMB.MessageToUser WHERE MessageId = ?`;
+        con.query(sql, [messageId],
+            function (err, result) {
+                connection.closeConnection(con);
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                }
+                else resolve(result);
             });
     });
 }
@@ -70,5 +109,7 @@ function addMessage(fromAccount, toAccount, content, type, Callback) {
 module.exports = {
     getOldMessage,
     getOlderMessage,
-    addMessage
+    addMessage,
+    seenMessage,
+    getMessageById
 }

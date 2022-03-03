@@ -13,20 +13,19 @@ const Wrapper = styled.div`
     background: linear-gradient(to right, #f5f5f5, #f5f5f5);
   }
   border-radius: 10px;
-  background: ${props=> props.texting?'#eae1eb':"none"};
-  border-right: ${props=> props.texting?'3px solid #82135f':'none'};
+  /* background: ${(props) => (props.texting ? '#eae1eb' : 'none')};
+  border-right: ${(props) => (props.texting ? '3px solid #82135f' : 'none')}; */
 `;
 const Card = styled.div`
   display: flex;
   max-height: 52px;
   width: 100%;
-  /* overflow: hidden; */
-
+  cursor: pointer;
 `;
 const CardContent = styled.div`
   display: flex;
   flex-direction: column;
-  width:100%;
+  width: 100%;
 `;
 
 const Avatar = styled.div`
@@ -48,20 +47,23 @@ const Name = styled.h4`
 const Message = styled.p`
   font-size: 14px;
   margin-bottom: 8px;
-  display:inline-block;
-  overflow:hidden;
+  display: inline-block;
+  overflow: hidden;
 `;
 const Time = styled.div`
   font-size: 0.8rem;
-  display:inline-block;
+  display: inline-block;
   min-width: 80px;
 `;
 
-function ChatCard(props) {
-  
+function CardConvention({ onSelectRoom, id }) {
+  const onRoomChange = (room) => {
+    onSelectRoom(id);
+  };
+
   return (
-    <Wrapper texting={props.texting}>
-      <Card>
+    <Wrapper>
+      <Card onClick={onRoomChange}>
         <Avatar>
           <img
             src="https://images.unsplash.com/photo-1645947124804-4824d2621a17?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwzNnx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60"
@@ -70,7 +72,15 @@ function ChatCard(props) {
         </Avatar>
         <CardContent>
           <Name>Flo Stein</Name>
-          <Message> Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab dolore consequuntur, placeat maiores impedit inventore totam rem repellendus praesentium voluptas enim eveniet dolor perspiciatis labore architecto voluptatem sit ratione fugiat, quod dolores laudantium vitae itaque nesciunt asperiores! Rem, veniam sapiente. Repellendus cumque reprehenderit eum excepturi aspernatur sapiente labore hic earum.</Message>
+          <Message>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab dolore
+            consequuntur, placeat maiores impedit inventore totam rem
+            repellendus praesentium voluptas enim eveniet dolor perspiciatis
+            labore architecto voluptatem sit ratione fugiat, quod dolores
+            laudantium vitae itaque nesciunt asperiores! Rem, veniam sapiente.
+            Repellendus cumque reprehenderit eum excepturi aspernatur sapiente
+            labore hic earum.
+          </Message>
         </CardContent>
         <Time>2 hour ago</Time>
       </Card>
@@ -78,4 +88,4 @@ function ChatCard(props) {
   );
 }
 
-export default ChatCard;
+export default CardConvention;

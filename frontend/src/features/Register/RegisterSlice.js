@@ -1,4 +1,4 @@
-import { AuthActionTypes } from 'app/actions/types/authActionTypes';
+import { AuthActionTypes } from 'app/actions/types/authTypes';
 
 const initialState = {
   error: false,
