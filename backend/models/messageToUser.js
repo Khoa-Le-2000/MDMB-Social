@@ -1,11 +1,13 @@
-class Account {
-    constructor(messageId, fromAccount, sendDate, content, type, toAccount, seenDate) {
+class MessageToUser {
+    constructor(messageId, fromAccount, sentDate, content, type, toAccount, seenDate) {
         this.MessageId = messageId;
         this.FromAccount = fromAccount;
-        this.SendDate = sendDate;
+        this.SentDate = sentDate;
         this.Content = content;
         this.Type = type;
         this.ToAccount = toAccount;
         this.SeenDate = seenDate;
     }
 }
+
+exports.MessageToUser = MessageToUser;

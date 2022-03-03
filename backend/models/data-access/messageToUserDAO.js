@@ -9,7 +9,7 @@ function getOldMessage(fromAccount, toAccount, Callback) {
         var sql = `SELECT * 
         FROM MessageToUser 
         Where (FromAccount=? and ToAccount=?) or (FromAccount=? and ToAccount=?)
-        ORDER BY SendDate DESC
+        ORDER BY SentDate DESC
         LIMIT 20`;
         con.query(sql, [fromAccount, toAccount, toAccount, fromAccount],
             function (err, result) {
@@ -18,7 +18,7 @@ function getOldMessage(fromAccount, toAccount, Callback) {
                 if (result.length > 0) {
                     var listMessage = [];
                     result.forEach(item => {
-                        listMessage.push(new messageToUser.MessageToUser(item.MessageId, item.FromAccount, item.SendDate, item.Content, item.Type, item.ToAccount, item.SeenDate));
+                        listMessage.push(new messageToUser.MessageToUser(item.MessageId, item.FromAccount, item.SentDate, item.Content, item.Type, item.ToAccount, item.SeenDate));
                     });
                     return Callback(listMessage);
                 } else return Callback(false);
@@ -35,7 +35,7 @@ function getOlderMessage(fromAccount, toAccount, messageId, Callback) {
         FROM MessageToUser
         Where ((FromAccount=? and ToAccount=?) or (FromAccount=? and ToAccount=?))
         and (MessageId < ?)
-        ORDER BY SendDate DESC
+        ORDER BY SentDate DESC
         LIMIT 20`;
         con.query(sql, [fromAccount, toAccount, toAccount, fromAccount, messageId],
             function (err, result) {
@@ -44,7 +44,7 @@ function getOlderMessage(fromAccount, toAccount, messageId, Callback) {
                 if (result.length > 0) {
                     var listMessage = [];
                     result.forEach(item => {
-                        listMessage.push(new messageToUser.MessageToUser(item.MessageId, item.FromAccount, item.SendDate, item.Content, item.Type, item.ToAccount, item.SeenDate));
+                        listMessage.push(new messageToUser.MessageToUser(item.MessageId, item.FromAccount, item.SentDate, item.Content, item.Type, item.ToAccount, item.SeenDate));
                     });
                     return Callback(listMessage);
                 } else return Callback(false);
