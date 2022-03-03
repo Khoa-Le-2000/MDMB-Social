@@ -24,7 +24,7 @@ function getChatList(FromAccount, ToAccount, Callback) {
     con.connect(function (err) {
         if (err) throw err;
         // console.log("Connected!");
-        var sql = `SELECT * from MDMB.MessageToUser  where FromAccount =? and ToAccount =? order by SentDate desc limit 1`;
+        var sql = `SELECT * from MDMB.MessageToUser as msg join MDMB.Account as acc on msg.ToAccount = acc.AccountId  where FromAccount =? and ToAccount =? order by SentDate desc limit 1`;
         con.query(sql, [FromAccount, ToAccount],
             function (err, result) {
                 connection.closeConnection(con);
@@ -37,7 +37,8 @@ function getChatList(FromAccount, ToAccount, Callback) {
                     SentDate:result[0].SentDate,
                     SeenDate:result[0].SeenDate,
                     Type:result[0].Type,
-                    MessageId:result[0].SentDate.MessageId
+                    MessageId:result[0].MessageId,
+                    Avatar:result[0].Avatar
                 })
             });
     });
