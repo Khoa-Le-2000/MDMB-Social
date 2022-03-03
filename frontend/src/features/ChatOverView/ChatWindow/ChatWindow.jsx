@@ -39,6 +39,7 @@ function ChatWindow({
   onChangeMessage,
   currentWindow,
   messages,
+  myAccountId,
 }) {
   return (
     <Wrapper>
@@ -47,7 +48,7 @@ function ChatWindow({
         <WrapperMessageContent>
           <Col lg={12}>
             {currentWindow === 1 ? (
-              <WindowContent messages={messages} />
+              <WindowContent messages={messages} myAccountId={myAccountId} />
             ) : (
               <WindowEmpty />
             )}

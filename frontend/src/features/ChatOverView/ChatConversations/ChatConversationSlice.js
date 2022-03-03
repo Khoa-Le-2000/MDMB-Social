@@ -1,4 +1,4 @@
-import { ChatActionTypes } from 'app/actions/types/chatTypes';
+import { ConversationActionTypes } from 'app/actions/types/conversationTypes';
 
 const initialState = {
   isFetching: false,
@@ -6,13 +6,10 @@ const initialState = {
   success: false,
   message: null,
   listConversation: [],
-  listFriend: [],
-  room: null,
 };
-
-const chatReducer = (state = initialState, action) => {
+const chatConversationReducer = (state = initialState, action) => {
   switch (action.type) {
-    case ChatActionTypes.GET_LIST_FRIEND_START:
+    case ConversationActionTypes.GET_LIST_CONVERSATION_START:
       return {
         ...state,
         isFetching: true,
@@ -20,16 +17,16 @@ const chatReducer = (state = initialState, action) => {
         success: false,
         message: null,
       };
-    case ChatActionTypes.GET_LIST_FRIEND_SUCCESS:
+    case ConversationActionTypes.GET_LIST_CONVERSATION_SUCCESS:
       return {
         ...state,
         isFetching: false,
         error: false,
         success: true,
         message: null,
-        listFriend: action.payload.listFriend,
+        listConversation: action.payload.listConversation,
       };
-    case ChatActionTypes.GET_LIST_FRIEND_FAILURE:
+    case ConversationActionTypes.GET_LIST_CONVERSATION_FAILURE:
       return {
         ...state,
         isFetching: false,
@@ -42,4 +39,4 @@ const chatReducer = (state = initialState, action) => {
   }
 };
 
-export default chatReducer;
+export default chatConversationReducer;

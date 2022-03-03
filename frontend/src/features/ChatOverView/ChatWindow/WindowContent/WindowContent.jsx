@@ -6,10 +6,14 @@ import styled from 'styled-components';
 const Wrapper = styled.div`
   padding: 0px 5px;
 `;
-function WindowContent({ messages }) {
+function WindowContent({ messages, myAccountId }) {
   return (
     <Wrapper>
-      {messages ? <Messages messages={messages} /> : <MessageEmpty />}
+      {messages ? (
+        <Messages messages={messages} myAccountId={myAccountId} />
+      ) : (
+        <MessageEmpty />
+      )}
     </Wrapper>
   );
 }

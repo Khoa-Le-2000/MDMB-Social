@@ -10,14 +10,14 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { Route, Routes } from 'react-router-dom';
 import './App.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Chat from 'features/Chat/Chat';
+import ChatOverView from 'features/ChatOverView/ChatOverView';
 
 function App() {
   return (
     <>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/chat" element={<Chat />} />
+        <Route path="/chat" element={<ChatOverView />} />
         <Route
           path="/dashboard"
           element={

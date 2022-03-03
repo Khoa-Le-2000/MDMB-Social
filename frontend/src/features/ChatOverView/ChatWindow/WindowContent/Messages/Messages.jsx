@@ -1,23 +1,20 @@
-import Receiver from 'features/ChatOverView/ChatWindow/WindowContent/Messages/Receiver/Receiver';
-import Sender from 'features/ChatOverView/ChatWindow/WindowContent/Messages/Sender/Sender';
+import CardMessage from 'features/ChatOverView/ChatWindow/WindowContent/Messages/CardMessage/CardMessage';
 import React from 'react';
 
-function Messages({ messages }) {
-  return (
-    messages &&
-    messages?.map((item, index) => (
-      <Receiver
-        key={index}
-        seen={item.seen}
-        id={item.id}
-        name={item.name}
-        avatar={item.avatar}
-        message={item.message}
-        time={item.time}
-        type={item.type}
-        owner={item.owner}
-      />
-    ))
-  );
+function Messages({ messages, myAccountId }) {
+  console.log('🚀 :: file: Messages.jsx :: line 5 :: myAccountId', myAccountId);
+  return messages.map((item, index) => (
+    <CardMessage
+      key={item.MessageId}
+      messageId={item.MessageId}
+      seenDate={item.seenDate}
+      sentDate={item.SentDate}
+      name={item.FromAccount === myAccountId ? 'You' : 'Receiver'}
+      avatar={item.avatar}
+      content={item.Content}
+      type={item.Type === 0 ? 'text' : 'image'}
+      owner={item.FromAccount === myAccountId}
+    />
+  ));
 }
 export default Messages;
