@@ -38,13 +38,13 @@ function getOlderMessage(req, res) {
 function getChatList(req, res) {
     let AccountId = req.body.AccountId;
     chatDao.getAccountReceived(AccountId, (AccountReceived) => {
-        if (!AccountReceived) return res.send([{ FromAccount: null, ToAccount: null, Content: null }])
+        if (!AccountReceived) return res.status(401).send({result: "No messenger found"})
         var List = []
         for (let i = 0; i < AccountReceived.length; i++) {
             chatDao.getChatList(AccountId, AccountReceived[i], (ChatList) => {
                 List.push(ChatList);
                 if (AccountReceived.length == List.length) {
-                    return res.send(List)
+                    return res.status(200).send(List)
                 }
             })
         }
