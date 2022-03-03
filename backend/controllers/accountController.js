@@ -393,7 +393,7 @@ async function getListFriend(req, res) {
 async function getListFriendWithLastMessage(req, res) {
   var accountId = req.query.accountId;
   let listFriend = await AccountDAO.getListFriendWithLastMessage(accountId);
-  if (listFriend) res.status(200).send({ result: listFriend });
+  if (listFriend) res.status(200).send({ result: listFriend[0] });
   else res.status(401).send({ result: "get list friend failed" });
 }
 
