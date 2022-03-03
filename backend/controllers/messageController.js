@@ -1,7 +1,7 @@
 const messageToUserDAO = require('../models/data-access/messageToUserDAO');
 
 function getOldMessage(req, res) {
-    console.log("get old message");
+    // console.log("get old message");
 
     let accountId = req.query.accountId;
     let friendId = req.query.friendId;
@@ -18,7 +18,7 @@ function getOldMessage(req, res) {
 }
 
 function getOlderMessage(req, res) {
-    console.log("get older message");
+    // console.log("get older message");
 
     let accountId = req.query.accountId;
     let friendId = req.query.friendId;
