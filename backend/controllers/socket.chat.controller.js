@@ -1,11 +1,11 @@
 const socketUser = require('../models/socket.user');
-const messageController = require('../models/data-access/messageToUserDAO');
+const messageToUserDAO = require('../models/data-access/messageToUserDAO');
 
 function chat(io, socket) {
     socket.on('chat message', async (msg, accountId, response) => {
         console.log("chat message: " + msg + " to accountId: " + accountId);
 
-        messageController.addMessage(socket.accountId, accountId, msg, 0, async (res) => {
+        messageToUserDAO.addMessage(socket.accountId, accountId, msg, 0, async (res) => {
             if (res) {
                 let user = await socketUser.getUserByAccountId(accountId);
                 if (user) {
@@ -22,8 +22,10 @@ function chat(io, socket) {
                         }
                     });
                 }
+                console.log("chat message sent");
                 response('ok');
             } else {
+                console.log("chat message not sent");
                 response('failed');
             }
         });
@@ -39,13 +41,27 @@ function chat(io, socket) {
         }
     });
 
-    socket.on('stop typing', async (accountIdFrom, accountIdTo) => {
-        console.log("stop typing: " + accountIdFrom + " to accountId: " + accountIdTo);
+    socket.on('stop typing', async (accountIdTo) => {
+        console.log("stop typing: " + socket.accountId + " to accountId: " + accountIdTo);
         let user = await socketUser.getUserByAccountId(accountIdTo);
         if (user) {
             user.socketId.forEach(socketId => {
-                io.to(socketId).emit('stop typing', accountIdFrom);
+                io.to(socketId).emit('stop typing', socket.accountId);
             });
+        }
+    });
+
+    socket.on('seen message', async (messageId) => {
+        console.log("seen message: " + messageId);
+        let res = await messageToUserDAO.seenMessage(messageId);
+        if (res) {
+            let messageToUser = await messageToUserDAO.getMessageToUserById(messageId);
+            let socketIds = await socketUser.getUserByAccountId(messageToUser.ToAccount);
+            if (socketIds) {
+                socketIds.socketId.forEach(socketId => {
+                    io.to(socketId).emit('seen message', messageId);
+                });
+            }
         }
     });
 }
