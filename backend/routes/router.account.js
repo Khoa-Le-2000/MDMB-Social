@@ -12,4 +12,5 @@ api.post("/register-by-google", authMiddleware.verifyToken, accountController.re
 api.post("/update", authMiddleware.verifyToken, accountController.update);
 api.get("/verify", accountController.verifyEmail)
 api.get("/list-friend", authMiddleware.verifyToken, accountController.getListFriend);
+api.get("/list-friend-with-last-message", authMiddleware.verifyToken, accountController.getListFriendWithLastMessage);
 module.exports = api;

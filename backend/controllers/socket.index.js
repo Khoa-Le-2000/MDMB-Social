@@ -44,6 +44,7 @@ function socket(server) {
 
     io.on('connection', async (socket) => {
         let check = await checkAuthen(io, socket);
+        socket.auth = check;
         if (check) {
             console.log("socketio connected with socket id: " + socket.id + " and accountId: " + socket.accountId);
 

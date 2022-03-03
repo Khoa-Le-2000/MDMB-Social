@@ -390,6 +390,13 @@ async function getListFriend(req, res) {
   // });
 }
 
+async function getListFriendWithLastMessage(req, res) {
+  var accountId = req.query.accountId;
+  let listFriend = await AccountDAO.getListFriendWithLastMessage(accountId);
+  if (listFriend) res.status(200).send({ result: listFriend });
+  else res.status(401).send({ result: "get list friend failed" });
+}
+
 module.exports = {
   login,
   loginByGoogle,
@@ -398,5 +405,6 @@ module.exports = {
   update,
   verifyEmail,
   getListFriend,
+  getListFriendWithLastMessage,
   registerByGoogle
 }

@@ -46,6 +46,7 @@ function Home() {
     dispatch(refreshToken(auth.refreshToken));
   };
   const handleLogout = () => {
+    socket.close();
     dispatch(logout(auth?.accessToken));
     navigate('/');
   };

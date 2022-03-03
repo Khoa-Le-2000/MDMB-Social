@@ -70,8 +70,46 @@ function addMessage(fromAccount, toAccount, content, type, Callback) {
     });
 }
 
+async function seenMessage(messageId) {
+    var con = connection.createConnection();
+    return new Promise((resolve, reject) => {
+        con.connect(async function (err) {
+            if (err) throw err;
+            await connection.setTimeZone(con);
+            var sql = `UPDATE MDMB.MessageToUser SET SeenDate = NOW() WHERE MessageId = ?`;
+            con.query(sql, [messageId],
+                function (err, result) {
+                    connection.closeConnection(con);
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    }
+                    else resolve(true);
+                });
+        });
+    });
+}
+
+function getMessageById(messageId) {
+    var con = connection.createConnection();
+    return new Promise((resolve, reject) => {
+        let sql = `SELECT * FROM MDMB.MessageToUser WHERE MessageId = ?`;
+        con.query(sql, [messageId],
+            function (err, result) {
+                connection.closeConnection(con);
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                }
+                else resolve(result);
+            });
+    });
+}
+
 module.exports = {
     getOldMessage,
     getOlderMessage,
-    addMessage
+    addMessage,
+    seenMessage,
+    getMessageById
 }

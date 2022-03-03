@@ -154,6 +154,21 @@ function getListFriend(AccountId) {
   });
 }
 
+function getListFriendWithLastMessage(AccountId) {
+  let sql = `CALL MDMB.proc_get_list_friend_with_last_message(?);`
+  return new Promise((resolve, reject) => {
+    var con = connection.createConnection();
+    con.connect(function (err) {
+      if (err) throw err;
+      con.query(sql, [AccountId],
+        function (err, result) {
+          if (err) return reject(err);
+          resolve(result);
+        });
+    });
+  });
+}
+
 function updateLastOnline(AccountId) {
   let res;
   var con = connection.createConnection();
@@ -180,5 +195,6 @@ module.exports = {
   getAccountId,
   updateAccount,
   getListFriend,
+  getListFriendWithLastMessage,
   updateLastOnline
 }

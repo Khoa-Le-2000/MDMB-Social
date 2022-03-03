@@ -50,6 +50,20 @@ function chat(io, socket) {
             });
         }
     });
+
+    socket.on('seen message', async (messageId) => {
+        console.log("seen message: " + messageId);
+        let res = await messageToUserDAO.seenMessage(messageId);
+        if (res) {
+            let messageToUser = await messageToUserDAO.getMessageToUserById(messageId);
+            let socketIds = await socketUser.getUserByAccountId(messageToUser.ToAccount);
+            if (socketIds) {
+                socketIds.socketId.forEach(socketId => {
+                    io.to(socketId).emit('seen message', messageId);
+                });
+            }
+        }
+    });
 }
 
 module.exports = chat;
