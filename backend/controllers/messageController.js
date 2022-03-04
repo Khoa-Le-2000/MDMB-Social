@@ -1,13 +1,21 @@
 const messageToUserDAO = require('../models/data-access/messageToUserDAO');
+const cryptoMiddlware = require('../middlewares/crypto.middleware');
 
 function getOldMessage(req, res) {
     // console.log("get old message");
 
     let accountId = req.query.accountId;
     let friendId = req.query.friendId;
-    
-    messageToUserDAO.getOldMessage(accountId, friendId, (listMessage) => {
+
+    messageToUserDAO.getOldMessage(accountId, friendId, async (listMessage) => {
         if (listMessage) {
+            await listMessage.forEach(async message => {
+                try {
+                    message.Content = await cryptoMiddlware.decrypt(message.Content);
+                } catch (error) {
+                    // console.log(error);
+                }
+            });
             res.status(200).json(listMessage);
         } else {
             res.status(200).json({
@@ -24,8 +32,17 @@ function getOlderMessage(req, res) {
     let friendId = req.query.friendId;
     let messageId = req.query.messageId;
 
-    messageToUserDAO.getOlderMessage(accountId, friendId, messageId, (listMessage) => {
+    messageToUserDAO.getOlderMessage(accountId, friendId, messageId, async (listMessage) => {
         if (listMessage) {
+            await listMessage.forEach(async message => {
+                try {
+                    // console.log('message: ' + message.Content);
+                    message.Content = await cryptoMiddlware.decrypt(message.Content);
+                    // console.log('decrypted msg: ' + message.Content);
+                } catch (err) {
+                    // console.log(err);
+                }
+            });
             res.status(200).json(listMessage);
         } else {
             res.status(200).json({

@@ -1,9 +1,13 @@
 const socketUser = require('../models/socket.user');
 const messageToUserDAO = require('../models/data-access/messageToUserDAO');
+const cryptoMiddlware = require('../middlewares/crypto.middleware');
 
 function chat(io, socket) {
     socket.on('chat message', async (msg, accountId, response) => {
         console.log("chat message: " + msg + " to accountId: " + accountId);
+        
+        msg = await cryptoMiddlware.encrypt(msg);
+        console.log('encrypted msg: ' + msg);
 
         messageToUserDAO.addMessage(socket.accountId, accountId, msg, 0, async (res, messageId) => {
             if (res) {

@@ -3,9 +3,10 @@ const messageToUser = require('../messageToUser');
 
 function getOldMessage(fromAccount, toAccount, Callback) {
     var con = connection.createConnection();
-    con.connect(function (err) {
+    con.connect(async function (err) {
         if (err) throw err;
         // console.log("Connected!");
+        await connection.setTimeZone(con);
         var sql = `SELECT * 
         FROM MessageToUser 
         Where (FromAccount=? and ToAccount=?) or (FromAccount=? and ToAccount=?)
