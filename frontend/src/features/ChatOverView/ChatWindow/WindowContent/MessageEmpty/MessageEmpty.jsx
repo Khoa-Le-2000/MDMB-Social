@@ -30,8 +30,6 @@ const Title = styled.div`
   50% { transform: rotate(0deg);}
   75% { transform: rotate(-20deg);color: #9a58d8}
   100% { transform: rotate(0deg);}
-
-  
 }
 `;
 const Description = styled.div`
