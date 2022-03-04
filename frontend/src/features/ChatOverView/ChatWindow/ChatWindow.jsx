@@ -46,9 +46,10 @@ function ChatWindow({
   myAccountId,
   messages,
   partner,
+  typing,
 }) {
   const { roomId } = useParams();
-
+  console.log(+roomId, +currentWindow);
   return (
     <Wrapper>
       <ChatHeader />
@@ -56,7 +57,11 @@ function ChatWindow({
         <WrapperMessageContent>
           <Col lg={12}>
             {+roomId === +currentWindow ? (
-              <WindowContent messages={messages} partner={partner} />
+              <WindowContent
+                messages={messages}
+                partner={partner}
+                typing={typing}
+              />
             ) : (
               <WindowEmpty />
             )}

@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import dayjs from 'dayjs';
+import { Col, Row } from 'react-bootstrap';
 import relativeTime from 'dayjs/plugin/relativeTime';
 dayjs.extend(relativeTime);
 
@@ -10,34 +11,26 @@ const Wrapper = styled.div`
   transition-duration: 0.2s;
   overflow-y: hidden;
   overflow-x: hidden;
-  padding: 10px;
-  padding-left: 0;
+  padding: 10px 0;
   &:hover {
     background: linear-gradient(to right, #f5f5f5, #f5f5f5);
   }
   border-radius: 10px;
-  /* background: ${(props) => (props.texting ? '#eae1eb' : 'none')};
-  border-right: ${(props) => (props.texting ? '3px solid #82135f' : 'none')}; */
 `;
 const Card = styled.div`
   display: flex;
-  max-height: 52px;
-  width: 100%;
   cursor: pointer;
 `;
 const CardContent = styled.div`
   display: flex;
   flex-direction: column;
-  width: 100%;
 `;
 
 const Avatar = styled.div`
-  padding-right: 10px;
+  margin-right: 10px;
   img {
     width: 52px;
     height: 52px;
-    /* border: 1px solid rgba(255, 255, 255, 0.75); */
-    padding: 4px;
     border-radius: 50%;
     object-fit: cover;
   }
@@ -81,18 +74,24 @@ function CardConvention({ onSelectRoom, conversation }) {
 
   return (
     <Wrapper>
-      <Card onClick={onRoomChange}>
-        <Avatar>
-          <img src={avatar} alt="" />
-        </Avatar>
-        <CardContent>
-          <Name>{name}</Name>
-          <Message>
-            {lastMessage ? lastMessage : 'You are now connected on MDMB Social'}
-          </Message>
-        </CardContent>
-        <Time>{dayjs(LastOnline).fromNow()}</Time>
-      </Card>
+      <Row>
+        <Col>
+          <Card onClick={onRoomChange}>
+            <Avatar>
+              <img src={avatar} alt="" />
+            </Avatar>
+            <CardContent>
+              <Name>{name}</Name>
+              <Message>
+                {lastMessage
+                  ? lastMessage
+                  : 'You are now connected on MDMB Social'}
+              </Message>
+            </CardContent>
+            <Time>{dayjs(LastOnline).fromNow()}</Time>
+          </Card>
+        </Col>
+      </Row>
     </Wrapper>
   );
 }

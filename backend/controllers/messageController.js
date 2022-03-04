@@ -4,8 +4,8 @@ const chatDao = require('../models/data-access/chatDao');
 function getOldMessage(req, res) {
     // console.log("get old message");
 
-    let fromAccount = req.query.accountId;
-    let toAccount = req.query.friendId;
+    let accountId = req.query.accountId;
+    let friendId = req.query.friendId;
 
     messageToUserDAO.getOldMessage(accountId, friendId, (listMessage) => {
         if (listMessage) {

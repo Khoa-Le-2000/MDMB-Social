@@ -28,7 +28,10 @@ function ChatOverView() {
   const dispatch = useDispatch();
   const { roomId } = useParams();
   const [currentWindow, setCurrentWindow] = React.useState(roomId);
+  const [typing, setTyping] = React.useState(false);
   const navigate = useNavigate();
+  const messages = useSelector(getListMessageLatest);
+  const partner = useSelector(getPartner);
 
   React.useEffect(() => {
     socket = io?.connect(process.env.REACT_APP_API_URL, {
@@ -38,37 +41,57 @@ function ChatOverView() {
     });
   }, [auth?.accessToken, auth?.refreshToken, auth?.accountId]);
 
-  const handleTyping = (messageChange) => {
-    if (messageChange) {
-      socket.emit('typing', '4');
+  React.useEffect(() => {
+    socket?.on('typing', (typingId) => {
+      if (+typingId === +roomId) {
+        setTyping(true);
+      }
+    });
+    socket?.on('stop typing', (typingId) => {
+      if (+typingId === +roomId) {
+        setTyping(false);
+      }
+    });
+  }, [roomId]);
+
+  React.useEffect(() => {
+    socket?.on('chat message', (data) => {
+      console.log('🚀 :: file: ChatOverView.jsx :: line 59 :: data', data);
+    });
+  }, [messages]);
+
+  const handleTyping = ({ isTyping }) => {
+    if (isTyping) {
+      console.log('typing');
+      socket.emit('typing', roomId);
     } else {
-      socket.emit('stop typing', '4');
+      console.log('stop typing');
+      socket.emit('stop typing', roomId);
     }
   };
 
   const handleSendMessage = (message) => {
-    console.log('🚀 :: file: ChatOverView.jsx :: line 50 :: message', message);
-    // socket.emit('chat message', message, '4', (res) => {
-    //   if (res === 'ok') {
-    //   }
-    // });
+    console.log('🚀 :: file: ChatOverView.jsx :: line 68 :: message', message);
+    socket.emit('chat message', message, roomId, (res) => {
+      if (res === 'ok') {
+      }
+    });
   };
 
   const handleSelectRoomClick = (conversation) => {
     setCurrentWindow(conversation.AccountId);
-    dispatch(selectRoom(auth.accountId, conversation, navigate));
+    dispatch(selectRoom(conversation));
+    navigate(`/chat/${conversation.AccountId}`);
+    dispatch(getMessagesLatest(auth?.accountId, conversation.AccountId));
   };
-
-  const messages = useSelector(getListMessageLatest);
-  const partner = useSelector(getPartner);
 
   return (
     <Wrapper fluid>
       <RowBS>
-        <ColBS lg={3}>
+        <ColBS lg={3} xs={3} md={3}>
           <ChatConversations onSelectRoom={handleSelectRoomClick} />
         </ColBS>
-        <ColBS lg={9}>
+        <ColBS lg={9} xs={9} md={9}>
           <ChatWindow
             onSendMessage={handleSendMessage}
             onTyping={handleTyping}
@@ -76,6 +99,7 @@ function ChatOverView() {
             partner={partner}
             messages={messages}
             currentWindow={currentWindow}
+            typing={typing}
           />
         </ColBS>
       </RowBS>
