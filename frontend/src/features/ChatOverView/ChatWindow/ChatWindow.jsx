@@ -1,10 +1,15 @@
+import { getMessagesLatest } from 'app/actions/chat';
+import { getListMessageLatest, getPartner } from 'app/selectors/chat';
 import ChatInput from 'features/ChatOverView/ChatBox/ChatBox';
 import ChatHeader from 'features/ChatOverView/ChatHeader/ChatHeader';
 import WindowContent from 'features/ChatOverView/ChatWindow/WindowContent/WindowContent';
 import WindowEmpty from 'features/ChatOverView/ChatWindow/WindowEmpty/WindowEmpty';
 import React from 'react';
 import { Col, Row } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
+
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -36,19 +41,22 @@ const ColBS = styled(Col)``;
 
 function ChatWindow({
   onSendMessage,
-  onChangeMessage,
+  onTyping,
   currentWindow,
-  messages,
   myAccountId,
+  messages,
+  partner,
 }) {
+  const { roomId } = useParams();
+
   return (
     <Wrapper>
       <ChatHeader />
       <RowMessageInner>
         <WrapperMessageContent>
           <Col lg={12}>
-            {currentWindow === 1 ? (
-              <WindowContent messages={messages} myAccountId={myAccountId} />
+            {+roomId === +currentWindow ? (
+              <WindowContent messages={messages} partner={partner} />
             ) : (
               <WindowEmpty />
             )}
@@ -57,10 +65,7 @@ function ChatWindow({
       </RowMessageInner>
       <RowBS>
         <ColBS>
-          <ChatInput
-            onSendMessage={onSendMessage}
-            onChangeMessage={onChangeMessage}
-          />
+          <ChatInput onSendMessage={onSendMessage} onTyping={onTyping} />
         </ColBS>
       </RowBS>
     </Wrapper>

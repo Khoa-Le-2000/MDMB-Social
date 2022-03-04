@@ -1,4 +1,7 @@
 import styled from 'styled-components';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+dayjs.extend(relativeTime);
 
 const Wrapper = styled.div`
   display: flex;
@@ -48,7 +51,15 @@ const Message = styled.p`
   font-size: 14px;
   margin-bottom: 8px;
   display: inline-block;
+  width: 230px;
+
+  padding: 0;
   overflow: hidden;
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 const Time = styled.div`
   font-size: 0.8rem;
@@ -58,15 +69,14 @@ const Time = styled.div`
 
 function CardConvention({ onSelectRoom, conversation }) {
   const {
-    AccountId: yourAccountId,
     Name: name,
     Avatar: avatar,
     LastMessage: lastMessage,
-    LastOnline: lastOnline,
+    LastOnline,
   } = conversation;
 
   const onRoomChange = () => {
-    onSelectRoom(yourAccountId);
+    onSelectRoom(conversation);
   };
 
   return (
@@ -77,9 +87,11 @@ function CardConvention({ onSelectRoom, conversation }) {
         </Avatar>
         <CardContent>
           <Name>{name}</Name>
-          <Message>{lastMessage}</Message>
+          <Message>
+            {lastMessage ? lastMessage : 'You are now connected on MDMB Social'}
+          </Message>
         </CardContent>
-        <Time>{lastOnline}</Time>
+        <Time>{dayjs(LastOnline).fromNow()}</Time>
       </Card>
     </Wrapper>
   );

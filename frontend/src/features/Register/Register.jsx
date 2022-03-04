@@ -7,7 +7,7 @@ import {
   getMessageRegister,
   getSuccessRegister,
   getTypeRegister,
-} from 'app/selectors/registerSelector';
+} from 'app/selectors/register';
 import React from 'react';
 import {
   Alert,

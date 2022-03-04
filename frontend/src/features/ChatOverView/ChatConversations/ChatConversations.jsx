@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getListConversation } from 'app/actions/conversations';
-import { getAuth } from 'app/selectors/loginSelector';
+import { getAuth } from 'app/selectors/login';
 import { getConversations } from 'app/selectors/conversations';
 
 const SideBar = styled.div`
@@ -107,13 +107,14 @@ function ChatConversations({ onSelectRoom }) {
         <Tab>Message unread</Tab>
       </Tabs>
       <Wrapper>
-        {listConversation?.map((item, index) => (
-          <CardConvention
-            key={index}
-            onSelectRoom={onSelectRoom}
-            conversation={item}
-          />
-        ))}
+        {listConversation &&
+          listConversation?.map((item, index) => (
+            <CardConvention
+              key={index}
+              onSelectRoom={onSelectRoom}
+              conversation={item}
+            />
+          ))}
       </Wrapper>
     </SideBar>
   );

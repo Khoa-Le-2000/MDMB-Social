@@ -25,7 +25,7 @@ import {
   getErrorCount,
   getErrorLogin,
   getErrorMessageLogin,
-} from 'app/selectors/loginSelector';
+} from 'app/selectors/login';
 import styled from 'styled-components';
 import * as yup from 'yup';
 import './login.scss';

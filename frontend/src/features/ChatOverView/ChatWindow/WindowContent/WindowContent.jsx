@@ -6,11 +6,11 @@ import styled from 'styled-components';
 const Wrapper = styled.div`
   padding: 0px 5px;
 `;
-function WindowContent({ messages, myAccountId }) {
+function WindowContent({ messages, partner }) {
   return (
     <Wrapper>
-      {messages ? (
-        <Messages messages={messages} myAccountId={myAccountId} />
+      {messages.length > 0 ? (
+        <Messages messages={messages} partner={partner} />
       ) : (
         <MessageEmpty />
       )}

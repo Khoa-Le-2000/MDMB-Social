@@ -1,5 +1,5 @@
 export const ConversationActionTypes = {
-  GET_LIST_CONVERSATION_START: 'conversation/getListConversation/start',
-  GET_LIST_CONVERSATION_SUCCESS: 'conversation/getListConversation/success',
-  GET_LIST_CONVERSATION_FAILURE: 'conversation/getListConversation/failure',
+  LIST_CONVERSATION_START: 'conversation/listConversation/start',
+  LIST_CONVERSATION_SUCCESS: 'conversation/listConversation/success',
+  LIST_CONVERSATION_FAILURE: 'conversation/listConversation/failure',
 };

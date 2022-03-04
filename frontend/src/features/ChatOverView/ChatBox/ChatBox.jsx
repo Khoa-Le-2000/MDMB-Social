@@ -92,12 +92,32 @@ const IconSticker = styled(StickerTest)`
   ${HoverMixin.default};
 `;
 
-function ChatBox({ onSendMessage, onChangeMessage }) {
+function ChatBox({ onSendMessage, onTyping }) {
   const [message, setMessage] = React.useState('');
+  const typingTimeoutRef = React.useRef(null);
+  const handleKeyPress = (e) => {
+    clearTimeout(typingTimeoutRef.current);
+    onTyping(true);
+  };
 
-  const handleChangeMessage = (e) => {
-    setMessage(e.target.value);
-    onChangeMessage(e.target.value);
+  const handleKeyUp = (e) => {
+    clearTimeout(typingTimeoutRef.current);
+    typingTimeoutRef.current = window.setTimeout(() => {}, 1000);
+    const value = e.currentTarget.value;
+    setMessage(value);
+
+    if (!onTyping) return;
+
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+
+    typingTimeoutRef.current = setTimeout(() => {
+      const formValues = {
+        keyword: value.replace(/\s/g, ''),
+      };
+      onTyping(formValues);
+    }, 300);
   };
 
   const onSendClick = (e) => {
@@ -120,7 +140,11 @@ function ChatBox({ onSendMessage, onChangeMessage }) {
       <Row>
         <Col lg={12}>
           <WrapperInput>
-            <Input contentEditable onChange={handleChangeMessage} />
+            <Input
+              contentEditable
+              onKeyUp={handleKeyUp}
+              onKeyPress={handleKeyPress}
+            />
             <FeaturesRight>
               <Emoji />
               <SendMessenger onClick={onSendClick} />

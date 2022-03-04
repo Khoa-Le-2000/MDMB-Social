@@ -6,11 +6,17 @@ const initialState = {
   success: false,
   message: null,
   listMessage: [],
+  partner: {
+    Avatar: null,
+    Name: null,
+    AccountId: null,
+  },
+  roomId: null,
 };
 
 const chatReducer = (state = initialState, action) => {
   switch (action.type) {
-    case ChatActionTypes.GET_LIST_FRIEND_START:
+    case ChatActionTypes.SELECT_ROOM_START:
       return {
         ...state,
         isFetching: true,
@@ -18,22 +24,44 @@ const chatReducer = (state = initialState, action) => {
         success: false,
         message: null,
       };
-    case ChatActionTypes.GET_LIST_FRIEND_SUCCESS:
+    case ChatActionTypes.SELECT_ROOM_SUCCESS:
       return {
         ...state,
         isFetching: false,
         error: false,
         success: true,
         message: null,
-        listFriend: action.payload.listFriend,
+        partner: {
+          Avatar: action.payload.Avatar,
+          Name: action.payload.Name,
+          AccountId: action.payload.AccountId,
+        },
+        roomId: action.payload.AccountId,
       };
-    case ChatActionTypes.GET_LIST_FRIEND_FAILURE:
+    case ChatActionTypes.LIST_MESSAGE_LATEST_START:
+      return {
+        ...state,
+        isFetching: true,
+        error: false,
+        success: false,
+        message: null,
+      };
+    case ChatActionTypes.LIST_MESSAGE_LATEST_SUCCESS:
+      return {
+        ...state,
+        isFetching: false,
+        error: false,
+        success: true,
+        message: null,
+        listMessage: action.payload,
+      };
+    case ChatActionTypes.LIST_MESSAGE_LATEST_FAILURE:
       return {
         ...state,
         isFetching: false,
         error: true,
         success: false,
-        message: action.payload.message,
+        message: action.payload,
       };
     default:
       return state;

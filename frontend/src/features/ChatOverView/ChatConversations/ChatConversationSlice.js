@@ -9,7 +9,7 @@ const initialState = {
 };
 const conversationsReducer = (state = initialState, action) => {
   switch (action.type) {
-    case ConversationActionTypes.GET_LIST_CONVERSATION_START:
+    case ConversationActionTypes.LIST_CONVERSATION_START:
       return {
         ...state,
         isFetching: true,
@@ -17,7 +17,7 @@ const conversationsReducer = (state = initialState, action) => {
         success: false,
         message: null,
       };
-    case ConversationActionTypes.GET_LIST_CONVERSATION_SUCCESS:
+    case ConversationActionTypes.LIST_CONVERSATION_SUCCESS:
       return {
         ...state,
         isFetching: false,
@@ -26,7 +26,7 @@ const conversationsReducer = (state = initialState, action) => {
         message: null,
         listConversation: action.payload.listConversation,
       };
-    case ConversationActionTypes.GET_LIST_CONVERSATION_FAILURE:
+    case ConversationActionTypes.LIST_CONVERSATION_FAILURE:
       return {
         ...state,
         isFetching: false,
