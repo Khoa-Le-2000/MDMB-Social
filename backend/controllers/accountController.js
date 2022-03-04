@@ -3,22 +3,22 @@ const AccountDAO = require("../models/data-access/accountDAO");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { OAuth2Client } = require("google-auth-library");
-const moment = require('moment')
-const auth = require('../middlewares/auth.middleware')
-const nodemailer = require('nodemailer')
+const moment = require("moment");
+const auth = require("../middlewares/auth.middleware");
+const nodemailer = require("nodemailer");
 
 function login(req, res) {
   var Username = req.body.Username;
   var Password = req.body.Password;
   AccountDAO.getAccount(Username, (Account) => {
-    if (Account == false) res.status(401).send({ result: 'login failure' });
+    if (Account == false) res.status(401).send({ result: "login failure" });
     else {
       let acccount = Account;
       bcrypt.compare(Password, acccount.Password, function (err, result) {
         if (result == true) {
           sendToken(req, res, Account);
-        } else res.status(401).send({ result: 'login failure' });
-      })
+        } else res.status(401).send({ result: "login failure" });
+      });
     }
   });
 }
@@ -28,29 +28,31 @@ function loginByGoogle(req, res) {
     const client = new OAuth2Client(process.env.CLIENT_ID);
 
     async function verify() {
-      const ticket = await client.verifyIdToken({
-        idToken: token,
-        audience: process.env.clientID,
-      }, (err, ticket) => {
-        if (err) {
-          return res.status(401).send({ result: 'Invalid token' });
-        } else {
-          const payload = ticket.getPayload();
-          const Email = payload['email'];
-          AccountDAO.getAccountByEmail(Email, (Account) => {
-            if (Account == false) {
-              res.status(200).send({ result: "login failure" })
-            }
-            else {
-              sendToken(req, res, Account);
-            }
-          });
+      const ticket = await client.verifyIdToken(
+        {
+          idToken: token,
+          audience: process.env.clientID,
+        },
+        (err, ticket) => {
+          if (err) {
+            return res.status(401).send({ result: "Invalid token" });
+          } else {
+            const payload = ticket.getPayload();
+            const Email = payload["email"];
+            AccountDAO.getAccountByEmail(Email, (Account) => {
+              if (Account == false) {
+                res.status(200).send({ result: "login failure" });
+              } else {
+                sendToken(req, res, Account);
+              }
+            });
+          }
         }
-      });
+      );
     }
     verify().catch(console.error);
   } else {
-    res.status(401).send({ result: 'No token provided' });
+    res.status(401).send({ result: "No token provided" });
   }
 }
 function loginByFaceBook(req, res) {
@@ -63,21 +65,23 @@ function loginByFaceBook(req, res) {
       } else {
         sendToken(req, res, Account);
       }
-    })
+    });
+  } else {
+    res.status(401).send({ result: "No token provided" });
   }
-  else {
-    res.status(401).send({ result: 'No token provided' });
-  }
-
 }
 //send Token
 function sendToken(req, res, Account) {
-  let accessToken = jwt.sign({ id: Account.AccountId }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
-  let refreshToken = jwt.sign({ id: Account.AccountId }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
+  let accessToken = jwt.sign({ id: Account.AccountId }, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: "1h",
+  });
+  let refreshToken = jwt.sign({ id: Account.AccountId }, process.env.REFRESH_TOKEN_SECRET, {
+    expiresIn: "1d",
+  });
   res.status(200).send({
     accessToken: accessToken,
     refreshToken: refreshToken,
-    accountId: Account.AccountId
+    accountId: Account.AccountId,
   });
 }
 //register
@@ -89,65 +93,88 @@ function register(req, res) {
 
   //regex
   let regName = /^((?![0-9\~\!\@\#\$\%\^\&\*\(\)\_\+\=\-\[\]\{\}\;\:\"\\\/\<\>\?]).){2,45}/;
-  let regEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,45}))$/;
+  let regEmail =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,45}))$/;
   let regPhone = /(84|0[3|5|7|8|9])+([0-9]{8})$/;
-  let regPass = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{6,60})$/
+  let regPass = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{6,60})$/;
 
-  if (!Name || !Email || !Phone || !Password || Name.trim() == null || Email.trim() == null || Password.trim() == null || Phone.trim() == null) {
-    res.status(401).send({
+  if (
+    !Name ||
+    !Email ||
+    !Phone ||
+    !Password ||
+    Name.trim() == null ||
+    Email.trim() == null ||
+    Password.trim() == null ||
+    Phone.trim() == null
+  ) {
+    return res.status(401).send({
       result: "incorrect format for: empty value",
-      description: `Not allow empty value for${(!Name || Name.trim() == null) ? " Name" : ""}${(!Email || Email.trim() == null) ? " Email" : ""}${(!Password || Password.trim() == null) ? " Password" : ""}${(!Phone || Phone.trim() == null) ? " Phone" : ""}`
-    })
-    return;
+      description: `Not allow empty value for${!Name || Name.trim() == null ? " Name" : ""}${
+        !Email || Email.trim() == null ? " Email" : ""
+      }${!Password || Password.trim() == null ? " Password" : ""}${
+        !Phone || Phone.trim() == null ? " Phone" : ""
+      }`,
+    });
   }
 
   if (!regName.test(Name)) {
-    res.status(401).send({
+    return res.status(401).send({
       result: "incorrect format for: Name",
-      description: 2 <= Name.length && Name.length <= 45 ? "Valid name not contain special character such as @-!#..." : "Name length not valid: at least 2 char"
-    })
-    return;
+      description:
+        2 <= Name.length && Name.length <= 45
+          ? "Valid name not contain special character such as @-!#..."
+          : "Name length not valid: at least 2 char",
+    });
   }
   if (!regEmail.test(Email) || Email.length > 45) {
-    res.status(401).send({
+    return res.status(401).send({
       result: "incorrect format for: Email",
-      description: Email.length <= 45 ? "Valid Email look like this: 123@gmail.com" : "Email length < 45"
-    })
-    return;
+      description:
+        Email.length <= 45 ? "Valid Email look like this: 123@gmail.com" : "Email length < 45",
+    });
   }
   if (!regPhone.test(Phone)) {
-    res.status(401).send({
+    return res.status(401).send({
       result: "incorrect format for: Phone",
-      description: `${(10 == Phone.length || 11 == Phone.length) ? "Valid Phone look like this: 098333**** or 848333****" : "Phone length 10-11 char"}`
-    })
-    return;
+      description: `${
+        10 == Phone.length || 11 == Phone.length
+          ? "Valid Phone look like this: 098333**** or 848333****"
+          : "Phone length 10-11 char"
+      }`,
+    });
   }
   if (!regPass.test(Password)) {
     res.status(401).send({
       result: "incorrect format for: Password",
-      description: `${6 <= Password.length && Password.length <= 45 ? "Valid Password must contains a Uppercase, a lowercase, and a number" : "Password length 6-45 char"}`
-    })
+      description: `${
+        6 <= Password.length && Password.length <= 45
+          ? "Valid Password must contains a Uppercase, a lowercase, and a number"
+          : "Password length 6-45 char"
+      }`,
+    });
     return;
   }
   AccountDAO.getAccountId(Email, Phone, (result) => {
-    if (result) res.status(401).send({ result: 'account existed', description: "account existed" })
+    if (result) res.status(401).send({ result: "account existed", description: "account existed" });
     else {
-
       if (Email) Email = Email.toLowerCase();
-      if (Name) Name = Name.toLowerCase().replace(/(^\w{1})|(\s{1}\w{1})/g, match => match.toUpperCase()); //Capital first letter
+      if (Name)
+        Name = Name.toLowerCase().replace(/(^\w{1})|(\s{1}\w{1})/g, (match) => match.toUpperCase()); //Capital first letter
 
       // bcrypt.hash(Password, 10).then((hash) => {
       // AccountDAO.createAccount(hash, Phone.trim(), Email.trim(), Name.trim(), (rs) => {
       //   if (rs) res.status(200).send({ result: 'register successful', description: 'register successful' });
       //   else res.status(401).send({ result: 'register failed', description: "must be some error..." })
       // })
-      let token = jwt.sign({ Password, Phone, Email, Name }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+      let token = jwt.sign({ Password, Phone, Email, Name }, process.env.ACCESS_TOKEN_SECRET, {
+        expiresIn: "1h",
+      });
       sendVerifyEmail(req, res, Email, token);
       // })
     }
-  })
+  });
 }
-
 
 function update(req, res) {
   let Name = req.body.Name;
@@ -160,7 +187,8 @@ function update(req, res) {
 
   //regex
   let regName = /^((?![0-9\~\!\@\#\$\%\^\&\*\(\)\_\+\=\-\[\]\{\}\;\:\"\\\/\<\>\?]).){2,45}/;
-  let regEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,45}))$/;
+  let regEmail =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,45}))$/;
   let regPhone = /(84|0[3|5|7|8|9])+([0-9]{8})$/;
   let regPass = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{6,60})$/;
   let regLink = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
@@ -168,110 +196,150 @@ function update(req, res) {
   let regGender = /^\d$/;
 
   if (!Email && !Phone) {
-    res.status(401).send({
+    return res.status(401).send({
       result: "incorrect fields",
-      description: "Must recieved a Phone or Email"
-    })
-    return;
+      description: "Must recieved a Phone or Email",
+    });
   }
 
   if (!regName.test(Name)) {
-    res.status(401).send({
+    return res.status(401).send({
       result: "incorrect format for: Name",
-      description: 2 <= Name.length && Name.length <= 45 ? "Valid name not contain special character such as @-!#..." : "Name length not valid: at least 2 char"
-    })
-    return;
+      description:
+        2 <= Name.length && Name.length <= 45
+          ? "Valid name not contain special character such as @-!#..."
+          : "Name length not valid: at least 2 char",
+    });
   }
   if (Email)
     if (!regEmail.test(Email) || Email.length > 45) {
-      res.status(401).send({
+      return res.status(401).send({
         result: "incorrect format for: Email",
-        description: Email.length <= 45 ? "Valid Email look like this: 123@gmail.com" : "Email length < 45"
-      })
-      return;
+        description:
+          Email.length <= 45 ? "Valid Email look like this: 123@gmail.com" : "Email length < 45",
+      });
     }
   if (Phone)
     if (!regPhone.test(Phone)) {
-      res.status(401).send({
+      return res.status(401).send({
         result: "incorrect format for: Phone",
-        description: `${(10 == Phone.length) ? "Valid Phone look like this: 098333****" : "Phone length 10 char"}`
-      })
-      return;
+        description: `${
+          10 == Phone.length ? "Valid Phone look like this: 098333****" : "Phone length 10 char"
+        }`,
+      });
     }
   if (Password)
     if (!regPass.test(Password)) {
-      res.status(401).send({
+      return res.status(401).send({
         result: "incorrect format for: Password",
-        description: `${6 <= Password.length && Password.length <= 45 ? "Valid Password must contains a Uppercase, a lowercase, and a number" : "Password length 6-45 char"}`
-      })
-      return;
+        description: `${
+          6 <= Password.length && Password.length <= 45
+            ? "Valid Password must contains a Uppercase, a lowercase, and a number"
+            : "Password length 6-45 char"
+        }`,
+      });
     }
   if (Avatar)
     if (!regLink.test(Avatar) || Avatar.length > 200) {
-      res.status(401).send({
+      return res.status(401).send({
         result: "incorrect format for: Avatar",
-        description: `${Avatar.length <= 200 ? "invalid Url: incorrect format for url" : "length of link is too long"}`
-      })
-      return;
+        description: `${
+          Avatar.length <= 200
+            ? "invalid Url: incorrect format for url"
+            : "length of link is too long"
+        }`,
+      });
     }
   if (Birthday)
     if (!regBirthday.test(Birthday)) {
-      res.status(401).send({
+      return res.status(401).send({
         result: "incorrect format for: Birthday",
-        description: `${10 == Birthday.length ? "Birthday look like this: (yyyy/mm/dd)" : "Birthday length 10 char (yyyy/mm/dd)"}`
-      })
-      return;
+        description: `${
+          10 == Birthday.length
+            ? "Birthday look like this: (yyyy/mm/dd)"
+            : "Birthday length 10 char (yyyy/mm/dd)"
+        }`,
+      });
     }
   if (Birthday)
-    if (!moment(Birthday, 'YYYY.MM.DD').isValid()) {
-      res.status(401).send({
+    if (!moment(Birthday, "YYYY.MM.DD").isValid()) {
+      return res.status(401).send({
         result: "incorrect format for: Birthday",
-        description: "Date not exist"
-      })
-      return;
+        description: "Date not exist",
+      });
     }
   if (Gender)
     if (!regGender.test(Gender)) {
-      res.status(401).send({
+      return res.status(401).send({
         result: "incorrect format for: Gender",
-        description: "Gender must be one digit"
-      })
-      return;
+        description: "Gender must be one digit",
+      });
     }
   AccountDAO.getAccountId(Email ? Email.trim() : null, Phone ? Phone.trim() : null, (AccountId) => {
-
-    if (!AccountId) res.status(401).send({ result: "user not found", description: "Could not find a user by Phone/Email" });
+    if (!AccountId)
+      res
+        .status(401)
+        .send({ result: "user not found", description: "Could not find a user by Phone/Email" });
     else {
       if (Email) Email = Email.toLowerCase();
-      if (Name) Name = Name.toLowerCase().replace(/(^\w{1})|(\s{1}\w{1})/g, match => match.toUpperCase());//Capital first letter
+      if (Name)
+        Name = Name.toLowerCase().replace(/(^\w{1})|(\s{1}\w{1})/g, (match) => match.toUpperCase()); //Capital first letter
 
-      if (Password) bcrypt.hash(Password, 10, function (err, hash) {
-        AccountDAO.updateAccount(AccountId, Password ? hash : null, Phone ? Phone.trim() : null, Email ? Email.trim() : null, Name ? Name.trim() : null, Avatar ? Avatar.trim() : null, Birthday ? Birthday.trim() : null, Gender ? Gender.trim() : null, (result) => {
-          if (result) res.status(200).send({ result: 'update successful', description: "successful" });
-          else res.status(401).send({ result: 'update failure', description: "There must be a error..." });
-        })
-      })
+      if (Password)
+        bcrypt.hash(Password, 10, function (err, hash) {
+          AccountDAO.updateAccount(
+            AccountId,
+            Password ? hash : null,
+            Phone ? Phone.trim() : null,
+            Email ? Email.trim() : null,
+            Name ? Name.trim() : null,
+            Avatar ? Avatar.trim() : null,
+            Birthday ? Birthday.trim() : null,
+            Gender ? Gender.trim() : null,
+            (result) => {
+              if (result)
+                res.status(200).send({ result: "update successful", description: "successful" });
+              else
+                res
+                  .status(401)
+                  .send({ result: "update failure", description: "There must be a error..." });
+            }
+          );
+        });
       else {
-        AccountDAO.updateAccount(AccountId, Password ? Password : null, Phone ? Phone.trim() : null, Email ? Email.trim() : null, Name ? Name.trim() : null, Avatar ? Avatar.trim() : null, Birthday ? Birthday.trim() : null, Gender ? Gender.trim() : null, (result) => {
-          if (result) res.status(200).send({ result: 'update successful' });
-          else res.status(401).send({ result: 'update failure', description: "There must be a error..." });
-        })
+        AccountDAO.updateAccount(
+          AccountId,
+          Password ? Password : null,
+          Phone ? Phone.trim() : null,
+          Email ? Email.trim() : null,
+          Name ? Name.trim() : null,
+          Avatar ? Avatar.trim() : null,
+          Birthday ? Birthday.trim() : null,
+          Gender ? Gender.trim() : null,
+          (result) => {
+            if (result) res.status(200).send({ result: "update successful" });
+            else
+              res
+                .status(401)
+                .send({ result: "update failure", description: "There must be a error..." });
+          }
+        );
       }
-
     }
-  })
+  });
 }
 function sendVerifyEmail(req, res, Email, token) {
   let transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
       user: "mdmbsocial@gmail.com",
-      pass: "mdmb1234"
-    }, tls: {
-      rejectUnauthorized: false
-    }
-  })
-  let link = `${process.env.MDMB_SOCIAL_PROTOCAL}${process.env.MDMB_SOCIAL_DOMAIN}:8080/account/verify?token=${token}`
+      pass: "mdmb1234",
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  });
+  let link = `${process.env.MDMB_SOCIAL_PROTOCAL}${process.env.MDMB_SOCIAL_DOMAIN}:8080/account/verify?token=${token}`;
   let mailOptions = {
     from: "mdmbsocial@gmail.com",
     to: `${Email}`,
@@ -285,24 +353,24 @@ function sendVerifyEmail(req, res, Email, token) {
 </tr></table><table cellpadding="0" cellspacing="0" class="es-footer" align="center"><tr><td align="center"><table class="es-footer-body" align="center" cellpadding="0" cellspacing="0" width="640" style="background-color: transparent"><tr><td class="es-p20t es-p20b es-p20r es-p20l" align="left"><table cellpadding="0" cellspacing="0" width="100%"><tr><td width="600" align="left"><table cellpadding="0" cellspacing="0" width="100%" role="presentation"><tr><td align="center" class="es-p35b"><p>MDMB Social &nbsp;© 2022 , Inc. All Rights Reserved.</p><p>4562 Hue, VN</p></td>
 </tr><tr><td><table cellpadding="0" cellspacing="0" width="100%" class="es-menu" role="presentation"><tr class="links"><td align="center" valign="top" width="33.33%" class="es-p10t es-p10b es-p5r es-p5l" style="padding-top: 5px;padding-bottom: 5px"><a target="_blank" href="https://" style="color: #999999">Visit Us </a></td><td align="center" valign="top" width="33.33%" class="es-p10t es-p10b es-p5r es-p5l" style="padding-top: 5px;padding-bottom: 5px;border-left: 1px solid #cccccc"><a target="_blank" href="https://" style="color: #999999">Privacy Policy</a></td><td align="center" valign="top" width="33.33%" class="es-p10t es-p10b es-p5r es-p5l" style="padding-top: 5px;padding-bottom: 5px;border-left: 1px solid #cccccc"><a target="_blank" href="https://" style="color: #999999">Terms of Use</a></td></tr></table></td></tr></table></td></tr></table></td></tr></table></td>
 </tr></table><table cellpadding="0" cellspacing="0" class="es-content" align="center"><tr><td class="es-info-area" align="center"><table class="es-content-body" align="center" cellpadding="0" cellspacing="0" width="600" style="background-color: transparent" bgcolor="rgba(0, 0, 0, 0)"><tr><td class="es-p20" align="left"><table cellpadding="0" cellspacing="0" width="100%"><tr><td width="560" align="center" valign="top"><table cellpadding="0" cellspacing="0" width="100%" role="presentation"><tr><td align="center" class="es-infoblock"><p><a target="_blank"></a>No longer want to receive these emails?&nbsp;<a href target="_blank">Unsubscribe</a>.<a target="_blank"></a></p></td></tr></table></td></tr></table></td></tr></table></td></tr></table></td></tr></table></div></body></html>
-    `
-
-  }
+    `,
+  };
   transporter.sendMail(mailOptions, (err, succ) => {
-    if (err) return res.status(401).send({ result: "Cant send email" })
-    else res.status(200).send({ result: "email sent successful" })
-  })
+    if (err) return res.status(401).send({ result: "Cant send email" });
+    else res.status(200).send({ result: "email sent successful" });
+  });
 }
 
 function verifyEmail(req, res) {
   var token = req.query.token;
   //checktoken
-  if (!token) return res.status(401).send({ error: 'No token provided' });
+  if (!token) return res.status(401).send({ error: "No token provided" });
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
     // console.log(decoded);
-    if (err) return res.status(401).send({ error: 'Invalid token' });
+    if (err) return res.status(401).send({ error: "Invalid token" });
     var dateNow = new Date();
-    if (decoded.exp < dateNow.getTime() / 1000) return res.status(401).send({ error: 'Token expired' });
+    if (decoded.exp < dateNow.getTime() / 1000)
+      return res.status(401).send({ error: "Token expired" });
 
     var payload = auth.parseJwt(token);
     var Password = payload.Password;
@@ -311,20 +379,18 @@ function verifyEmail(req, res) {
     var Name = payload.Name;
 
     AccountDAO.getAccountId(Email, Phone, (Account) => {
-
-      if (Account) return res.status(401).send({ error: 'Account created' });
+      if (Account) return res.status(401).send({ error: "Account created" });
       else {
         bcrypt.hash(Password, 10).then((hash) => {
           AccountDAO.createAccount(hash, Phone, Email, Name, (rs) => {
-            if (rs) return res.redirect(`${process.env.MDMB_SOCIAL_URL}?alert=Register%20successful`);
-
+            if (rs)
+              return res.redirect(`${process.env.MDMB_SOCIAL_URL}?alert=Register%20successful`);
             else return res.redirect(`${process.env.MDMB_SOCIAL_URL}?alert=Register%failed`);
-          })
-        })
+          });
+        });
       }
-    })
+    });
   });
-
 }
 function registerByGoogle(req, res) {
   let Name = req.body.Name;
@@ -332,51 +398,64 @@ function registerByGoogle(req, res) {
   let Phone = req.body.Phone;
   //regex
   let regName = /^((?![0-9\~\!\@\#\$\%\^\&\*\(\)\_\+\=\-\[\]\{\}\;\:\"\\\/\<\>\?]).){2,45}/;
-  let regEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,45}))$/;
+  let regEmail =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,45}))$/;
   let regPhone = /(84|0[3|5|7|8|9])+([0-9]{8})$/;
 
-  if (!Name || !Email || !Phone || Name.trim() == null || Email.trim() == null || Phone.trim() == null) {
-    res.status(401).send({
+  if (
+    !Name ||
+    !Email ||
+    !Phone ||
+    Name.trim() == null ||
+    Email.trim() == null ||
+    Phone.trim() == null
+  ) {
+    return res.status(401).send({
       result: "incorrect format for: empty value",
-      description: `Not allow empty value for${(!Name || Name.trim() == null) ? " Name" : ""}${(!Email || Email.trim() == null) ? " Email" : ""}${(!Phone || Phone.trim() == null) ? " Phone" : ""}`
-    })
-    return;
+      description: `Not allow empty value for${!Name || Name.trim() == null ? " Name" : ""}${
+        !Email || Email.trim() == null ? " Email" : ""
+      }${!Phone || Phone.trim() == null ? " Phone" : ""}`,
+    });
   }
 
   if (!regName.test(Name)) {
-    res.status(401).send({
+    return res.status(401).send({
       result: "incorrect format for: Name",
-      description: 2 <= Name.length && Name.length <= 45 ? "Valid name not contain special character such as @-!#..." : "Name length not valid: at least 2 char"
-    })
-    return;
+      description:
+        2 <= Name.length && Name.length <= 45
+          ? "Valid name not contain special character such as @-!#..."
+          : "Name length not valid: at least 2 char",
+    });
   }
   if (!regEmail.test(Email) || Email.length > 45) {
-    res.status(401).send({
+    return res.status(401).send({
       result: "incorrect format for: Email",
-      description: Email.length <= 45 ? "Valid Email look like this: 123@gmail.com" : "Email length < 45"
-    })
-    return;
+      description:
+        Email.length <= 45 ? "Valid Email look like this: 123@gmail.com" : "Email length < 45",
+    });
   }
   if (!regPhone.test(Phone)) {
-    res.status(401).send({
+    return res.status(401).send({
       result: "incorrect format for: Phone",
-      description: `${(10 == Phone.length || 11 == Phone.length) ? "Valid Phone look like this: 098333**** or 848333****" : "Phone length 10-11 char"}`
-    })
-    return;
+      description: `${
+        10 == Phone.length || 11 == Phone.length
+          ? "Valid Phone look like this: 098333**** or 848333****"
+          : "Phone length 10-11 char"
+      }`,
+    });
   }
   AccountDAO.getAccountId(Email, Phone, (result) => {
-    if (result) res.status(401).send({ result: 'account existed', description: "account existed" })
+    if (result) res.status(401).send({ result: "account existed", description: "account existed" });
     else {
-
       if (Email) Email = Email.toLowerCase();
-      if (Name) Name = Name.toLowerCase().replace(/(^\w{1})|(\s{1}\w{1})/g, match => match.toUpperCase()); //Capital first letter
+      if (Name)
+        Name = Name.toLowerCase().replace(/(^\w{1})|(\s{1}\w{1})/g, (match) => match.toUpperCase()); //Capital first letter
       AccountDAO.createAccount(null, Phone, Email, Name, (rs) => {
-        if (rs) return res.send({ result: "register successful" })
-
+        if (rs) return res.send({ result: "register successful" });
         else return res.send({ result: "register failed, sql error..." });
-      })
+      });
     }
-  })
+  });
 }
 
 async function getListFriend(req, res) {
@@ -406,5 +485,5 @@ module.exports = {
   verifyEmail,
   getListFriend,
   getListFriendWithLastMessage,
-  registerByGoogle
-}
+  registerByGoogle,
+};

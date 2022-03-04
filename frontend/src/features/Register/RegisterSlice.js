@@ -1,4 +1,4 @@
-import { AuthActionTypes } from 'app/actions/types/authActionTypes';
+import { AuthActionTypes } from 'app/actions/types/authTypes';
 
 const initialState = {
   error: false,
@@ -12,6 +12,7 @@ const initialState = {
   fillRegister: {
     email: null,
     name: null,
+    password: null,
     phone: null,
   },
 };
@@ -24,6 +25,7 @@ const registerReducer = (state = initialState, action) => {
         fillRegister: {
           email: null,
           name: null,
+          password: null,
           phone: null,
         },
         error: false,
@@ -47,6 +49,12 @@ const registerReducer = (state = initialState, action) => {
         isFetching: true,
         error: false,
         success: false,
+        fillRegister: {
+          ...state.fillRegister,
+          email: null,
+          name: null,
+          password: null,
+        },
       };
     case AuthActionTypes.REGISTER_SUCCESS:
       return {

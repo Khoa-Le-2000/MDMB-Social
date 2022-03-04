@@ -25,7 +25,7 @@ import {
   getErrorCount,
   getErrorLogin,
   getErrorMessageLogin,
-} from 'app/selectors/loginSelector';
+} from 'app/selectors/login';
 import styled from 'styled-components';
 import * as yup from 'yup';
 import './login.scss';
@@ -139,6 +139,7 @@ function Login() {
       <Row
         style={{
           flexDirection: 'row-reverse',
+          height: '100%',
         }}
       >
         <Col
@@ -309,7 +310,7 @@ function Login() {
               nextIcon=""
               prevIcon=""
             >
-              <Carousel.Item interval={1000}>
+              <Carousel.Item interval={1000} className="h-100">
                 <div className="hero">
                   <img className="w-100" src={Hero1} alt="icon" />
                 </div>
@@ -320,7 +321,7 @@ function Login() {
                   </p>
                 </Carousel.Caption>
               </Carousel.Item>
-              <Carousel.Item>
+              <Carousel.Item className="h-100">
                 <div className="hero">
                   <img className="w-100" src={Hero2} alt="icon" />
                 </div>
@@ -331,7 +332,7 @@ function Login() {
                   </p>
                 </Carousel.Caption>
               </Carousel.Item>
-              <Carousel.Item>
+              <Carousel.Item className="h-100">
                 <div className="hero">
                   <img className="w-100" src={Hero3} alt="icon" />
                 </div>

@@ -1,4 +1,4 @@
-import { AuthActionTypes } from 'app/actions/types/authActionTypes';
+import { AuthActionTypes } from 'app/actions/types/authTypes';
 
 const initialState = {
   error: false,
@@ -37,6 +37,16 @@ const loginReducer = (state = initialState, action) => {
         captcha: {
           ...state.captcha,
           errorCount: state?.captcha?.errorCount || 0,
+        },
+        token: {
+          ...state.token,
+          accessToken: null,
+          refreshToken: null,
+        },
+        logout: {
+          ...state.logout,
+          error: false,
+          isFetching: false,
         },
       };
     case AuthActionTypes.LOGIN_SUCCESS:

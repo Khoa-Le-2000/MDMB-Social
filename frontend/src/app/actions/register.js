@@ -1,5 +1,5 @@
 import authApi from 'apis/authApi';
-import { AuthActionTypes } from 'app/actions/types/authActionTypes';
+import { AuthActionTypes } from 'app/actions/types/authTypes';
 
 export const resetRegister = () => {
   return {

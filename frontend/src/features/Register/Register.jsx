@@ -7,7 +7,7 @@ import {
   getMessageRegister,
   getSuccessRegister,
   getTypeRegister,
-} from 'app/selectors/registerSelector';
+} from 'app/selectors/register';
 import React from 'react';
 import {
   Alert,
@@ -22,11 +22,10 @@ import {
 } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import * as yup from 'yup';
 import './register.scss';
-import { useNavigate } from 'react-router-dom';
 
 const IconEye = styled(Eye)`
   width: 1.2rem;
@@ -144,10 +143,11 @@ function Register() {
   const messageRegister = useSelector(getMessageRegister);
   const hasError = useSelector(getErrorRegister);
   const hasSuccess = useSelector(getSuccessRegister);
+  const [show, setShow] = React.useState(true);
   const isLocalType = useSelector(getTypeRegister)?.local;
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const dataFill = useSelector(getFillToRegister);
-  const dispatch = useDispatch();
 
   const {
     register,
@@ -163,7 +163,6 @@ function Register() {
     resolver: yupResolver(schema),
   });
 
-  const [show, setShow] = React.useState(true);
   const handleClose = () => {
     if (isLocalType) {
       setShow(false);
@@ -273,7 +272,7 @@ function Register() {
                             {...register('email', {
                               required: true,
                             })}
-                            disabled={dataFill}
+                            disabled={dataFill?.email}
                             placeholder="Enter your email"
                           />
                           <Form.Text className="text-danger">
@@ -301,7 +300,7 @@ function Register() {
                         </Form.Group>
                       </Col>
                     </Row>
-                    {!dataFill && (
+                    {!dataFill?.email && (
                       <Row>
                         <Col lg={6}>
                           <Form.Label>Password</Form.Label>
