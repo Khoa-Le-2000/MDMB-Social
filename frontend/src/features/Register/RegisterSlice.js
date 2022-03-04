@@ -13,7 +13,6 @@ const initialState = {
     email: null,
     name: null,
     password: null,
-    phone: null,
   },
 };
 
@@ -26,7 +25,6 @@ const registerReducer = (state = initialState, action) => {
           email: null,
           name: null,
           password: null,
-          phone: null,
         },
         error: false,
         isFetching: false,
@@ -49,13 +47,8 @@ const registerReducer = (state = initialState, action) => {
         isFetching: true,
         error: false,
         success: false,
-        fillRegister: {
-          ...state.fillRegister,
-          email: null,
-          name: null,
-          password: null,
-        },
       };
+
     case AuthActionTypes.REGISTER_SUCCESS:
       return {
         ...state,
