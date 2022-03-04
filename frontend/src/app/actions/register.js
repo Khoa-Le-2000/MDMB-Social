@@ -43,11 +43,12 @@ export const registerUser = (user, navigate) => async (dispatch) => {
         type: user?.google ? 'google' : 'local',
       })
     );
-  } else if (data?.result === 'email sent succesful') {
+  } else if (data?.result === 'email sent successful') {
     dispatch(
-      registerSuccess(
-        `We just sent an email to ${user.email} to activate your account.`
-      )
+      registerSuccess({
+        message: `We just sent an email to ${user.email} to activate your account.`,
+        type: user?.google ? 'google' : 'local',
+      })
     );
   } else {
     dispatch(registerFailure('Email is already in use'));
