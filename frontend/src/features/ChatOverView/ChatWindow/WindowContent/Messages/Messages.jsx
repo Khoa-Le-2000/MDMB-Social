@@ -63,9 +63,7 @@ const DotFalling = styled.div`
 `;
 
 function Messages({ messages, partner, typing }) {
-  console.log('🚀 :: file: Messages.jsx :: line 66 :: typing', typing);
   const myAccountId = useSelector(getAuth)?.accountId;
-  // const { isTyping: isTypingPartner } = partner;
   return (
     <>
       {messages.map((item) => (

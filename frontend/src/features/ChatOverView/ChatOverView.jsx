@@ -56,9 +56,9 @@ function ChatOverView() {
 
   React.useEffect(() => {
     socket?.on('chat message', (data) => {
-      console.log('🚀 :: file: ChatOverView.jsx :: line 59 :: data', data);
+    
     });
-  }, [messages]);
+  }, []);
 
   const handleTyping = ({ isTyping }) => {
     if (isTyping) {
@@ -74,6 +74,7 @@ function ChatOverView() {
     console.log('🚀 :: file: ChatOverView.jsx :: line 68 :: message', message);
     socket.emit('chat message', message, roomId, (res) => {
       if (res === 'ok') {
+        dispatch(getMessagesLatest(roomId));
       }
     });
   };

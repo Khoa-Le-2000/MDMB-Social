@@ -8,8 +8,6 @@ const Wrapper = styled.div`
 `;
 
 function WindowContent({ messages, partner, typing }) {
-  console.log(messages.length);
-
   return (
     <Wrapper>
       {messages.length > 0 ? (
