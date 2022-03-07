@@ -1,6 +1,5 @@
-import { logout, refreshToken } from 'app/actions/login';
+import { refreshToken } from 'app/actions/login';
 import axios from 'axios';
-import jwt_decode from 'jwt-decode';
 import queryString from 'query-string';
 
 const axiosClient = axios.create({
@@ -13,40 +12,16 @@ const axiosClient = axios.create({
 
 export const interceptor = (store) => {
   axiosClient.interceptors.request.use(
-    (config) => {
-      const user = store?.getState()?.login?.auth;
+    async (config) => {
+      const auth = store?.getState()?.login?.auth;
+      debugger;
 
-      if (!config.headers['Authorization'] && user) {
-        config.headers['Authorization'] = user.accessToken;
+      if (!config.headers['Authorization'] && auth?.accessToken) {
+        config.headers['Authorization'] = auth?.accessToken;
       }
-
-      // if (user?.accessToken && user?.refreshToken) {
-      //   const { exp: decodedAT } = jwt_decode(user.accessToken);
-      //   const { exp: decodedRT } = jwt_decode(user.refreshToken);
-
-      //   var currentTime = new Date().getTime() / 1000;
-      //   let isExpiredAT = currentTime > decodedAT;
-      //   let isExpiredRT = currentTime > decodedRT;
-
-      //   if (isExpiredAT && !isExpiredRT) {
-      //     console.log('Refresh token start');
-      //     store.dispatch(refreshToken(user?.refreshToken));
-      //     console.log('Refresh token success');
-      //     if (config?.headers) {
-      //       config.headers['Authorization'] =
-      //         store?.getState()?.login?.auth?.accessToken;
-      //     }
-      //   } else if (isExpiredAT && isExpiredRT) {
-      //     store.dispatch(logout());
-      //   }
-      //   console.log('After: ', isExpiredAT, isExpiredRT);
-      // }
       return config;
     },
     (error) => {
-      if (error.response.status === 403) {
-        // store.dispatch(refreshToken(user?.refreshToken));
-      }
       return Promise.reject(error);
     }
   );
@@ -58,6 +33,12 @@ export const interceptor = (store) => {
       return response;
     },
     (error) => {
+      if (error.response.status === 401) {
+        const rt = store?.getState()?.login?.auth?.refreshToken;
+        if (refreshToken) {
+          store.dispatch(refreshToken(rt));
+        }
+      }
       return Promise.reject(error);
     }
   );
