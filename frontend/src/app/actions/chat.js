@@ -74,7 +74,21 @@ const receiveMessageStart = () => {
   };
 };
 
+const receiveMessageFailure = (error) => {
+  return {
+    type: ChatActionTypes.RECEIVE_MESSAGE_FAILURE,
+    payload: error,
+  };
+};
+
+const receiveMessageSuccess = (message) => {
+  return {
+    type: ChatActionTypes.RECEIVE_MESSAGE_SUCCESS,
+    payload: message,
+  };
+};
+
 export const receiveMessage = (message) => async (dispatch) => {
   dispatch(receiveMessageStart());
-  dispatch(sendMessageSuccess(message));
+  dispatch(receiveMessageSuccess(message));
 };

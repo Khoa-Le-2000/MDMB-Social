@@ -1,4 +1,9 @@
-import { getMessagesLatest, receiveMessage, selectRoom, sendMessage } from 'app/actions/chat';
+import {
+  getMessagesLatest,
+  receiveMessage,
+  selectRoom,
+  sendMessage,
+} from 'app/actions/chat';
 import { getListMessageLatest, getPartner } from 'app/selectors/chat';
 import { getAuth } from 'app/selectors/login';
 import ChatConversations from 'features/ChatOverView/ChatConversations/ChatConversations';
@@ -32,6 +37,10 @@ function ChatOverView() {
   const [typing, setTyping] = React.useState(false);
   const navigate = useNavigate();
   const messagesLatest = useSelector(getListMessageLatest);
+  console.log(
+    '🚀 :: file: ChatOverView.jsx :: line 40 :: ChatOverView :: messagesLatest',
+    messagesLatest
+  );
   const partner = useSelector(getPartner);
 
   React.useEffect(() => {
@@ -57,9 +66,7 @@ function ChatOverView() {
 
   React.useEffect(() => {
     socket?.on('chat message', (data) => {
-      if (messagesLatest.MessageId !== data.MessageId) {
-        dispatch(receiveMessage(data));
-      }
+      dispatch(receiveMessage(data));
     });
   }, [messagesLatest.MessageId, dispatch]);
 
