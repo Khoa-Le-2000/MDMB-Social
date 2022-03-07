@@ -1,4 +1,9 @@
-import { getMessagesLatest, selectRoom } from 'app/actions/chat';
+import {
+  getMessagesLatest,
+  receiveMessage,
+  selectRoom,
+  sendMessage,
+} from 'app/actions/chat';
 import { getListMessageLatest, getPartner } from 'app/selectors/chat';
 import { getAuth } from 'app/selectors/login';
 import ChatConversations from 'features/ChatOverView/ChatConversations/ChatConversations';
@@ -31,13 +36,11 @@ function ChatOverView() {
   const [isOnline, setIsOnline] = React.useState(false);
   const [typing, setTyping] = React.useState(false);
   const navigate = useNavigate();
-  const messages = useSelector(getListMessageLatest);
-  const [messagesLatest, setMessagesLatest] = React.useState(messages);
+  const messagesLatest = useSelector(getListMessageLatest);
   console.log(
-    '🚀 :: file: ChatOverView.jsx :: line 36 :: ChatOverView :: messagesLatest',
+    '🚀 :: file: ChatOverView.jsx :: line 40 :: ChatOverView :: messagesLatest',
     messagesLatest
   );
-
   const partner = useSelector(getPartner);
 
   React.useEffect(() => {
@@ -63,11 +66,9 @@ function ChatOverView() {
 
   React.useEffect(() => {
     socket?.on('chat message', (data) => {
-      if (+data.FromAccount === +roomId) {
-        setMessagesLatest((prev) => [...prev, data]);
-      }
+      dispatch(receiveMessage(data));
     });
-  }, [messages, roomId]);
+  }, [messagesLatest.MessageId, dispatch]);
 
   React.useEffect(() => {
     socket.on('user-online', function (accountId) {
@@ -87,8 +88,8 @@ function ChatOverView() {
 
   const handleSendMessage = (message) => {
     socket.emit('chat message', message, roomId, (status, data) => {
-      if (+data.ToAccount === +roomId && status === 'ok') {
-        setMessagesLatest((prev) => [...prev, data]);
+      if (status === 'ok' && +data.ToAccount === +roomId) {
+        dispatch(sendMessage(data));
       }
     });
   };

@@ -16,9 +16,9 @@ const WrapperContent = styled.div`
   border-radius: ${({ owner }) =>
     owner ? ' 25px 25px 0 25px' : ' 0px 25px 25px 25px'};
   border-bottom: 3px solid;
-  border-bottom-color ${({ owner }) => (owner === 1 ? '#9b527e' : '#d0bddc')};
+  border-bottom-color: ${({ owner }) => (owner === 1 ? '#9b527e' : '#d0bddc')};
   background-color: ${({ owner }) => (owner === 1 ? '#e7e5f2' : '#6049cd')};
-  color:  ${({ owner }) => (owner === 1 ? '#434354' : '#ebf0ff')};
+  color: ${({ owner }) => (owner === 1 ? '#434354' : '#ebf0ff')};
   max-width: 800px;
   font-size: 14px;
   min-width: 200px;
