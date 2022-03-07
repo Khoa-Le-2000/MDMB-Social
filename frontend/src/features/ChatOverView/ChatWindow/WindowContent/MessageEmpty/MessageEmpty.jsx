@@ -8,11 +8,11 @@ const Wrapper = styled.div`
   justify-content: center;
   margin-bottom:10%;
 `;
-const WrapperText = styled.div`
-  background-color: #ffffff;
-  border-radius: 10px;
-  padding:-10%;
-  box-shadow: -4px 4px 4px 4px #c985c6;
+  const WrapperText = styled.div`
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding:-10%;
+    box-shadow: -4px 4px 4px 4px #c985c6;
   /* box-shadow: inset 0 20px 20px -20px #000000; */
 `;
 const Title = styled.div`
@@ -26,9 +26,9 @@ const Title = styled.div`
   animation-duration: 2s;
   @keyframes floatTitle {
   0%{transform: rotate(00deg);}
-  25% { transform: rotate(20deg); color: #c985c6}
+  25% { transform: rotate(10deg); color: #c985c6}
   50% { transform: rotate(0deg);}
-  75% { transform: rotate(-20deg);color: #9a58d8}
+  75% { transform: rotate(-10deg);color: #9a58d8}
   100% { transform: rotate(0deg);}
 }
 `;
