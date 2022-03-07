@@ -33,10 +33,6 @@ function ChatOverView() {
   const navigate = useNavigate();
   const messages = useSelector(getListMessageLatest);
   const [messagesLatest, setMessagesLatest] = React.useState(messages);
-  console.log(
-    '🚀 :: file: ChatOverView.jsx :: line 36 :: ChatOverView :: messagesLatest',
-    messagesLatest
-  );
 
   const partner = useSelector(getPartner);
 
