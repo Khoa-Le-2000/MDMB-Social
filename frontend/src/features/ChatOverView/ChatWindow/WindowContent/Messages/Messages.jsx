@@ -1,0 +1,96 @@
+import CardMessage from 'features/ChatOverView/ChatWindow/WindowContent/Messages/CardMessage/CardMessage';
+import React from 'react';
+import { getAuth } from 'app/selectors/login';
+import { useSelector } from 'react-redux';
+import styled, { keyframes } from 'styled-components';
+
+const dotTyping = keyframes`
+  0% {
+    box-shadow: 9984px 0 0 0 #9880ff, 9999px 0 0 0 #9880ff, 10014px 0 0 0 #9880ff;
+  }
+  16.667% {
+    box-shadow: 9984px -10px 0 0 #9880ff, 9999px 0 0 0 #9880ff, 10014px 0 0 0 #9880ff;
+  }
+  33.333% {
+    box-shadow: 9984px 0 0 0 #9880ff, 9999px 0 0 0 #9880ff, 10014px 0 0 0 #9880ff;
+  }
+  50% {
+    box-shadow: 9984px 0 0 0 #9880ff, 9999px -10px 0 0 #9880ff, 10014px 0 0 0 #9880ff;
+  }
+  66.667% {
+    box-shadow: 9984px 0 0 0 #9880ff, 9999px 0 0 0 #9880ff, 10014px 0 0 0 #9880ff;
+  }
+  83.333% {
+    box-shadow: 9984px 0 0 0 #9880ff, 9999px 0 0 0 #9880ff, 10014px -10px 0 0 #9880ff;
+  }
+  100% {
+    box-shadow: 9984px 0 0 0 #9880ff, 9999px 0 0 0 #9880ff, 10014px 0 0 0 #9880ff;
+  }
+`;
+const Wrapper = styled.div`
+  display: flex;
+  margin-bottom: 25px;
+  padding: 0 62px;
+`;
+const WrapperContent = styled.div`
+  transition: 0s;
+  border-radius: 0px 25px 25px 25px;
+  border-bottom: 3px solid #81d4f9;
+  background: linear-gradient(90deg, #cfd9df 0%, #e2ebf0 100%);
+  color: #434354;
+  width: 80px;
+  position: relative;
+`;
+const WrapperMessage = styled.div`
+  padding: 10px;
+`;
+
+const CardTyping = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+const DotFalling = styled.div`
+  position: relative;
+  left: -9999px;
+  width: 8px;
+  height: 8px;
+  border-radius: 5px;
+  background-color: #9880ff;
+  color: #9880ff;
+  box-shadow: 9984px 0 0 0 #9880ff, 9999px 0 0 0 #9880ff, 10014px 0 0 0 #9880ff;
+  animation: ${dotTyping} 1.5s infinite linear;
+`;
+
+function Messages({ messages, partner, typing }) {
+  const myAccountId = useSelector(getAuth)?.accountId;
+  return (
+    <>
+      {messages.map((item) => (
+        <CardMessage
+          key={item.MessageId}
+          messageId={item.MessageId}
+          seenDate={item.seenDate}
+          sentDate={item.SentDate}
+          name={partner.Name}
+          avatar={item.avatar}
+          content={item.Content}
+          type={item.Type === 0 ? 'text' : 'image'}
+          owner={item.FromAccount === myAccountId}
+        />
+      ))}
+      {typing && (
+        <Wrapper>
+          <WrapperContent>
+            <WrapperMessage>
+              <CardTyping>
+                <DotFalling />
+              </CardTyping>
+            </WrapperMessage>
+          </WrapperContent>
+        </Wrapper>
+      )}
+    </>
+  );
+}
+export default Messages;

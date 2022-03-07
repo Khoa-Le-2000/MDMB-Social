@@ -4,6 +4,8 @@ export const HoverMixin = {
     &:hover {
       background: #fdebf7;
       cursor: pointer;
+      transform: scale(1.2);
+      
     }
   `,
 };

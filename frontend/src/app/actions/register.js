@@ -1,5 +1,5 @@
 import authApi from 'apis/authApi';
-import { AuthActionTypes } from 'app/actions/types/authActionTypes';
+import { AuthActionTypes } from 'app/actions/types/authTypes';
 
 export const resetRegister = () => {
   return {
@@ -27,7 +27,7 @@ export const registerSuccess = (data) => {
   };
 };
 
-export const registerUser = (user, navigate) => async (dispatch) => {
+export const registerUser = (user) => async (dispatch) => {
   dispatch(registerStart());
 
   let data = null;

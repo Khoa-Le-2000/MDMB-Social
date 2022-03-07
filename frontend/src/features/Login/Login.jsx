@@ -7,7 +7,15 @@ import FacebookIcon from 'assets/images/icons/facebook.svg';
 import GoogleIcon from 'assets/images/icons/google.svg';
 import { useViewport } from 'hooks';
 import React from 'react';
-import { Button, Carousel, Col, Form, InputGroup, Row } from 'react-bootstrap';
+import {
+  Button,
+  Carousel,
+  Col,
+  Form,
+  InputGroup,
+  Row,
+  Spinner,
+} from 'react-bootstrap';
 import FacebookLogin from 'react-facebook-login';
 import GoogleLogin from 'react-google-login';
 import ReCAPTCHA from 'react-google-recaptcha';
@@ -25,7 +33,8 @@ import {
   getErrorCount,
   getErrorLogin,
   getErrorMessageLogin,
-} from 'app/selectors/loginSelector';
+  getFetchingLogin,
+} from 'app/selectors/login';
 import styled from 'styled-components';
 import * as yup from 'yup';
 import './login.scss';
@@ -73,7 +82,11 @@ function Login() {
   const messageErrorLogin = useSelector(getErrorMessageLogin);
   const hasError = useSelector(getErrorLogin);
   const { width } = useViewport();
-
+  const isFetching = useSelector(getFetchingLogin);
+  console.log(
+    '🚀 :: file: Login.jsx :: line 86 :: Login :: isFetching',
+    isFetching
+  );
   const [showPassword, setShowPassword] = React.useState(false);
   const [message, setMessage] = React.useState('');
 
@@ -231,10 +244,21 @@ function Login() {
                 <Button
                   type="submit"
                   className="btn-login"
+                  variant="primary"
+                  disabled={isFetching}
                   onKeyDown={(event) =>
                     event.key === 'Enter' && onLoginHandler()
                   }
                 >
+                  {isFetching && (
+                    <Spinner
+                      as="span"
+                      animation="grow"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                    />
+                  )}
                   Log In
                 </Button>
               </div>

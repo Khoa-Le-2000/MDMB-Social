@@ -1,5 +1,5 @@
 import authApi from 'apis/authApi';
-import { AuthActionTypes } from 'app/actions/types/authActionTypes';
+import { AuthActionTypes } from 'app/actions/types/authTypes';
 
 export const loginStart = () => {
   return {
@@ -14,29 +14,38 @@ export const loginFailure = (message) => {
   };
 };
 
-export const loginSuccess = (token) => {
+export const loginSuccess = (auth) => {
   return {
     type: AuthActionTypes.LOGIN_SUCCESS,
     payload: {
-      accessToken: token.accessToken,
-      refreshToken: token.refreshToken,
+      accessToken: auth.accessToken,
+      refreshToken: auth.refreshToken,
+      accountId: auth.accountId,
     },
   };
 };
 
 export const login = (user) => async (dispatch) => {
   dispatch(loginStart());
-  const data = await authApi.login(user);
-  if (data?.accessToken && data?.refreshToken) {
-    const { accessToken, refreshToken } = data;
-    dispatch(
-      loginSuccess({
-        accessToken,
-        refreshToken,
-      })
-    );
-  } else {
-    dispatch(loginFailure('Wrong email or password!'));
+  try {
+    const data = await authApi.login(user);
+    if (data?.accessToken) {
+      console.log('🚀 :: file: login.js :: line 32 :: login :: data', data);
+      const { accessToken, refreshToken, accountId } = data;
+      dispatch(
+        loginSuccess({
+          accessToken,
+          refreshToken,
+          accountId,
+        })
+      );
+    }
+  } catch (error) {
+    if (error.response.status === 401) {
+      if (error.response.data.result === 'login failure') {
+        dispatch(loginFailure('Wrong email or password!'));
+      }
+    }
   }
 };
 
@@ -49,11 +58,12 @@ export const loginByGoogle = (googleData, navigate) => async (dispatch) => {
   const data = await authApi.loginWithGoogle(tokenId);
 
   if (data?.accessToken && data?.refreshToken) {
-    const { accessToken, refreshToken } = data;
+    const { accessToken, refreshToken, accountId } = data;
     dispatch(
       loginSuccess({
         accessToken,
         refreshToken,
+        accountId,
       })
     );
   } else if (data?.result === 'login failure') {
