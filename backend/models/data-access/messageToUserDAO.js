@@ -3,9 +3,10 @@ const messageToUser = require('../messageToUser');
 
 function getOldMessage(fromAccount, toAccount, Callback) {
     var con = connection.createConnection();
-    con.connect(function (err) {
+    con.connect(async function (err) {
         if (err) throw err;
         // console.log("Connected!");
+        await connection.setTimeZone(con);
         var sql = `SELECT * 
         FROM MessageToUser 
         Where (FromAccount=? and ToAccount=?) or (FromAccount=? and ToAccount=?)
@@ -65,7 +66,7 @@ function addMessage(fromAccount, toAccount, content, type, Callback) {
                     console.log(err);
                     return Callback(false);
                 }
-                else return Callback(true);
+                else return Callback(true, result.insertId);
             });
     });
 }
@@ -101,7 +102,12 @@ function getMessageById(messageId) {
                     console.log(err);
                     reject(err);
                 }
-                else resolve(result);
+                else {
+                    if (result.length > 0) {
+                        resolve(new messageToUser.MessageToUser(result[0].MessageId, result[0].FromAccount, result[0].SentDate, result[0].Content, result[0].Type, result[0].ToAccount, result[0].SeenDate));
+                    }
+                    else resolve(false);
+                }
             });
     });
 }

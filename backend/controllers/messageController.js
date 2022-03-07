@@ -1,5 +1,5 @@
 const messageToUserDAO = require('../models/data-access/messageToUserDAO');
-const chatDao = require('../models/data-access/chatDao');
+const cryptoMiddlware = require('../middlewares/crypto.middleware');
 
 function getOldMessage(req, res) {
     // console.log("get old message");
@@ -7,8 +7,15 @@ function getOldMessage(req, res) {
     let accountId = req.query.accountId;
     let friendId = req.query.friendId;
 
-    messageToUserDAO.getOldMessage(accountId, friendId, (listMessage) => {
+    messageToUserDAO.getOldMessage(accountId, friendId, async (listMessage) => {
         if (listMessage) {
+            await listMessage.forEach(async message => {
+                try {
+                    message.Content = await cryptoMiddlware.decrypt(message.Content);
+                } catch (error) {
+                    // console.log(error);
+                }
+            });
             res.status(200).json(listMessage);
         } else {
             res.status(200).json({
@@ -25,8 +32,17 @@ function getOlderMessage(req, res) {
     let friendId = req.query.friendId;
     let messageId = req.query.messageId;
 
-    messageToUserDAO.getOlderMessage(accountId, friendId, messageId, (listMessage) => {
+    messageToUserDAO.getOlderMessage(accountId, friendId, messageId, async (listMessage) => {
         if (listMessage) {
+            await listMessage.forEach(async message => {
+                try {
+                    // console.log('message: ' + message.Content);
+                    message.Content = await cryptoMiddlware.decrypt(message.Content);
+                    // console.log('decrypted msg: ' + message.Content);
+                } catch (err) {
+                    // console.log(err);
+                }
+            });
             res.status(200).json(listMessage);
         } else {
             res.status(200).json({
@@ -35,24 +51,24 @@ function getOlderMessage(req, res) {
         }
     });
 }
-function getChatList(req, res) {
-    let AccountId = req.query.AccountId;
-    chatDao.getAccountReceived(AccountId, (AccountReceived) => {
-        if (!AccountReceived) return res.status(401).send({ result: "No messenger found" })
-        var List = []
-        for (let i = 0; i < AccountReceived.length; i++) {
-            chatDao.getChatList(AccountId, AccountReceived[i], (ChatList) => {
-                List.push(ChatList);
-                if (AccountReceived.length == List.length) {
-                    List.sort((a, b) =>{
-                        return Date.parse(b.SentDate) - Date.parse(a.SentDate);
-                    })
-                    return res.status(200).send(List)
-                }
-            })
-        }
-    })
-}
+// function getChatList(req, res) {
+//     let AccountId = req.query.AccountId;
+//     chatDao.getAccountReceived(AccountId, (AccountReceived) => {
+//         if (!AccountReceived) return res.status(401).send({ result: "No messenger found" })
+//         var List = []
+//         for (let i = 0; i < AccountReceived.length; i++) {
+//             chatDao.getChatList(AccountId, AccountReceived[i], (ChatList) => {
+//                 List.push(ChatList);
+//                 if (AccountReceived.length == List.length) {
+//                     List.sort((a, b) =>{
+//                         return Date.parse(b.SentDate) - Date.parse(a.SentDate);
+//                     })
+//                     return res.status(200).send(List)
+//                 }
+//             })
+//         }
+//     })
+// }
 
 module.exports = {
     getOldMessage,

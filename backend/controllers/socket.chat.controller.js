@@ -1,16 +1,20 @@
 const socketUser = require('../models/socket.user');
 const messageToUserDAO = require('../models/data-access/messageToUserDAO');
+const cryptoMiddlware = require('../middlewares/crypto.middleware');
 
 function chat(io, socket) {
     socket.on('chat message', async (msg, accountId, response) => {
         console.log("chat message: " + msg + " to accountId: " + accountId);
+        
+        msg = await cryptoMiddlware.encrypt(msg);
+        console.log('encrypted msg: ' + msg);
 
-        messageToUserDAO.addMessage(socket.accountId, accountId, msg, 0, async (res) => {
+        messageToUserDAO.addMessage(socket.accountId, accountId, msg, 0, async (res, messageId) => {
             if (res) {
                 let user = await socketUser.getUserByAccountId(accountId);
                 if (user) {
                     user.socketId.forEach(socketId => {
-                        io.to(socketId).emit('chat message', msg);
+                        io.to(socketId).emit('chat message', msg, messageId);
                     });
                 }
 
@@ -18,12 +22,12 @@ function chat(io, socket) {
                 if (userSend.socketId.length > 1) {
                     userSend.socketId.forEach(socketId => {
                         if (socketId !== socket.id) {
-                            io.to(socketId).emit('chat message yourself', msg);
+                            io.to(socketId).emit('chat message yourself', msg, messageId);
                         }
                     });
                 }
                 console.log("chat message sent");
-                response('ok');
+                response('ok', messageId);
             } else {
                 console.log("chat message not sent");
                 response('failed');
@@ -55,10 +59,11 @@ function chat(io, socket) {
         console.log("seen message: " + messageId);
         let res = await messageToUserDAO.seenMessage(messageId);
         if (res) {
-            let messageToUser = await messageToUserDAO.getMessageToUserById(messageId);
-            let socketIds = await socketUser.getUserByAccountId(messageToUser.ToAccount);
+            let messageToUser = await messageToUserDAO.getMessageById(messageId);
+            let socketIds = await socketUser.getUserByAccountId(messageToUser.FromAccount);
             if (socketIds) {
                 socketIds.socketId.forEach(socketId => {
+                    console.log('OLA ' + socketId);
                     io.to(socketId).emit('seen message', messageId);
                 });
             }
