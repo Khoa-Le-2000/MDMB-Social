@@ -4,6 +4,7 @@ const cryptoMiddlware = require('../middlewares/crypto.middleware');
 
 function chat(io, socket) {
     socket.on('chat message', async (msg, accountId, response) => {
+        let messageBeforeEncrypt = msg;
         console.log("chat message: " + msg + " to accountId: " + accountId);
         
         msg = await cryptoMiddlware.encrypt(msg);
@@ -11,10 +12,12 @@ function chat(io, socket) {
 
         messageToUserDAO.addMessage(socket.accountId, accountId, msg, 0, async (res, messageId) => {
             if (res) {
+                let message = await messageToUserDAO.getMessageById(messageId);
+                message.Content = messageBeforeEncrypt;
                 let user = await socketUser.getUserByAccountId(accountId);
                 if (user) {
                     user.socketId.forEach(socketId => {
-                        io.to(socketId).emit('chat message', msg, messageId);
+                        io.to(socketId).emit('chat message', message);
                     });
                 }
 
@@ -22,12 +25,12 @@ function chat(io, socket) {
                 if (userSend.socketId.length > 1) {
                     userSend.socketId.forEach(socketId => {
                         if (socketId !== socket.id) {
-                            io.to(socketId).emit('chat message yourself', msg, messageId);
+                            io.to(socketId).emit('chat message yourself', message);
                         }
                     });
                 }
                 console.log("chat message sent");
-                response('ok', messageId);
+                response('ok', message);
             } else {
                 console.log("chat message not sent");
                 response('failed');

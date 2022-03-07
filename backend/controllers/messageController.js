@@ -73,5 +73,5 @@ function getOlderMessage(req, res) {
 module.exports = {
     getOldMessage,
     getOlderMessage,
-    getChatList
+    // getChatList
 };
