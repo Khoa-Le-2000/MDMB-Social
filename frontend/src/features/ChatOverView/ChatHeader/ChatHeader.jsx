@@ -17,7 +17,7 @@ const Wrapper = styled.div`
   box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset,
     rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
     rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
-  opacity: ${(props) => (props.WindowEmpty ? "0" : "1")};
+    Visibility : ${(props) => (props.WindowEmpty ? "hidden" : "none")};
 
 `;
 const WrapperInfoPadding = styled.div``;
@@ -45,6 +45,7 @@ const Name = styled.h3`
   font-size: 1.2rem;
   font-weight: bold;
   margin-bottom: 5px;
+  width:50%
 `;
 const Status = styled.span`
   font-size: 0.8rem;

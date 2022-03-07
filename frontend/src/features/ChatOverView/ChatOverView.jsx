@@ -3,6 +3,7 @@ import { getListMessageLatest, getPartner } from 'app/selectors/chat';
 import { getAuth } from 'app/selectors/login';
 import ChatConversations from 'features/ChatOverView/ChatConversations/ChatConversations';
 import ChatWindow from 'features/ChatOverView/ChatWindow/ChatWindow';
+import NavLeft from 'features/ChatOverView/NavLeft/NavLeft';
 import React from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
@@ -21,6 +22,11 @@ const ColBS = styled(Col)`
   padding-left: 0;
   padding-right: 0;
 `;
+const LeftBar = styled(Col)`
+  padding-left: 0;
+  padding-right: 0;
+  width:8% ;
+`
 
 let socket;
 function ChatOverView() {
@@ -103,10 +109,13 @@ function ChatOverView() {
   return (
     <Wrapper fluid>
       <RowBS>
+      <LeftBar lg={1} xs={1} md={1}>
+          <NavLeft/>
+        </LeftBar>
         <ColBS lg={3} xs={3} md={3}>
           <ChatConversations onSelectRoom={handleSelectRoomClick} />
         </ColBS>
-        <ColBS lg={9} xs={9} md={9}>
+        <ColBS lg={8} xs={8} md={8} >
           <ChatWindow
             onSendMessage={handleSendMessage}
             onTyping={handleTyping}

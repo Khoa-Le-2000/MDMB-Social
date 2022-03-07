@@ -11,7 +11,7 @@ import EmojiInput from 'features/ChatOverView/ChatBox/EmojiInput/EmojiInput';
 const Wrapper = styled.div`
   height: 100%;
   width: 100%;
-  opacity: ${(props) => (props.WindowEmpty ? "0" : "1")};
+  Visibility : ${(props) => (props.WindowEmpty ? "hidden" : "none")};
 
 `;
 const WrapperInput = styled.div`

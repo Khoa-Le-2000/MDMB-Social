@@ -20,20 +20,11 @@ const SideBar = styled.div`
   padding: 0 5px;
   border-right: 1px solid rgba(24, 23, 23, 0.75);
 `;
-const Logo = styled.img`
-  content: url(${LogoImg});
-  width: 4rem;
-  justify-content: center;
+const Logo = styled.div`
+  height:7% ;
   align-self: center;
-  transition: all 0.3s ease-in-out;
+  padding-top:3%;
 
-  :hover {
-    opacity: 0.8;
-    border-radius: 50%;
-    border: 1px solid #e6e6e6;
-    background-color: #e6e6e6;
-    transform: scale(0.9);
-  }
 `;
 const InputGroup = styled(BsInputGroup)`
   margin-bottom: 10px;
@@ -95,7 +86,7 @@ function ChatConversations({ onSelectRoom }) {
 
   return (
     <SideBar>
-      <Logo />
+      <Logo > MDMB Social</Logo >
       <InputGroup>
         <Form.Control placeholder="Searching" />
         <InputSearch>
