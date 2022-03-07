@@ -14,8 +14,6 @@ export const interceptor = (store) => {
   axiosClient.interceptors.request.use(
     async (config) => {
       const auth = store?.getState()?.login?.auth;
-      debugger;
-
       if (!config.headers['Authorization'] && auth?.accessToken) {
         config.headers['Authorization'] = auth?.accessToken;
       }
@@ -34,9 +32,15 @@ export const interceptor = (store) => {
     },
     (error) => {
       if (error.response.status === 401) {
-        const rt = store?.getState()?.login?.auth?.refreshToken;
-        if (refreshToken) {
-          store.dispatch(refreshToken(rt));
+        if (error.response.data.error === 'Token expired') {
+          const rt = store?.getState()?.login?.auth?.refreshToken;
+          if (refreshToken) {
+            store.dispatch(refreshToken(rt));
+          }
+        } else if (error.response.data.error === 'login failure') {
+          error.response.data.message = 'Wrong email or password!';
+          error.response.data.status = 401;
+          return Promise.reject(error);
         }
       }
       return Promise.reject(error);
