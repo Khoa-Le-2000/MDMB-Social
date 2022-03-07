@@ -83,10 +83,7 @@ function Login() {
   const hasError = useSelector(getErrorLogin);
   const { width } = useViewport();
   const isFetching = useSelector(getFetchingLogin);
-  console.log(
-    '🚀 :: file: Login.jsx :: line 86 :: Login :: isFetching',
-    isFetching
-  );
+ 
   const [showPassword, setShowPassword] = React.useState(false);
   const [message, setMessage] = React.useState('');
 
