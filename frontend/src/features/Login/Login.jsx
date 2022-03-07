@@ -7,7 +7,15 @@ import FacebookIcon from 'assets/images/icons/facebook.svg';
 import GoogleIcon from 'assets/images/icons/google.svg';
 import { useViewport } from 'hooks';
 import React from 'react';
-import { Button, Carousel, Col, Form, InputGroup, Row } from 'react-bootstrap';
+import {
+  Button,
+  Carousel,
+  Col,
+  Form,
+  InputGroup,
+  Row,
+  Spinner,
+} from 'react-bootstrap';
 import FacebookLogin from 'react-facebook-login';
 import GoogleLogin from 'react-google-login';
 import ReCAPTCHA from 'react-google-recaptcha';
@@ -25,7 +33,8 @@ import {
   getErrorCount,
   getErrorLogin,
   getErrorMessageLogin,
-} from 'app/selectors/loginSelector';
+  getFetchingLogin,
+} from 'app/selectors/login';
 import styled from 'styled-components';
 import * as yup from 'yup';
 import './login.scss';
@@ -73,7 +82,11 @@ function Login() {
   const messageErrorLogin = useSelector(getErrorMessageLogin);
   const hasError = useSelector(getErrorLogin);
   const { width } = useViewport();
-
+  const isFetching = useSelector(getFetchingLogin);
+  console.log(
+    '🚀 :: file: Login.jsx :: line 86 :: Login :: isFetching',
+    isFetching
+  );
   const [showPassword, setShowPassword] = React.useState(false);
   const [message, setMessage] = React.useState('');
 
@@ -139,6 +152,7 @@ function Login() {
       <Row
         style={{
           flexDirection: 'row-reverse',
+          height: '100%',
         }}
       >
         <Col
@@ -230,10 +244,21 @@ function Login() {
                 <Button
                   type="submit"
                   className="btn-login"
+                  variant="primary"
+                  disabled={isFetching}
                   onKeyDown={(event) =>
                     event.key === 'Enter' && onLoginHandler()
                   }
                 >
+                  {isFetching && (
+                    <Spinner
+                      as="span"
+                      animation="grow"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                    />
+                  )}
                   Log In
                 </Button>
               </div>
@@ -309,7 +334,7 @@ function Login() {
               nextIcon=""
               prevIcon=""
             >
-              <Carousel.Item interval={1000}>
+              <Carousel.Item interval={1000} className="h-100">
                 <div className="hero">
                   <img className="w-100" src={Hero1} alt="icon" />
                 </div>
@@ -320,7 +345,7 @@ function Login() {
                   </p>
                 </Carousel.Caption>
               </Carousel.Item>
-              <Carousel.Item>
+              <Carousel.Item className="h-100">
                 <div className="hero">
                   <img className="w-100" src={Hero2} alt="icon" />
                 </div>
@@ -331,7 +356,7 @@ function Login() {
                   </p>
                 </Carousel.Caption>
               </Carousel.Item>
-              <Carousel.Item>
+              <Carousel.Item className="h-100">
                 <div className="hero">
                   <img className="w-100" src={Hero3} alt="icon" />
                 </div>

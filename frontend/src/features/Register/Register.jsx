@@ -3,11 +3,12 @@ import { ArrowNarrowRight, Eye, EyeOff } from '@styled-icons/heroicons-solid';
 import { registerUser, resetRegister } from 'app/actions/register';
 import {
   getErrorRegister,
+  getFetchingRegister,
   getFillToRegister,
   getMessageRegister,
   getSuccessRegister,
   getTypeRegister,
-} from 'app/selectors/registerSelector';
+} from 'app/selectors/register';
 import React from 'react';
 import {
   Alert,
@@ -19,14 +20,14 @@ import {
   InputGroup,
   Modal,
   Row,
+  Spinner,
 } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import * as yup from 'yup';
 import './register.scss';
-import { useNavigate } from 'react-router-dom';
 
 const IconEye = styled(Eye)`
   width: 1.2rem;
@@ -144,14 +145,17 @@ function Register() {
   const messageRegister = useSelector(getMessageRegister);
   const hasError = useSelector(getErrorRegister);
   const hasSuccess = useSelector(getSuccessRegister);
+  const [show, setShow] = React.useState(true);
   const isLocalType = useSelector(getTypeRegister)?.local;
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const dataFill = useSelector(getFillToRegister);
-  const dispatch = useDispatch();
+  const isFetching = useSelector(getFetchingRegister);
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -163,10 +167,10 @@ function Register() {
     resolver: yupResolver(schema),
   });
 
-  const [show, setShow] = React.useState(true);
   const handleClose = () => {
     if (isLocalType) {
       setShow(false);
+      dispatch(resetRegister());
     } else {
       dispatch(resetRegister());
       navigate('/');
@@ -175,11 +179,11 @@ function Register() {
 
   const onRegisterHandler = (data, e) => {
     e.preventDefault();
-    if (dataFill) {
+    if (dataFill?.email) {
       data['google'] = true;
-      dispatch(registerUser(data, navigate));
     }
     dispatch(registerUser(data));
+    reset();
   };
 
   let priorityError = 0;
@@ -372,8 +376,20 @@ function Register() {
                           type="submit"
                           variant="primary"
                           className="w-100"
+                          disabled={isFetching}
                         >
-                          <ButtonContent>Create Account</ButtonContent>
+                          <ButtonContent>
+                            {isFetching && (
+                              <Spinner
+                                as="span"
+                                animation="grow"
+                                size="sm"
+                                role="status"
+                                aria-hidden="true"
+                              />
+                            )}
+                            Create Account
+                          </ButtonContent>
                           <IconInner>
                             <IconArrowNarrowRight />
                           </IconInner>

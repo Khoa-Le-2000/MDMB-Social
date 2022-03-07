@@ -3,7 +3,7 @@ import { Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout, refreshToken } from 'app/actions/login';
-import { getAuth } from 'app/selectors/loginSelector';
+import { getAuth } from 'app/selectors/login';
 
 function Dashboard() {
   const auth = useSelector(getAuth);
