@@ -115,6 +115,7 @@ function ChatBox({ onSendMessage, onTyping }) {
 
   const onSendClick = (e) => {
     e.preventDefault();
+    if (!message || message.trim().length === 0) return;
     onSendMessage(message);
     setMessage('');
   };
