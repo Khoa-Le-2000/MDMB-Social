@@ -13,13 +13,11 @@ const SelectRoomSuccess = (partner) => {
   };
 };
 
-export const selectRoom =
-  (accountId, conversation, navigate) => async (dispatch) => {
-    dispatch(SelectRoomStart());
-    const { Avatar, Name, AccountId } = conversation;
-    dispatch(SelectRoomSuccess({ Avatar, Name, AccountId }));
-    dispatch(getMessagesLatest(accountId, conversation.AccountId, navigate));
-  };
+export const selectRoom = (conversation) => async (dispatch) => {
+  dispatch(SelectRoomStart());
+  const { Avatar, Name, AccountId } = conversation;
+  dispatch(SelectRoomSuccess({ Avatar, Name, AccountId }));
+};
 
 const getListMessageLatestStart = () => {
   return {
@@ -34,23 +32,13 @@ const getListMessageLatestSuccess = (listMessage) => {
   };
 };
 
-const getListMessageLatestFailure = (message) => {
-  return {
-    type: ChatActionTypes.LIST_MESSAGE_LATEST_FAILURE,
-    payload: message,
-  };
-};
-
 export const getMessagesLatest =
-  (myAccountId, yourAccountId, navigate) => async (dispatch) => {
+  (myAccountId, yourAccountId) => async (dispatch) => {
     dispatch(getListMessageLatestStart());
     const data = await chatApi.getListMessage(myAccountId, yourAccountId);
-    console.log('🚀 :: file: chat.js :: line 46 :: data', data);
     if (data?.message === 'No message found') {
       dispatch(getListMessageLatestSuccess([]));
-      navigate(`/chat/${yourAccountId}`);
     } else {
       dispatch(getListMessageLatestSuccess(data));
-      navigate(`/chat/${yourAccountId}`);
     }
   };

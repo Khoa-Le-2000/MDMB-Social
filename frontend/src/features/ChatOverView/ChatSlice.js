@@ -45,7 +45,9 @@ const chatReducer = (state = initialState, action) => {
         error: false,
         success: false,
         message: null,
+        listMessage: [],
       };
+
     case ChatActionTypes.LIST_MESSAGE_LATEST_SUCCESS:
       return {
         ...state,

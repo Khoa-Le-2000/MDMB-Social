@@ -13,7 +13,6 @@ const Wrapper = styled.div`
 `;
 const WrapperContent = styled.div`
   transition: 0s;
-  border-radius: 0px 25px 25px 25px;
   border-radius: ${({ owner }) =>
     owner ? ' 25px 25px 0 25px' : ' 0px 25px 25px 25px'};
   border-bottom: 3px solid;
@@ -67,6 +66,7 @@ const SeenStatus = styled(CheckCircle)`
   bottom: 0;
   color: ${({ seen }) => (seen ? '#551ecc' : 'none')};
 `;
+
 function Card(props) {
   const { name, avatar, content, sentDate, seenDate, owner, type } = props;
 
@@ -82,6 +82,7 @@ function Card(props) {
               {name} <Time>{dayjs(sentDate).fromNow()}</Time>
             </Name>
           )}
+
           <WrapperContent owner={owner ? 1 : 0}>
             <WrapperMessage owner={owner ? 1 : 0}>
               <Message>

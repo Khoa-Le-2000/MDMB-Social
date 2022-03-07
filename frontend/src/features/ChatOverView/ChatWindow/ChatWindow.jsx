@@ -1,12 +1,9 @@
-import { getMessagesLatest } from 'app/actions/chat';
-import { getListMessageLatest, getPartner } from 'app/selectors/chat';
 import ChatInput from 'features/ChatOverView/ChatBox/ChatBox';
 import ChatHeader from 'features/ChatOverView/ChatHeader/ChatHeader';
 import WindowContent from 'features/ChatOverView/ChatWindow/WindowContent/WindowContent';
 import WindowEmpty from 'features/ChatOverView/ChatWindow/WindowEmpty/WindowEmpty';
 import React from 'react';
 import { Col, Row } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -46,9 +43,9 @@ function ChatWindow({
   myAccountId,
   messages,
   partner,
+  typing,
 }) {
   const { roomId } = useParams();
-
   return (
     <Wrapper>
       <ChatHeader />
@@ -56,7 +53,11 @@ function ChatWindow({
         <WrapperMessageContent>
           <Col lg={12}>
             {+roomId === +currentWindow ? (
-              <WindowContent messages={messages} partner={partner} />
+              <WindowContent
+                messages={messages}
+                partner={partner}
+                typing={typing}
+              />
             ) : (
               <WindowEmpty />
             )}
