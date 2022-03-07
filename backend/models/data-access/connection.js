@@ -7,7 +7,7 @@ function createConnection(){
         user: config.USER,
         password: config.PASSWORD,
         database: config.DATABASE,
-        timezone: 'utc'
+        // timezone: 'utc'
     });
 }
 

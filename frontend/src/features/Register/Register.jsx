@@ -3,6 +3,7 @@ import { ArrowNarrowRight, Eye, EyeOff } from '@styled-icons/heroicons-solid';
 import { registerUser, resetRegister } from 'app/actions/register';
 import {
   getErrorRegister,
+  getFetchingRegister,
   getFillToRegister,
   getMessageRegister,
   getSuccessRegister,
@@ -19,6 +20,7 @@ import {
   InputGroup,
   Modal,
   Row,
+  Spinner,
 } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -148,6 +150,7 @@ function Register() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const dataFill = useSelector(getFillToRegister);
+  const isFetching = useSelector(getFetchingRegister);
 
   const {
     register,
@@ -179,7 +182,7 @@ function Register() {
     if (dataFill?.email) {
       data['google'] = true;
     }
-    dispatch(registerUser(data, navigate));
+    dispatch(registerUser(data));
     reset();
   };
 
@@ -373,8 +376,20 @@ function Register() {
                           type="submit"
                           variant="primary"
                           className="w-100"
+                          disabled={isFetching}
                         >
-                          <ButtonContent>Create Account</ButtonContent>
+                          <ButtonContent>
+                            {isFetching && (
+                              <Spinner
+                                as="span"
+                                animation="grow"
+                                size="sm"
+                                role="status"
+                                aria-hidden="true"
+                              />
+                            )}
+                            Create Account
+                          </ButtonContent>
                           <IconInner>
                             <IconArrowNarrowRight />
                           </IconInner>

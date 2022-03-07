@@ -32,6 +32,11 @@ function ChatOverView() {
   const [typing, setTyping] = React.useState(false);
   const navigate = useNavigate();
   const messages = useSelector(getListMessageLatest);
+  const [messagesLatest, setMessagesLatest] = React.useState(messages);
+  console.log(
+    '🚀 :: file: ChatOverView.jsx :: line 36 :: ChatOverView :: messagesLatest',
+    messagesLatest
+  );
 
   const partner = useSelector(getPartner);
 
@@ -58,17 +63,15 @@ function ChatOverView() {
 
   React.useEffect(() => {
     socket?.on('chat message', (data) => {
-      console.log(
-        '🚀 :: file: ChatOverView.jsx :: line 60 :: socket?.on :: data',
-        data
-      );
+      if (+data.FromAccount === +roomId) {
+        setMessagesLatest((prev) => [...prev, data]);
+      }
     });
-  }, []);
+  }, [messages, roomId]);
 
   React.useEffect(() => {
     socket.on('user-online', function (accountId) {
       if (+accountId === +roomId) {
-        console.log('user-online: ' + accountId);
         setIsOnline(true);
       }
     });
@@ -83,12 +86,9 @@ function ChatOverView() {
   };
 
   const handleSendMessage = (message) => {
-    socket.emit('chat message', message, roomId, (res) => {
-      if (res === 'ok') {
-        console.log(
-          '🚀 :: file: ChatOverView.jsx :: line 68 :: message',
-          message
-        );
+    socket.emit('chat message', message, roomId, (status, data) => {
+      if (+data.ToAccount === +roomId && status === 'ok') {
+        setMessagesLatest((prev) => [...prev, data]);
       }
     });
   };
@@ -112,7 +112,7 @@ function ChatOverView() {
             onTyping={handleTyping}
             myAccountId={auth?.accountId}
             partner={partner}
-            messages={messages}
+            messages={messagesLatest}
             currentWindow={currentWindow}
             typing={typing}
             isOnline={isOnline}

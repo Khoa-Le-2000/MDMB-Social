@@ -95,10 +95,6 @@ const DarkIcon = styled(Moon)`
 
 const StatusText = styled.span``;
 function ChatHeader({ partner, isOnline }) {
-  console.log(
-    '🚀 :: file: ChatHeader.jsx :: line 98 :: ChatHeader :: isOnline',
-    isOnline
-  );
   const [isDark, setIsDark] = useToggle(false);
   const toggleTheme = () => {
     setIsDark(!isDark);

@@ -42,3 +42,34 @@ export const getMessagesLatest =
       dispatch(getListMessageLatestSuccess(data));
     }
   };
+
+const sendMessageStart = () => {
+  return {
+    type: ChatActionTypes.SEND_MESSAGE_START,
+  };
+};
+
+const sendMessageSuccess = (message) => {
+  return {
+    type: ChatActionTypes.SEND_MESSAGE_SUCCESS,
+    payload: message,
+  };
+};
+
+const sendMessageFailure = (error) => {
+  return {
+    type: ChatActionTypes.SEND_MESSAGE_FAILURE,
+    payload: error,
+  };
+};
+
+export const sendMessage =
+  (myAccountId, yourAccountId, message) => async (dispatch) => {
+    dispatch(sendMessageStart());
+    const data = await chatApi.sendMessage(myAccountId, yourAccountId, message);
+    if (data?.message === 'Message sent') {
+      dispatch(sendMessageSuccess(message));
+    } else {
+      dispatch(sendMessageFailure(data));
+    }
+  };

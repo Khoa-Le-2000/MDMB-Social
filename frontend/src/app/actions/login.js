@@ -27,18 +27,25 @@ export const loginSuccess = (auth) => {
 
 export const login = (user) => async (dispatch) => {
   dispatch(loginStart());
-  const data = await authApi.login(user);
-  if (data?.accessToken && data?.refreshToken) {
-    const { accessToken, refreshToken, accountId } = data;
-    dispatch(
-      loginSuccess({
-        accessToken,
-        refreshToken,
-        accountId,
-      })
-    );
-  } else {
-    dispatch(loginFailure('Wrong email or password!'));
+  try {
+    const data = await authApi.login(user);
+    if (data?.accessToken) {
+      console.log('🚀 :: file: login.js :: line 32 :: login :: data', data);
+      const { accessToken, refreshToken, accountId } = data;
+      dispatch(
+        loginSuccess({
+          accessToken,
+          refreshToken,
+          accountId,
+        })
+      );
+    }
+  } catch (error) {
+    if (error.response.status === 401) {
+      if (error.response.data.result === 'login failure') {
+        dispatch(loginFailure('Wrong email or password!'));
+      }
+    }
   }
 };
 
