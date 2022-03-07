@@ -63,13 +63,32 @@ const sendMessageFailure = (error) => {
   };
 };
 
-export const sendMessage =
-  (myAccountId, yourAccountId, message) => async (dispatch) => {
-    dispatch(sendMessageStart());
-    const data = await chatApi.sendMessage(myAccountId, yourAccountId, message);
-    if (data?.message === 'Message sent') {
-      dispatch(sendMessageSuccess(message));
-    } else {
-      dispatch(sendMessageFailure(data));
-    }
+export const sendMessage = (message) => async (dispatch) => {
+  dispatch(sendMessageStart());
+  dispatch(sendMessageSuccess(message));
+};
+
+const receiveMessageStart = () => {
+  return {
+    type: ChatActionTypes.RECEIVE_MESSAGE_START,
   };
+};
+
+const receiveMessageFailure = (error) => {
+  return {
+    type: ChatActionTypes.RECEIVE_MESSAGE_FAILURE,
+    payload: error,
+  };
+};
+
+const receiveMessageSuccess = (message) => {
+  return {
+    type: ChatActionTypes.RECEIVE_MESSAGE_SUCCESS,
+    payload: message,
+  };
+};
+
+export const receiveMessage = (message) => async (dispatch) => {
+  dispatch(receiveMessageStart());
+  dispatch(receiveMessageSuccess(message));
+};
