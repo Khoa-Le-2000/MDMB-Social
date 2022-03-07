@@ -145,7 +145,8 @@ function getListFriend(AccountId) {
           // console.log('accounr ' + accounts);
           for (let i = 0; i < result.length; i++) {
             let account = new Account.Account(result[i].AccountId, null,
-              result[i].Phone, result[i].Email, result[i].Name, result[i].Avatar, result[i].Birthday, result[i].Gender, result[i].CreatedDate);
+              result[i].Phone, result[i].Email, result[i].Name, result[i].Avatar, result[i].Birthday, 
+              result[i].Gender, result[i].CreatedDate, result[i].LastOnline);
             accounts.push(account);
           }
           resolve(accounts);
