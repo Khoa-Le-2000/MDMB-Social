@@ -97,14 +97,13 @@
     });
 
     const accountId = params.accountId;
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNjQ2MTg0OTY2LCJleHAiOjE2NDYxODg1NjZ9.5NdsgNfDDAS6kL8INyUko0QEYHyL97NXMx4tnFSFCOw";
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiaWF0IjoxNjQ2MzgzOTkwLCJleHAiOjE2NDYzODc1OTB9.xSpDr4VrKzRNQNXGQsJ4vv0OzfhZ6tV8QNhefpVxk7s";
 
     var socket = io.connect("http://localhost:8080", {
       transports: ['websocket'],
       auth: { token: token },
-      query: { accountId: 7 }
+      query: { accountId: 4 }
     });
-    console.log('🚀 :: file: index.html :: line 107 :: socket', socket);
 
     var messages = document.getElementById('messages');
     var form = document.getElementById('form');

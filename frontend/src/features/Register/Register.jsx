@@ -152,6 +152,7 @@ function Register() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -166,6 +167,7 @@ function Register() {
   const handleClose = () => {
     if (isLocalType) {
       setShow(false);
+      dispatch(resetRegister());
     } else {
       dispatch(resetRegister());
       navigate('/');
@@ -174,11 +176,11 @@ function Register() {
 
   const onRegisterHandler = (data, e) => {
     e.preventDefault();
-    if (dataFill) {
+    if (dataFill?.email) {
       data['google'] = true;
-      dispatch(registerUser(data, navigate));
     }
-    dispatch(registerUser(data));
+    dispatch(registerUser(data, navigate));
+    reset();
   };
 
   let priorityError = 0;

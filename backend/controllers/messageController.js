@@ -1,11 +1,12 @@
 const messageToUserDAO = require('../models/data-access/messageToUserDAO');
+const chatDao = require('../models/data-access/chatDao');
 
 function getOldMessage(req, res) {
     // console.log("get old message");
 
     let accountId = req.query.accountId;
     let friendId = req.query.friendId;
-    
+
     messageToUserDAO.getOldMessage(accountId, friendId, (listMessage) => {
         if (listMessage) {
             res.status(200).json(listMessage);
@@ -34,8 +35,27 @@ function getOlderMessage(req, res) {
         }
     });
 }
+function getChatList(req, res) {
+    let AccountId = req.query.AccountId;
+    chatDao.getAccountReceived(AccountId, (AccountReceived) => {
+        if (!AccountReceived) return res.status(401).send({ result: "No messenger found" })
+        var List = []
+        for (let i = 0; i < AccountReceived.length; i++) {
+            chatDao.getChatList(AccountId, AccountReceived[i], (ChatList) => {
+                List.push(ChatList);
+                if (AccountReceived.length == List.length) {
+                    List.sort((a, b) =>{
+                        return Date.parse(b.SentDate) - Date.parse(a.SentDate);
+                    })
+                    return res.status(200).send(List)
+                }
+            })
+        }
+    })
+}
 
 module.exports = {
     getOldMessage,
-    getOlderMessage
+    getOlderMessage,
+    getChatList
 };

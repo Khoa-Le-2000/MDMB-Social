@@ -6,11 +6,12 @@ import styled from 'styled-components';
 const Wrapper = styled.div`
   padding: 0px 5px;
 `;
-function WindowContent({ messages, partner }) {
+
+function WindowContent({ messages, partner, typing }) {
   return (
     <Wrapper>
       {messages.length > 0 ? (
-        <Messages messages={messages} partner={partner} />
+        <Messages messages={messages} partner={partner} typing={typing} />
       ) : (
         <MessageEmpty />
       )}

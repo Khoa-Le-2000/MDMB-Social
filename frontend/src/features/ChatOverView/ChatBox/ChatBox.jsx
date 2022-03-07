@@ -6,6 +6,7 @@ import React from 'react';
 import { Col, Row } from 'react-bootstrap';
 import styled from 'styled-components';
 import { HoverMixin } from 'styles/MixinStyles';
+import EmojiInput from 'features/ChatOverView/ChatBox/EmojiInput/EmojiInput';
 
 const Wrapper = styled.div`
   height: 100%;
@@ -57,7 +58,7 @@ const SendMessenger = styled(Send)`
     cursor: pointer;
   }
 `;
-const Emoji = styled(EmojiHappy)`
+const EmojiIcon = styled(EmojiHappy)`
   width: 2rem;
   height: 2rem;
   padding: 5px;
@@ -99,7 +100,9 @@ function ChatBox({ onSendMessage, onTyping, WindowEmpty }) {
   const typingTimeoutRef = React.useRef(null);
   const handleKeyPress = (e) => {
     clearTimeout(typingTimeoutRef.current);
-    onTyping(true);
+    onTyping({
+      isTyping: true,
+    });
   };
 
   const handleKeyUp = (e) => {
@@ -109,23 +112,22 @@ function ChatBox({ onSendMessage, onTyping, WindowEmpty }) {
     setMessage(value);
 
     if (!onTyping) return;
-
-    if (typingTimeoutRef.current) {
-      clearTimeout(typingTimeoutRef.current);
-    }
-
     typingTimeoutRef.current = setTimeout(() => {
-      const formValues = {
-        keyword: value.replace(/\s/g, ''),
-      };
-      onTyping(formValues);
-    }, 300);
+      onTyping({
+        isTyping: false,
+      });
+    }, 1000);
   };
 
   const onSendClick = (e) => {
     e.preventDefault();
     onSendMessage(message);
     setMessage('');
+  };
+  const chatBoxRef = React.useRef(null);
+
+  const emojiInserted = (messageWithEmoji) => {
+    chatBoxRef.current.focus();
   };
 
   return (
@@ -143,12 +145,17 @@ function ChatBox({ onSendMessage, onTyping, WindowEmpty }) {
         <Col lg={12}>
           <WrapperInput>
             <Input
-              contentEditable
+              ref={chatBoxRef}
               onKeyUp={handleKeyUp}
               onKeyPress={handleKeyPress}
+              onChange={(e) => setMessage(e.target.value)}
+              value={message}
+              onKeyDown={(e) => e.key === 'Enter' && onSendClick(e)}
             />
             <FeaturesRight>
-              <Emoji />
+              <EmojiIcon>
+                <EmojiInput value={message} onSelection={emojiInserted} />
+              </EmojiIcon>
               <SendMessenger onClick={onSendClick} />
             </FeaturesRight>
           </WrapperInput>

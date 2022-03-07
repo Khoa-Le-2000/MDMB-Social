@@ -14,8 +14,6 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 10px 0;
-  opacity: ${(props) => (props.WindowEmpty ? "0" : "1")};
-
   box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset,
     rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
     rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
@@ -31,12 +29,12 @@ const WrapperText = styled.div`
   flex-direction: column;
 `;
 const Avatar = styled.div`
-  padding-right: 10px;
+  margin-right: 10px;
+  margin-left: 4px;
   img {
     width: 52px;
     height: 52px;
     border: 1px solid rgba(255, 255, 255, 0.75);
-    padding: 4px;
     border-radius: 50%;
     object-fit: cover;
   }
@@ -96,8 +94,11 @@ const DarkIcon = styled(Moon)`
 `;
 
 const StatusText = styled.span``;
-function ChatHeader(props) {
-  
+function ChatHeader({ partner, isOnline }) {
+  console.log(
+    '🚀 :: file: ChatHeader.jsx :: line 98 :: ChatHeader :: isOnline',
+    isOnline
+  );
   const [isDark, setIsDark] = useToggle(false);
   const toggleTheme = () => {
     setIsDark(!isDark);
@@ -109,13 +110,10 @@ function ChatHeader(props) {
           <WrapperInfoPadding>
             <WrapperInfo>
               <Avatar>
-                <img
-                  src="https://images.unsplash.com/photo-1644982654131-79f434ac0c6c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHw3MHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60"
-                  alt="avatar"
-                />
+                <img src={partner.Avatar} alt="avatar" />
               </Avatar>
               <WrapperText>
-                <Name>UI Art Design</Name>
+                <Name>{partner.Name}</Name>
                 <Status>
                   <Online />
                   <StatusText>Online</StatusText>
