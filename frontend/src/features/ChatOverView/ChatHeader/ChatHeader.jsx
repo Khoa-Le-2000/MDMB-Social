@@ -17,6 +17,8 @@ const Wrapper = styled.div`
   box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset,
     rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
     rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+  opacity: ${(props) => (props.WindowEmpty ? "0" : "1")};
+
 `;
 const WrapperInfoPadding = styled.div``;
 
@@ -94,7 +96,7 @@ const DarkIcon = styled(Moon)`
 `;
 
 const StatusText = styled.span``;
-function ChatHeader({ partner, isOnline }) {
+function ChatHeader({ partner, isOnline, WindowEmpty }) {
   console.log(
     '🚀 :: file: ChatHeader.jsx :: line 98 :: ChatHeader :: isOnline',
     isOnline
@@ -104,7 +106,7 @@ function ChatHeader({ partner, isOnline }) {
     setIsDark(!isDark);
   };
   return (
-    <Wrapper WindowEmpty={props.WindowEmpty}>
+    <Wrapper WindowEmpty={WindowEmpty}>
       <Row className="w-100">
         <Col lg={10}>
           <WrapperInfoPadding>
