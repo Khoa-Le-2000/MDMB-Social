@@ -40,15 +40,15 @@ function ChatWindow({
   onSendMessage,
   onTyping,
   currentWindow,
-  myAccountId,
   messages,
   partner,
   typing,
+  isOnline,
 }) {
   const { roomId } = useParams();
   return (
     <Wrapper>
-      <ChatHeader />
+      <ChatHeader partner={partner} isOnline={isOnline} />
       <RowMessageInner>
         <WrapperMessageContent>
           <Col lg={12}>

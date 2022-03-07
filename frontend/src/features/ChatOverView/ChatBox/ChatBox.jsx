@@ -143,6 +143,7 @@ function ChatBox({ onSendMessage, onTyping }) {
               onKeyUp={handleKeyUp}
               onKeyPress={handleKeyPress}
               onChange={(e) => setMessage(e.target.value)}
+              value={message}
               onKeyDown={(e) => e.key === 'Enter' && onSendClick(e)}
             />
             <FeaturesRight>
