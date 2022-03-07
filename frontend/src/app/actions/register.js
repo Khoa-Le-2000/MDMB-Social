@@ -27,7 +27,7 @@ export const registerSuccess = (data) => {
   };
 };
 
-export const registerUser = (user, navigate) => async (dispatch) => {
+export const registerUser = (user) => async (dispatch) => {
   dispatch(registerStart());
 
   let data = null;

@@ -29,7 +29,8 @@ export const login = (user) => async (dispatch) => {
   dispatch(loginStart());
   try {
     const data = await authApi.login(user);
-    if (data.status === 200) {
+    if (data?.accessToken) {
+      console.log('🚀 :: file: login.js :: line 32 :: login :: data', data);
       const { accessToken, refreshToken, accountId } = data;
       dispatch(
         loginSuccess({
