@@ -14,6 +14,7 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 10px 0;
+  opacity: ${(props) => (props.WindowEmpty ? "0" : "1")};
 
   box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset,
     rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
@@ -95,14 +96,14 @@ const DarkIcon = styled(Moon)`
 `;
 
 const StatusText = styled.span``;
-function ChatHeader() {
+function ChatHeader(props) {
+  
   const [isDark, setIsDark] = useToggle(false);
   const toggleTheme = () => {
     setIsDark(!isDark);
   };
-
   return (
-    <Wrapper>
+    <Wrapper WindowEmpty={props.WindowEmpty}>
       <Row className="w-100">
         <Col lg={10}>
           <WrapperInfoPadding>

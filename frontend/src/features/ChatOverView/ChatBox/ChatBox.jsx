@@ -10,6 +10,8 @@ import { HoverMixin } from 'styles/MixinStyles';
 const Wrapper = styled.div`
   height: 100%;
   width: 100%;
+  opacity: ${(props) => (props.WindowEmpty ? "0" : "1")};
+
 `;
 const WrapperInput = styled.div`
   display: flex;
@@ -92,7 +94,7 @@ const IconSticker = styled(StickerTest)`
   ${HoverMixin.default};
 `;
 
-function ChatBox({ onSendMessage, onTyping }) {
+function ChatBox({ onSendMessage, onTyping, WindowEmpty }) {
   const [message, setMessage] = React.useState('');
   const typingTimeoutRef = React.useRef(null);
   const handleKeyPress = (e) => {
@@ -102,7 +104,7 @@ function ChatBox({ onSendMessage, onTyping }) {
 
   const handleKeyUp = (e) => {
     clearTimeout(typingTimeoutRef.current);
-    typingTimeoutRef.current = window.setTimeout(() => {}, 1000);
+    typingTimeoutRef.current = window.setTimeout(() => { }, 1000);
     const value = e.currentTarget.value;
     setMessage(value);
 
@@ -127,7 +129,7 @@ function ChatBox({ onSendMessage, onTyping }) {
   };
 
   return (
-    <Wrapper>
+    <Wrapper WindowEmpty={WindowEmpty}>
       <Row>
         <Col lg={12}>
           <FeaturesTop>

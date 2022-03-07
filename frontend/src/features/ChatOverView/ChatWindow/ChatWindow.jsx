@@ -51,7 +51,7 @@ function ChatWindow({
 
   return (
     <Wrapper>
-      <ChatHeader />
+      {+roomId === +currentWindow ? <ChatHeader /> : <ChatHeader WindowEmpty />}
       <RowMessageInner>
         <WrapperMessageContent>
           <Col lg={12}>
@@ -65,7 +65,9 @@ function ChatWindow({
       </RowMessageInner>
       <RowBS>
         <ColBS>
-          <ChatInput onSendMessage={onSendMessage} onTyping={onTyping} />
+          {+roomId === +currentWindow ? <ChatInput onSendMessage={onSendMessage} onTyping={onTyping} /> : <ChatInput onSendMessage={onSendMessage} onTyping={onTyping} WindowEmpty />}
+
+
         </ColBS>
       </RowBS>
     </Wrapper>
