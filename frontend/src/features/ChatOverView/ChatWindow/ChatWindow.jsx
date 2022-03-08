@@ -52,15 +52,11 @@ function ChatWindow({
       <RowMessageInner>
         <WrapperMessageContent>
           <Col lg={12}>
-            {+roomId === +currentWindow ? (
               <WindowContent
                 messages={messages}
                 partner={partner}
                 typing={typing}
               />
-            ) : (
-              <WindowEmpty />
-            )}
           </Col>
         </WrapperMessageContent>
       </RowMessageInner>

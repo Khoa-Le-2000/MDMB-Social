@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import io from 'socket.io-client';
 import styled from 'styled-components';
+import WindowEmpty from 'features/ChatOverView/ChatWindow/WindowEmpty/WindowEmpty';
 
 const Wrapper = styled(Container)`
   height: 100vh;
@@ -116,6 +117,7 @@ function ChatOverView() {
           <ChatConversations onSelectRoom={handleSelectRoomClick} />
         </ColBS>
         <ColBS lg={8} xs={8} md={8} >
+          {+roomId === +currentWindow ?
           <ChatWindow
             onSendMessage={handleSendMessage}
             onTyping={handleTyping}
@@ -125,7 +127,9 @@ function ChatOverView() {
             currentWindow={currentWindow}
             typing={typing}
             isOnline={isOnline}
-          />
+          />:
+          <WindowEmpty/>
+        }
         </ColBS>
       </RowBS>
     </Wrapper>
