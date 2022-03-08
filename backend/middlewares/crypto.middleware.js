@@ -1,7 +1,8 @@
 const crypto = require('crypto');
+const util = require('util');
 
 function getIV() {
-    let result = new TextEncoder("utf-8").encode(process.env.CRYPTO_IV);
+    let result = new util.TextEncoder("utf-8").encode(process.env.CRYPTO_IV);
     return result;
 }
 

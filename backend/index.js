@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 var https = require('https');
+const fs = require('fs');
 const route = require('./routes/index');
 const socket = require('./controllers/socket.index');
 const app = express();
@@ -28,7 +29,14 @@ app.use(session({
 
 app.use(cors(corsOptions));
 // const server = app.listen(PORT);
-const server = https.createServer(app).listen(PORT);
+
+const options = {
+    ca: fs.readFileSync("ca_bundle.crt"),
+ key: fs.readFileSync("private.key"),
+ cert: fs.readFileSync("certificate.crt")
+}
+const server = https.createServer(options, app).listen(8000);
+
 route(app);
 
 console.log(`Server is running on port ${PORT}`);
