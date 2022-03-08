@@ -21,7 +21,7 @@ const WrapperContent = styled.div`
   color: ${({ owner }) => (owner === 1 ? '#434354' : '#ebf0ff')};
   max-width: 800px;
   font-size: 14px;
-  min-width: 200px;
+  min-width: 250px;
   position: ${({ owner }) => (owner === 1 ? 'relative' : 'static')};
 `;
 
