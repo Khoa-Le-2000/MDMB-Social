@@ -45,7 +45,6 @@ const Name = styled.h3`
   font-size: 1.2rem;
   font-weight: bold;
   margin-bottom: 5px;
-  width:50%
 `;
 const Status = styled.span`
   font-size: 0.8rem;

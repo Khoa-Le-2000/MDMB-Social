@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import LogoImg from 'assets/images/logos/logo.jpg';
-import { ReactComponent as Message } from 'assets/images/icons/messageIcon3.svg';
-import { ReactComponent as PhoneBook } from 'assets/images/icons/phone-book.svg';
-import { ReactComponent as Setting } from 'assets/images/icons/setting.svg';
+import { ReactComponent as Message } from 'assets/images/icons/chat-fill.svg';
+import { ReactComponent as PhoneBook } from 'assets/images/icons/journal.svg';
+import { ReactComponent as Setting } from 'assets/images/icons/gear.svg';
 
 const Wrapper = styled.div`
     height:97% ;
@@ -61,17 +61,19 @@ const HoverWraper = styled.div`
 
 const MessageIcon = styled(Message)`
   width: 3rem;
+  height: 3rem;
   background-color:  ${props=>props.choosed?"#7b3e75":""};
 `
 const PhoneBookIcon = styled(PhoneBook)`
   width: 3rem;
+  height: 3rem;
   background-color:  ${props=>props.choosed?"#7b3e75":""};
 
 `
 const SettingIcon = styled(Setting)`
-  height: 3.7rem;
-  width: 3.7rem;
-  margin-left:20px;
+  height: 3rem;
+  width: 3rem;
+  margin-left:24px;
   background-color:  ${props=>props.choosed?"#7b3e75":""};
 `
 function LefBar() {
