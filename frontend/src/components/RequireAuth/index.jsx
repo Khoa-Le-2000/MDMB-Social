@@ -12,8 +12,7 @@ function RequireAuth({ children }) {
   return isAuthenticated ? (
     children
   ) : (
-    children
-
+    <Navigate to="/" replace state={{ path: location.pathname }} />
   );
 }
 
