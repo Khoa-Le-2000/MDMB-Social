@@ -59,13 +59,14 @@ const SendMessenger = styled(Send)`
   }
 `;
 const EmojiIcon = styled(EmojiHappy)`
-  width: 2rem;
-  height: 2rem;
-  padding: 5px;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 1px;
   position: absolute;
   right: 100%;
   ${HoverMixin.default};
   border-radius: 50%;
+  margin: 12px 10px;
 `;
 
 const Input = styled.input`
