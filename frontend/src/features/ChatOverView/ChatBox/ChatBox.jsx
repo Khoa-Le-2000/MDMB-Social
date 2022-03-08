@@ -5,7 +5,7 @@ import { ReactComponent as StickerTest } from 'assets/images/icons/sticker.svg';
 import React from 'react';
 import { Col, Row } from 'react-bootstrap';
 import styled from 'styled-components';
-import { HoverMixin } from 'styles/MixinStyles';
+import { HoverMixin } from 'styles/mixinStyles';
 import EmojiInput from 'features/ChatOverView/ChatBox/EmojiInput/EmojiInput';
 
 const Wrapper = styled.div`

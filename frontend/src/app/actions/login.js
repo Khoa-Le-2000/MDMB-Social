@@ -40,7 +40,9 @@ export const login = (user) => async (dispatch) => {
       );
     }
   } catch (error) {
-    if (error.response.status === 401) {
+    if (!error?.status) {
+      dispatch(loginFailure('Server not responding'));
+    } else if (error?.response?.status === 401) {
       if (error.response.data.result === 'login failure') {
         dispatch(loginFailure('Wrong email or password!'));
       }

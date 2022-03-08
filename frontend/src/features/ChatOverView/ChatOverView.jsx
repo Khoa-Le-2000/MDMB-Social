@@ -36,11 +36,8 @@ function ChatOverView() {
   const [isOnline, setIsOnline] = React.useState(false);
   const [typing, setTyping] = React.useState(false);
   const navigate = useNavigate();
-  const messagesLatest = useSelector(getListMessageLatest);
-  console.log(
-    '🚀 :: file: ChatOverView.jsx :: line 40 :: ChatOverView :: messagesLatest',
-    messagesLatest
-  );
+  const messages = useSelector(getListMessageLatest);
+  const messagesLatest = messages.reverse();
   const partner = useSelector(getPartner);
 
   React.useEffect(() => {

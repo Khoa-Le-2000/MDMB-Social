@@ -2,7 +2,7 @@ import 'emoji-mart/css/emoji-mart.css';
 import React, { useState, useCallback, useRef } from 'react';
 import { Picker } from 'emoji-mart';
 import styled from 'styled-components';
-import { HoverMixin } from 'styles/MixinStyles';
+import { HoverMixin } from 'styles/mixinStyles';
 import { EmojiHappy } from '@styled-icons/heroicons-outline';
 
 const Dialog = styled.div`
