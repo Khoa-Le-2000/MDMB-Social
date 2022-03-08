@@ -9,7 +9,7 @@ export const ThemeContext = React.createContext({
 });
 
 function ThemeProvider({ children }) {
-  const [darkMode, setDarkMode] = useLocalStorage('DarkMode', true);
+  const [darkMode, setDarkMode] = useLocalStorage('isDark', false);
 
   const toggleTheme = () => {
     setDarkMode(!darkMode);

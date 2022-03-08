@@ -52,32 +52,38 @@ export const login = (user) => async (dispatch) => {
 
 export const loginByGoogle = (googleData, navigate) => async (dispatch) => {
   dispatch(loginStart());
-  const {
-    tokenId,
-    profileObj: { email, name },
-  } = googleData;
-  const data = await authApi.loginWithGoogle(tokenId);
+  try {
+    const {
+      tokenId,
+      profileObj: { email, name },
+    } = googleData;
+    const data = await authApi.loginWithGoogle(tokenId);
 
-  if (data?.accessToken && data?.refreshToken) {
-    const { accessToken, refreshToken, accountId } = data;
-    dispatch(
-      loginSuccess({
-        accessToken,
-        refreshToken,
-        accountId,
-      })
-    );
-  } else if (data?.result === 'login failure') {
-    dispatch(
-      fillToRegister({
-        email,
-        name,
-        password: 'Abcd123',
-      })
-    );
-    navigate('register');
-  } else {
-    dispatch(loginFailure(`Can't sign in to your Google Account`));
+    if (data?.accessToken && data?.refreshToken) {
+      const { accessToken, refreshToken, accountId } = data;
+      dispatch(
+        loginSuccess({
+          accessToken,
+          refreshToken,
+          accountId,
+        })
+      );
+    } else if (data?.result === 'login failure') {
+      dispatch(
+        fillToRegister({
+          email,
+          name,
+          password: 'Abcd123',
+        })
+      );
+      navigate('register');
+    } else {
+      dispatch(loginFailure(`Can't sign in to your Google Account`));
+    }
+  } catch (error) {
+    if (!error?.status) {
+      dispatch(loginFailure('Server not responding'));
+    }
   }
 };
 
