@@ -73,7 +73,7 @@ function Messages({ messages, partner, typing }) {
           seenDate={item.seenDate}
           sentDate={item.SentDate}
           name={partner.Name}
-          avatar={item.avatar}
+          avatar={partner.Avatar}
           content={item.Content}
           type={item.Type === 0 ? 'text' : 'image'}
           owner={item.FromAccount === myAccountId}
