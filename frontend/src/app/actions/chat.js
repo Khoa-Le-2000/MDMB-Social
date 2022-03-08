@@ -39,7 +39,7 @@ export const getMessagesLatest =
     if (data?.message === 'No message found') {
       dispatch(getListMessageLatestSuccess([]));
     } else {
-      dispatch(getListMessageLatestSuccess(data));
+      dispatch(getListMessageLatestSuccess(data.reverse()));
     }
   };
 
