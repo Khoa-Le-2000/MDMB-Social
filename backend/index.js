@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+var https = require('https');
 const route = require('./routes/index');
 const socket = require('./controllers/socket.index');
 const app = express();
@@ -26,7 +27,8 @@ app.use(session({
 }));
 
 app.use(cors(corsOptions));
-const server = app.listen(PORT);
+// const server = app.listen(PORT);
+const server = https.createServer(app).listen(PORT);
 route(app);
 
 console.log(`Server is running on port ${PORT}`);
