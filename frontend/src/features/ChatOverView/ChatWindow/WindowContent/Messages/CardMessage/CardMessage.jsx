@@ -67,7 +67,7 @@ const SeenStatus = styled(CheckCircle)`
   color: ${({ seen }) => (seen ? '#551ecc' : 'none')};
 `;
 
-function Card(props) {
+function CardMessage(props) {
   const { name, avatar, content, sentDate, seenDate, owner, type } = props;
 
   return (
@@ -101,4 +101,4 @@ function Card(props) {
     </Wrapper>
   );
 }
-export default Card;
+export default CardMessage;
