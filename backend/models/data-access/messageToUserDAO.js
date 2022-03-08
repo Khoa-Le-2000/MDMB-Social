@@ -6,7 +6,7 @@ function getOldMessage(fromAccount, toAccount, Callback) {
     con.connect(async function (err) {
         if (err) throw err;
         // console.log("Connected!");
-        await connection.setTimeZone(con);
+        // await connection.setTimeZone(con);
         var sql = `SELECT * 
         FROM MessageToUser 
         Where (FromAccount=? and ToAccount=?) or (FromAccount=? and ToAccount=?)
