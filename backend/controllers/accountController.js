@@ -12,13 +12,13 @@ function login(req, res) {
   var Username = req.body.Username;
   var Password = req.body.Password;
   AccountDAO.getAccount(Username, (Account) => {
-    if (Account == false) res.status(401).send({ result: "login failure" });
+    if (Account == false) res.status(200).send({ result: "login failure" });
     else {
       let acccount = Account;
       bcrypt.compare(Password, acccount.Password, function (err, result) {
         if (result == true) {
           sendToken(req, res, Account);
-        } else res.status(401).send({ result: "login failure" });
+        } else res.status(200).send({ result: "login failure" });
       });
     }
   });
