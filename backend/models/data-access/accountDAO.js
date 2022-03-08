@@ -41,7 +41,7 @@ function createAccount(Password, Phone, Email, Name, Callback) {
   var con = connection.createConnection();
   con.connect(async function (err) {
     if (err) throw err;
-    await connection.setTimeZone(con);
+    // await connection.setTimeZone(con);
     var sql = `insert into MDMB.Account(Password, Phone, Email, Name) values(?,?,?,?);`;
     con.query(sql, [Password, Phone, Email, Name],
       function (err, result) {
@@ -176,7 +176,7 @@ function updateLastOnline(AccountId) {
   return new Promise((resolve, reject) => {
     con.connect(async function (err) {
       if (err) throw err;
-      await connection.setTimeZone(con);
+      // await connection.setTimeZone(con);
       var sql = `UPDATE MDMB.Account SET LastOnline = NOW() where AccountId=?;`;
       con.query(sql, [AccountId],
         function (err, result) {

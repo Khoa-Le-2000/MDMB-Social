@@ -11,12 +11,12 @@ function createConnection(){
     });
 }
 
-async function setTimeZone(connection){
-    let sql = 'SET time_zone = "+07:00"';
-    await connection.query(sql, function(err, result){
-        if(err) throw err;
-    });
-}
+// async function setTimeZone(connection){
+//     let sql = 'SET time_zone = "+07:00"';
+//     await connection.query(sql, function(err, result){
+//         if(err) throw err;
+//     });
+// }
 
 function closeConnection(connection){
     connection.end(function(err){
@@ -27,6 +27,6 @@ function closeConnection(connection){
 
 module.exports = {
     createConnection,
-    closeConnection,
-    setTimeZone
+    closeConnection
+    // setTimeZone
 }

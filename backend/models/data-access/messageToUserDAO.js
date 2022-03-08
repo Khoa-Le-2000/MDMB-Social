@@ -57,7 +57,7 @@ function addMessage(fromAccount, toAccount, content, type, Callback) {
     var con = connection.createConnection();
     con.connect(async function (err) {
         if (err) throw err;
-        await connection.setTimeZone(con);
+        // await connection.setTimeZone(con);
         var sql = `insert into MDMB.MessageToUser(FromAccount, ToAccount, Content, Type) values(?,?,?,?);`;
         con.query(sql, [fromAccount, toAccount, content, type],
             function (err, result) {
@@ -76,7 +76,7 @@ async function seenMessage(messageId) {
     return new Promise((resolve, reject) => {
         con.connect(async function (err) {
             if (err) throw err;
-            await connection.setTimeZone(con);
+            // await connection.setTimeZone(con);
             var sql = `UPDATE MDMB.MessageToUser SET SeenDate = NOW() WHERE MessageId = ?`;
             con.query(sql, [messageId],
                 function (err, result) {
