@@ -39,6 +39,56 @@ export const getMessagesLatest =
     if (data?.message === 'No message found') {
       dispatch(getListMessageLatestSuccess([]));
     } else {
-      dispatch(getListMessageLatestSuccess(data));
+      dispatch(getListMessageLatestSuccess(data.reverse()));
     }
   };
+
+const sendMessageStart = () => {
+  return {
+    type: ChatActionTypes.SEND_MESSAGE_START,
+  };
+};
+
+const sendMessageSuccess = (message) => {
+  return {
+    type: ChatActionTypes.SEND_MESSAGE_SUCCESS,
+    payload: message,
+  };
+};
+
+const sendMessageFailure = (error) => {
+  return {
+    type: ChatActionTypes.SEND_MESSAGE_FAILURE,
+    payload: error,
+  };
+};
+
+export const sendMessage = (message) => async (dispatch) => {
+  dispatch(sendMessageStart());
+  dispatch(sendMessageSuccess(message));
+};
+
+const receiveMessageStart = () => {
+  return {
+    type: ChatActionTypes.RECEIVE_MESSAGE_START,
+  };
+};
+
+const receiveMessageFailure = (error) => {
+  return {
+    type: ChatActionTypes.RECEIVE_MESSAGE_FAILURE,
+    payload: error,
+  };
+};
+
+const receiveMessageSuccess = (message) => {
+  return {
+    type: ChatActionTypes.RECEIVE_MESSAGE_SUCCESS,
+    payload: message,
+  };
+};
+
+export const receiveMessage = (message) => async (dispatch) => {
+  dispatch(receiveMessageStart());
+  dispatch(receiveMessageSuccess(message));
+};

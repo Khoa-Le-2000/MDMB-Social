@@ -5,3 +5,5 @@ export const getErrorCount = (state) => state?.login?.captcha?.errorCount;
 
 export const getErrorLogin = (state) => state?.login?.error;
 export const getErrorMessageLogin = (state) => state?.login?.message;
+
+export const getFetchingLogin = (state) => state?.login?.isFetching;

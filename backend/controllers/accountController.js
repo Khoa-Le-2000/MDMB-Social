@@ -6,6 +6,7 @@ const { OAuth2Client } = require("google-auth-library");
 const moment = require("moment");
 const auth = require("../middlewares/auth.middleware");
 const nodemailer = require("nodemailer");
+const cryptoMiddlware = require("../middlewares/crypto.middleware");
 
 function login(req, res) {
   var Username = req.body.Username;
@@ -472,6 +473,12 @@ async function getListFriend(req, res) {
 async function getListFriendWithLastMessage(req, res) {
   var accountId = req.query.accountId;
   let listFriend = await AccountDAO.getListFriendWithLastMessage(accountId);
+  await listFriend[0].forEach(async (friend) => {
+    try {
+      friend.LastMessage = await cryptoMiddlware.decrypt(friend.LastMessage);
+    } catch (error) {
+    }
+  });
   if (listFriend) res.status(200).send({ result: listFriend[0] });
   else res.status(401).send({ result: "get list friend failed" });
 }

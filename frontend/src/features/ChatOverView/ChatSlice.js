@@ -65,6 +65,52 @@ const chatReducer = (state = initialState, action) => {
         success: false,
         message: action.payload,
       };
+    case ChatActionTypes.SEND_MESSAGE_START:
+      return {
+        ...state,
+        isFetching: true,
+        error: false,
+        success: false,
+        message: null,
+      };
+
+    case ChatActionTypes.SEND_MESSAGE_SUCCESS:
+      return {
+        ...state,
+        isFetching: false,
+        error: false,
+        success: true,
+        message: null,
+        listMessage: [...state.listMessage, action.payload],
+      };
+
+    case ChatActionTypes.SEND_MESSAGE_FAILURE:
+      return {
+        ...state,
+        isFetching: false,
+        error: true,
+        success: false,
+        message: action.payload,
+      };
+
+    case ChatActionTypes.RECEIVE_MESSAGE_START:
+      return {
+        ...state,
+        isFetching: true,
+        error: false,
+        success: false,
+        message: null,
+      };
+
+    case ChatActionTypes.RECEIVE_MESSAGE_SUCCESS:
+      return {
+        ...state,
+        isFetching: false,
+        error: false,
+        success: true,
+        message: null,
+        listMessage: [...state.listMessage, action.payload],
+      };
     default:
       return state;
   }

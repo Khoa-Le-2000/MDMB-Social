@@ -1,14 +1,10 @@
-import {
-  DotsVertical,
-  VideoCamera,
-  Sun,
-  Moon,
-} from '@styled-icons/heroicons-solid';
 import { Circle } from '@styled-icons/boxicons-solid';
+import { DotsVertical, VideoCamera } from '@styled-icons/heroicons-solid';
+import ToggleTheme from 'components/ToggleTheme';
+import { useToggle } from 'hooks';
 import React from 'react';
 import { Col, Row } from 'react-bootstrap';
 import styled from 'styled-components';
-import { useToggle } from 'hooks';
 
 const Wrapper = styled.div`
   display: flex;
@@ -89,19 +85,9 @@ const Online = styled(Circle)`
   color: #8025d5;
 `;
 const FutureSwitchWrapper = styled(Feature)``;
-const LightIcon = styled(Sun)`
-  width: 1.4rem;
-`;
-const DarkIcon = styled(Moon)`
-  width: 1.4rem;
-`;
 
 const StatusText = styled.span``;
-function ChatHeader({ partner, isOnline, WindowEmpty }) {
-  console.log(
-    '🚀 :: file: ChatHeader.jsx :: line 98 :: ChatHeader :: isOnline',
-    isOnline
-  );
+function ChatHeader({ partner, isOnline }) {
   const [isDark, setIsDark] = useToggle(false);
   const toggleTheme = () => {
     setIsDark(!isDark);
@@ -129,7 +115,7 @@ function ChatHeader({ partner, isOnline, WindowEmpty }) {
           <WrapperFeaturesPadding className="h-100">
             <Features className="h-100">
               <FutureSwitchWrapper onClick={toggleTheme}>
-                {isDark ? <DarkIcon /> : <LightIcon />}
+                <ToggleTheme />
               </FutureSwitchWrapper>
               <FeatureVideoWrapper>
                 <IconVideo />

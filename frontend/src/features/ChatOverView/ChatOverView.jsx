@@ -1,4 +1,9 @@
-import { getMessagesLatest, selectRoom } from 'app/actions/chat';
+import {
+  getMessagesLatest,
+  receiveMessage,
+  selectRoom,
+  sendMessage,
+} from 'app/actions/chat';
 import { getListMessageLatest, getPartner } from 'app/selectors/chat';
 import { getAuth } from 'app/selectors/login';
 import ChatConversations from 'features/ChatOverView/ChatConversations/ChatConversations';
@@ -37,8 +42,7 @@ function ChatOverView() {
   const [isOnline, setIsOnline] = React.useState(false);
   const [typing, setTyping] = React.useState(false);
   const navigate = useNavigate();
-  const messages = useSelector(getListMessageLatest);
-
+  const messagesLatest = useSelector(getListMessageLatest);
   const partner = useSelector(getPartner);
 
   React.useEffect(() => {
@@ -64,17 +68,13 @@ function ChatOverView() {
 
   React.useEffect(() => {
     socket?.on('chat message', (data) => {
-      console.log(
-        '🚀 :: file: ChatOverView.jsx :: line 60 :: socket?.on :: data',
-        data
-      );
+      dispatch(receiveMessage(data));
     });
-  }, []);
+  }, [messagesLatest.MessageId, dispatch]);
 
   React.useEffect(() => {
     socket.on('user-online', function (accountId) {
       if (+accountId === +roomId) {
-        console.log('user-online: ' + accountId);
         setIsOnline(true);
       }
     });
@@ -89,12 +89,9 @@ function ChatOverView() {
   };
 
   const handleSendMessage = (message) => {
-    socket.emit('chat message', message, roomId, (res) => {
-      if (res === 'ok') {
-        console.log(
-          '🚀 :: file: ChatOverView.jsx :: line 68 :: message',
-          message
-        );
+    socket.emit('chat message', message, roomId, (status, data) => {
+      if (status === 'ok' && +data.ToAccount === +roomId) {
+        dispatch(sendMessage(data));
       }
     });
   };
@@ -121,7 +118,7 @@ function ChatOverView() {
             onTyping={handleTyping}
             myAccountId={auth?.accountId}
             partner={partner}
-            messages={messages}
+            messages={messagesLatest}
             currentWindow={currentWindow}
             typing={typing}
             isOnline={isOnline}
