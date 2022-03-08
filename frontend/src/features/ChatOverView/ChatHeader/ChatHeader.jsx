@@ -87,7 +87,7 @@ const Online = styled(Circle)`
 const FutureSwitchWrapper = styled(Feature)``;
 
 const StatusText = styled.span``;
-function ChatHeader({ partner, isOnline }) {
+function ChatHeader({ partner, isOnline, WindowEmpty }) {
   const [isDark, setIsDark] = useToggle(false);
   const toggleTheme = () => {
     setIsDark(!isDark);
