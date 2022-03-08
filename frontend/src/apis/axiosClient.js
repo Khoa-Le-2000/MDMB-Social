@@ -31,19 +31,22 @@ export const interceptor = (store) => {
       return response;
     },
     (error) => {
-      if (error.response.status === 401) {
+      if (!error?.status) {
+        return Promise.reject({ error });
+      }
+      if (error?.response?.status === 401) {
         if (error.response.data.error === 'Token expired') {
           const rt = store?.getState()?.login?.auth?.refreshToken;
           if (refreshToken) {
             store.dispatch(refreshToken(rt));
           }
-        } else if (error.response.data.error === 'login failure') {
+        } else if (error?.response?.data?.error === 'login failure') {
           error.response.data.message = 'Wrong email or password!';
           error.response.data.status = 401;
           return Promise.reject(error);
         }
       }
-      return Promise.reject(error);
+      return Promise.reject({ error });
     }
   );
 };
