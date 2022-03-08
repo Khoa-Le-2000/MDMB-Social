@@ -28,7 +28,6 @@ export const registerSuccess = (data) => {
 };
 
 export const registerUser = (user, navigate) => async (dispatch) => {
-  console.log('🚀 :: file: register.js :: line 31 :: user', user);
   dispatch(registerStart());
 
   let data = null;
@@ -37,7 +36,6 @@ export const registerUser = (user, navigate) => async (dispatch) => {
   } else {
     data = await authApi.register(user);
   }
-
   if (data?.result === 'register successful') {
     dispatch(
       registerSuccess({
@@ -45,11 +43,12 @@ export const registerUser = (user, navigate) => async (dispatch) => {
         type: user?.google ? 'google' : 'local',
       })
     );
-  } else if (data?.result === 'email sent succesful') {
+  } else if (data?.result === 'email sent successful') {
     dispatch(
-      registerSuccess(
-        `We just sent an email to ${user.email} to activate your account.`
-      )
+      registerSuccess({
+        message: `We just sent an email to ${user.email} to activate your account.`,
+        type: user?.google ? 'google' : 'local',
+      })
     );
   } else {
     dispatch(registerFailure('Email is already in use'));
