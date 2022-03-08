@@ -1,4 +1,4 @@
-import { refreshToken } from 'app/actions/login';
+import { logout, refreshToken } from 'app/actions/login';
 import axios from 'axios';
 import queryString from 'query-string';
 
@@ -31,18 +31,21 @@ export const interceptor = (store) => {
       return response;
     },
     (error) => {
-      if (!error?.status) {
+      if (!error?.status && !error?.response?.status) {
         return Promise.reject({ error });
       }
       if (error?.response?.status === 401) {
         if (error.response.data.error === 'Token expired') {
           const rt = store?.getState()?.login?.auth?.refreshToken;
-          if (refreshToken) {
+          if (rt) {
             store.dispatch(refreshToken(rt));
           }
         } else if (error?.response?.data?.error === 'login failure') {
           error.response.data.message = 'Wrong email or password!';
           error.response.data.status = 401;
+          return Promise.reject(error);
+        } else if (error?.response?.data.error === 'Refresh token expired') {
+          store.dispatch(logout());
           return Promise.reject(error);
         }
       }

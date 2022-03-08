@@ -88,11 +88,13 @@ export const loginByGoogle = (googleData, navigate) => async (dispatch) => {
 };
 
 export const refreshToken = (refreshToken) => async (dispatch) => {
-  const data = await authApi.refreshToken(refreshToken);
-  if (data?.accessToken) {
-    const { accessToken } = data;
-    dispatch(refreshTokenSuccess(accessToken));
-  }
+  try {
+    const data = await authApi.refreshToken(refreshToken);
+    if (data?.accessToken) {
+      const { accessToken } = data;
+      dispatch(refreshTokenSuccess(accessToken));
+    }
+  } catch (error) {}
 };
 
 export const refreshTokenSuccess = (token) => {

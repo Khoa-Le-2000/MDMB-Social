@@ -15,7 +15,7 @@ function verifyToken(req, res, next) {
                 return res.status(401).send({ error: 'Invalid token' });
             }
         }
-        
+
         req.userId = decoded.id;
         next();
     });
@@ -48,7 +48,7 @@ function verifyRefreshToken(req, res, next) {
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
         if (err) {
             if (err.name === 'TokenExpiredError') {
-                return res.status(401).send({ error: 'Token expired' });
+                return res.status(401).send({ error: 'Refresh token expired' });
             } else {
                 return res.status(401).send({ error: 'Invalid token' });
             }
