@@ -41,6 +41,7 @@ const authApi = {
   },
 
   refreshToken: (refreshToken) => {
+    debugger;
     return axiosClient.post('auth/refresh-token', {
       refreshToken,
     });
