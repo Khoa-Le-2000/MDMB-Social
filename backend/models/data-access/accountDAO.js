@@ -163,6 +163,7 @@ function getListFriendWithLastMessage(AccountId) {
       if (err) throw err;
       con.query(sql, [AccountId],
         function (err, result) {
+          connection.closeConnection(con);
           if (err) return reject(err);
           resolve(result);
         });
