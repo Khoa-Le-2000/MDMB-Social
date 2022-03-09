@@ -58,7 +58,6 @@ export const loginByGoogle = (googleData, navigate) => async (dispatch) => {
       profileObj: { email, name },
     } = googleData;
     const data = await authApi.loginWithGoogle(tokenId);
-
     if (data?.accessToken && data?.refreshToken) {
       const { accessToken, refreshToken, accountId } = data;
       dispatch(
