@@ -39,9 +39,10 @@ function getAccountByEmail(Email, Callback) {
 
 function createAccount(Password, Phone, Email, Name, Callback) {
   var con = connection.createConnection();
-  con.connect(function (err) {
+  con.connect(async function (err) {
     if (err) throw err;
-    var sql = `insert into MDMB.Account(Password, Phone, Email, Name) values(?,?,?,?)`;
+    // await connection.setTimeZone(con);
+    var sql = `insert into MDMB.Account(Password, Phone, Email, Name) values(?,?,?,?);`;
     con.query(sql, [Password, Phone, Email, Name],
       function (err, result) {
         connection.closeConnection(con);
@@ -144,10 +145,26 @@ function getListFriend(AccountId) {
           // console.log('accounr ' + accounts);
           for (let i = 0; i < result.length; i++) {
             let account = new Account.Account(result[i].AccountId, null,
-              result[i].Phone, result[i].Email, result[i].Name, result[i].Avatar, result[i].Birthday, result[i].Gender, result[i].CreatedDate);
+              result[i].Phone, result[i].Email, result[i].Name, result[i].Avatar, result[i].Birthday, 
+              result[i].Gender, result[i].CreatedDate, result[i].LastOnline);
             accounts.push(account);
           }
           resolve(accounts);
+        });
+    });
+  });
+}
+
+function getListFriendWithLastMessage(AccountId) {
+  let sql = `CALL MDMB.proc_get_list_friend_with_last_message(?);`
+  return new Promise((resolve, reject) => {
+    var con = connection.createConnection();
+    con.connect(function (err) {
+      if (err) throw err;
+      con.query(sql, [AccountId],
+        function (err, result) {
+          if (err) return reject(err);
+          resolve(result);
         });
     });
   });
@@ -157,9 +174,10 @@ function updateLastOnline(AccountId) {
   let res;
   var con = connection.createConnection();
   return new Promise((resolve, reject) => {
-    con.connect(function (err) {
+    con.connect(async function (err) {
       if (err) throw err;
-      var sql = `UPDATE MDMB.Account SET LastOnline = NOW() where AccountId=?`;
+      // await connection.setTimeZone(con);
+      var sql = `UPDATE MDMB.Account SET LastOnline = NOW() where AccountId=?;`;
       con.query(sql, [AccountId],
         function (err, result) {
           connection.closeConnection(con);
@@ -178,5 +196,6 @@ module.exports = {
   getAccountId,
   updateAccount,
   getListFriend,
+  getListFriendWithLastMessage,
   updateLastOnline
 }

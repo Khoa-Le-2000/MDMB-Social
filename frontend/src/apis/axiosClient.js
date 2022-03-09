@@ -1,6 +1,5 @@
 import { logout, refreshToken } from 'app/actions/login';
 import axios from 'axios';
-import jwt_decode from 'jwt-decode';
 import queryString from 'query-string';
 
 const axiosClient = axios.create({
@@ -14,32 +13,9 @@ const axiosClient = axios.create({
 export const interceptor = (store) => {
   axiosClient.interceptors.request.use(
     async (config) => {
-      const user = store?.getState()?.auth?.token;
-
-      if (!config.headers.Authorization && user) {
-        config.headers.Authorization = `${user.accessToken}`;
-      }
-
-      if (user?.accessToken && user?.refreshToken) {
-        const { exp: decodedAT } = jwt_decode(user.accessToken);
-        const { exp: decodedRT } = jwt_decode(user.refreshToken);
-
-        var currentTime = new Date().getTime() / 1000;
-        let isExpiredAT = currentTime > decodedAT;
-        let isExpiredRT = currentTime > decodedRT;
-
-        if (isExpiredAT && !isExpiredRT) {
-          console.log('Refresh token start');
-          await store.dispatch(refreshToken(user?.refreshToken));
-          console.log('Refresh token success');
-          if (config?.headers) {
-            config.headers.Authorization =
-              store?.getState()?.authReducer?.token?.accessToken;
-          }
-        } else if (isExpiredAT && isExpiredRT) {
-          store.dispatch(logout());
-        }
-        console.log('After: ', isExpiredAT, isExpiredRT);
+      const auth = store?.getState()?.login?.auth;
+      if (!config.headers['Authorization'] && auth?.accessToken) {
+        config.headers['Authorization'] = auth?.accessToken;
       }
       return config;
     },
@@ -55,7 +31,25 @@ export const interceptor = (store) => {
       return response;
     },
     (error) => {
-      return Promise.reject(error);
+      if (!error?.status && !error?.response?.status) {
+        return Promise.reject({ error });
+      }
+      if (error?.response?.status === 401) {
+        if (error.response.data.error === 'Token expired') {
+          const rt = store?.getState()?.login?.auth?.refreshToken;
+          if (rt) {
+            store.dispatch(refreshToken(rt));
+          }
+        } else if (error?.response?.data?.error === 'login failure') {
+          error.response.data.message = 'Wrong email or password!';
+          error.response.data.status = 401;
+          return Promise.reject(error);
+        } else if (error?.response?.data.error === 'Refresh token expired') {
+          store.dispatch(logout());
+          return Promise.reject(error);
+        }
+      }
+      return Promise.reject({ error });
     }
   );
 };

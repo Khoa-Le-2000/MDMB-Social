@@ -26,6 +26,7 @@ const filterTransform = createTransform(
 const persistConfig = {
   key: 'root',
   storage,
+  blacklist: ['conversations'],
   transforms: [filterTransform],
 };
 

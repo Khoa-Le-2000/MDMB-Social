@@ -7,9 +7,16 @@ function createConnection(){
         user: config.USER,
         password: config.PASSWORD,
         database: config.DATABASE,
-        timezone: '+07:00'
+        timezone: 'utc'
     });
 }
+
+// async function setTimeZone(connection){
+//     let sql = 'SET time_zone = "+07:00"';
+//     await connection.query(sql, function(err, result){
+//         if(err) throw err;
+//     });
+// }
 
 function closeConnection(connection){
     connection.end(function(err){
@@ -21,4 +28,5 @@ function closeConnection(connection){
 module.exports = {
     createConnection,
     closeConnection
+    // setTimeZone
 }
