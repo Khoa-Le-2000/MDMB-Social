@@ -1,4 +1,4 @@
-import { getMessagesLatest, selectRoom } from 'app/actions/chat';
+import { getMessagesLatest, receiveMessage, selectRoom } from 'app/actions/chat';
 import { getListMessageLatest, getPartner } from 'app/selectors/chat';
 import { getAuth } from 'app/selectors/login';
 import ChatConversations from 'features/ChatOverView/ChatConversations/ChatConversations';
@@ -24,6 +24,8 @@ const RowBS = styled(Row)`
 const ColBS1 = styled(Col)`
   padding-left: 0;
   padding-right: 0;
+  background-color:#efeff3 ;
+
 `;
 const ColBS2 = styled(Col)`
   padding-left: 0;
@@ -34,6 +36,8 @@ const LeftBar = styled(Col)`
   padding-left: 0;
   padding-right: 0;
   width:6% ;
+  background-color:#e0e0e6 ;
+
 `
 
 let socket;
@@ -45,7 +49,7 @@ function ChatOverView() {
   const [isOnline, setIsOnline] = React.useState(false);
   const [typing, setTyping] = React.useState(false);
   const navigate = useNavigate();
-  const messages = useSelector(getListMessageLatest);
+  const messagesLatest = useSelector(getListMessageLatest);
 
   const partner = useSelector(getPartner);
 

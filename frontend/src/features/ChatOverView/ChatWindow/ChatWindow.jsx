@@ -12,9 +12,9 @@ const Wrapper = styled.div`
   flex-direction: column;
   flex-grow: 1;
   height: 100%;
+
 `;
 const RowMessageInner = styled(Row)`
-  
   margin: 0;
 `;
 const WrapperMessageContent = styled.div`
@@ -24,12 +24,14 @@ const WrapperMessageContent = styled.div`
   display: flex;
   flex-direction: column-reverse;
   align-items: flex-start;
+  
 `;
 const RowBS = styled(Row)`
   height: inherit;
   margin: 0;
 `;
-const ColBS = styled(Col)``;
+const ColBS = styled(Col)`
+`;
 
 function ChatWindow({
   onSendMessage,

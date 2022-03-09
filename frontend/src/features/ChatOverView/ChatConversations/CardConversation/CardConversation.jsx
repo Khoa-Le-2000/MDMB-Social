@@ -2,16 +2,22 @@ import styled from 'styled-components';
 import dayjs from 'dayjs';
 import { Col, Row } from 'react-bootstrap';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { useParams } from '../../../../../node_modules/react-router-dom/index';
 dayjs.extend(relativeTime);
 
 const Wrapper = styled.div`
+  padding:10px 0 10px 0;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
   transition-duration: 0.2s;
   overflow-y: hidden;
   overflow-x: hidden;
-
+  border-left: ${props=>props.checked? "3px solid #cd556b":"none"};
+  background: ${props=>props.checked? "linear-gradient(90deg, #f1a7ac 0%, #eeb0b4 50%, #fad0d0 60%,#e0e0e6 100%);":"none"};
+  &:hover{
+    background-color:#d8d3d3 ;
+  }
 `;
 const Card = styled.div`
   display: flex;
@@ -66,8 +72,10 @@ function CardConvention({ onSelectRoom, conversation }) {
   const onRoomChange = () => {
     onSelectRoom(conversation);
   };
+  const {roomId} =useParams();
+
   return (
-    <Wrapper >
+    <Wrapper checked={+roomId===+conversation.AccountId}>
       <Row>
         <Col>
           <Card onClick={onRoomChange}>

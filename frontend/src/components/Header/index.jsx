@@ -80,7 +80,6 @@ const ProfileAvatar = styled.div`
   list-style: none;
   position: relative;
   display: inline-block;
-  overflow: hidden;
   color: #fff;
   white-space: nowrap;
   text-align: center;

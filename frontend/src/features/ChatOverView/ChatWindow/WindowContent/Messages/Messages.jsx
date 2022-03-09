@@ -43,6 +43,7 @@ const WrapperContent = styled.div`
 `;
 const WrapperMessage = styled.div`
   padding: 10px;
+
 `;
 
 const CardTyping = styled.div`
