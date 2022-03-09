@@ -40,12 +40,12 @@ export const login = (user) => async (dispatch) => {
       );
     }
   } catch (error) {
-    if (!error?.status) {
-      dispatch(loginFailure('Server not responding'));
-    } else if (error?.response?.status === 401) {
-      if (error.response.data.result === 'login failure') {
+    if (error.error?.response?.status === 401) {
+      if (error.error.response.data.result === 'login failure') {
         dispatch(loginFailure('Wrong email or password!'));
       }
+    } else if (!error?.status) {
+      dispatch(loginFailure('Server not responding'));
     }
   }
 };
@@ -58,7 +58,6 @@ export const loginByGoogle = (googleData, navigate) => async (dispatch) => {
       profileObj: { email, name },
     } = googleData;
     const data = await authApi.loginWithGoogle(tokenId);
-
     if (data?.accessToken && data?.refreshToken) {
       const { accessToken, refreshToken, accountId } = data;
       dispatch(

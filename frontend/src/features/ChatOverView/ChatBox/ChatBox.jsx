@@ -108,8 +108,7 @@ function ChatBox({ onSendMessage, onTyping, WindowEmpty }) {
 
   const handleKeyUp = (e) => {
     clearTimeout(typingTimeoutRef.current);
-    typingTimeoutRef.current = window.setTimeout(() => { }, 1000);
-    const value = e.currentTarget.value;
+  const value = e.currentTarget.value;
     setMessage(value);
 
     if (!onTyping) return;
