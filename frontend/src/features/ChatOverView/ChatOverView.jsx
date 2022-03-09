@@ -1,9 +1,4 @@
-import {
-  getMessagesLatest,
-  receiveMessage,
-  selectRoom,
-  sendMessage,
-} from 'app/actions/chat';
+import { getMessagesLatest, receiveMessage, selectRoom } from 'app/actions/chat';
 import { getListMessageLatest, getPartner } from 'app/selectors/chat';
 import { getAuth } from 'app/selectors/login';
 import ChatConversations from 'features/ChatOverView/ChatConversations/ChatConversations';
@@ -20,19 +15,31 @@ import Sidebar from 'features/ChatOverView/Sidebar/Sidebar';
 const Wrapper = styled(Container)`
   height: 100vh;
   overflow: hidden;
+  padding-right: 0;
+
 `;
 const RowBS = styled(Row)`
   height: inherit;
 `;
-const ColBS = styled(Col)`
+const ColBS1 = styled(Col)`
   padding-left: 0;
   padding-right: 0;
+  background-color:#efeff3 ;
+
+`;
+const ColBS2 = styled(Col)`
+  padding-left: 0;
+  padding-right: 0;
+  
 `;
 const LeftBar = styled(Col)`
   padding-left: 0;
   padding-right: 0;
-  width: 8%;
-`;
+  width:6% ;
+  background-color:#e0e0e6 ;
+
+`
+
 let socket;
 function ChatOverView() {
   const auth = useSelector(getAuth);
@@ -43,6 +50,7 @@ function ChatOverView() {
   const [typing, setTyping] = React.useState(false);
   const navigate = useNavigate();
   const messagesLatest = useSelector(getListMessageLatest);
+
   const partner = useSelector(getPartner);
 
   React.useEffect(() => {
@@ -74,13 +82,17 @@ function ChatOverView() {
 
   React.useEffect(() => {
     socket?.on('chat message', (data) => {
-      dispatch(receiveMessage(data));
+      console.log(
+        '🚀 :: file: ChatOverView.jsx :: line 60 :: socket?.on :: data',
+        data
+      );
     });
   }, [dispatch]);
 
   React.useEffect(() => {
     socket.on('user-online', function (accountId) {
       if (+accountId === +roomId) {
+        console.log('user-online: ' + accountId);
         setIsOnline(true);
       }
     });
@@ -95,9 +107,12 @@ function ChatOverView() {
   };
 
   const handleSendMessage = (message) => {
-    socket.emit('chat message', message, roomId, (status, data) => {
-      if (status === 'ok' && +data.ToAccount === +roomId) {
-        dispatch(sendMessage(data));
+    socket.emit('chat message', message, roomId, (res) => {
+      if (res === 'ok') {
+        console.log(
+          '🚀 :: file: ChatOverView.jsx :: line 68 :: message',
+          message
+        );
       }
     });
   };
@@ -115,10 +130,10 @@ function ChatOverView() {
         <LeftBar lg={1} xs={1} md={1}>
           <Sidebar />
         </LeftBar>
-        <ColBS lg={3} xs={3} md={3}>
+        <ColBS1 lg={3} xs={3} md={3}>
           <ChatConversations onSelectRoom={handleSelectRoomClick} />
-        </ColBS>
-        <ColBS lg={8} xs={8} md={8}>
+        </ColBS1>
+        <ColBS2 lg={8} xs={8} md={8}>
           {+roomId === +currentWindow ? (
             <ChatWindow
               onSendMessage={handleSendMessage}
@@ -133,7 +148,7 @@ function ChatOverView() {
           ) : (
             <WindowEmpty />
           )}
-        </ColBS>
+        </ColBS2>
       </RowBS>
     </Wrapper>
   );
