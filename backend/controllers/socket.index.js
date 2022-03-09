@@ -56,8 +56,8 @@ function socket(server) {
                     if (user.socketId.length == 1) {
                         let friend = [];
                         let listFriend = await acccountDao.getListFriend(socket.accountId);
-                        console.log('list friend :')
-                        console.log(listFriend);
+                        // console.log('list friend :')
+                        // console.log(listFriend);
                         friend.forEach(friend => {
                             let socketIds = socketUser.getSocketIdByAccountId(friend.accountId);
                             socketIds.forEach(socketId => {
