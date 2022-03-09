@@ -8,14 +8,14 @@ import { getListMessageLatest, getPartner } from 'app/selectors/chat';
 import { getAuth } from 'app/selectors/login';
 import ChatConversations from 'features/ChatOverView/ChatConversations/ChatConversations';
 import ChatWindow from 'features/ChatOverView/ChatWindow/ChatWindow';
-import NavLeft from 'features/ChatOverView/NavLeft/NavLeft';
+import WindowEmpty from 'features/ChatOverView/ChatWindow/WindowEmpty/WindowEmpty';
 import React from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import io from 'socket.io-client';
 import styled from 'styled-components';
-import WindowEmpty from 'features/ChatOverView/ChatWindow/WindowEmpty/WindowEmpty';
+import Sidebar from 'features/ChatOverView/Sidebar/Sidebar';
 
 const Wrapper = styled(Container)`
   height: 100vh;
@@ -31,9 +31,8 @@ const ColBS = styled(Col)`
 const LeftBar = styled(Col)`
   padding-left: 0;
   padding-right: 0;
-  width:8% ;
-`
-
+  width: 8%;
+`;
 let socket;
 function ChatOverView() {
   const auth = useSelector(getAuth);
@@ -68,10 +67,16 @@ function ChatOverView() {
   }, [roomId]);
 
   React.useEffect(() => {
+    socket?.on('chat message yourself', (data) => {
+      dispatch(receiveMessage(data));
+    });
+  }, [dispatch]);
+
+  React.useEffect(() => {
     socket?.on('chat message', (data) => {
       dispatch(receiveMessage(data));
     });
-  }, [messagesLatest.MessageId, dispatch]);
+  }, [dispatch]);
 
   React.useEffect(() => {
     socket.on('user-online', function (accountId) {
@@ -107,26 +112,27 @@ function ChatOverView() {
   return (
     <Wrapper fluid>
       <RowBS>
-      <LeftBar lg={1} xs={1} md={1}>
-          <NavLeft/>
+        <LeftBar lg={1} xs={1} md={1}>
+          <Sidebar />
         </LeftBar>
         <ColBS lg={3} xs={3} md={3}>
           <ChatConversations onSelectRoom={handleSelectRoomClick} />
         </ColBS>
-        <ColBS lg={8} xs={8} md={8} >
-          {+roomId === +currentWindow ?
-          <ChatWindow
-            onSendMessage={handleSendMessage}
-            onTyping={handleTyping}
-            myAccountId={auth?.accountId}
-            partner={partner}
-            messages={messagesLatest}
-            currentWindow={currentWindow}
-            typing={typing}
-            isOnline={isOnline}
-          />:
-          <WindowEmpty/>
-        }
+        <ColBS lg={8} xs={8} md={8}>
+          {+roomId === +currentWindow ? (
+            <ChatWindow
+              onSendMessage={handleSendMessage}
+              onTyping={handleTyping}
+              myAccountId={auth?.accountId}
+              partner={partner}
+              messages={messagesLatest}
+              currentWindow={currentWindow}
+              typing={typing}
+              isOnline={isOnline}
+            />
+          ) : (
+            <WindowEmpty />
+          )}
         </ColBS>
       </RowBS>
     </Wrapper>

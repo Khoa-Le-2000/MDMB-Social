@@ -42,7 +42,7 @@ function loginByGoogle(req, res) {
             const Email = payload["email"];
             AccountDAO.getAccountByEmail(Email, (Account) => {
               if (Account == false) {
-                res.status(200).send({ result: "login failure" });
+                res.status(401).send({ result: "login failure" });
               } else {
                 sendToken(req, res, Account);
               }
@@ -340,7 +340,7 @@ function sendVerifyEmail(req, res, Email, token) {
       rejectUnauthorized: false,
     },
   });
-  let link = `${process.env.MDMB_SOCIAL_PROTOCAL}${process.env.MDMB_SOCIAL_DOMAIN}:8080/account/verify?token=${token}`;
+  let link = `${process.env.MDMB_SOCIAL_PROTOCAL}${process.env.MDMB_SOCIAL_DOMAIN}:${process.env.PORT}/account/verify?token=${token}`;
   let mailOptions = {
     from: "mdmbsocial@gmail.com",
     to: `${Email}`,
