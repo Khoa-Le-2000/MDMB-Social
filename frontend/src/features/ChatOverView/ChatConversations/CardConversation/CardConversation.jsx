@@ -11,11 +11,7 @@ const Wrapper = styled.div`
   transition-duration: 0.2s;
   overflow-y: hidden;
   overflow-x: hidden;
-  padding: 10px 0;
-  &:hover {
-    background: linear-gradient(to right, #f5f5f5, #f5f5f5);
-  }
-  border-radius: 10px;
+
 `;
 const Card = styled.div`
   display: flex;
@@ -67,13 +63,11 @@ function CardConvention({ onSelectRoom, conversation }) {
     LastMessage: lastMessage,
     LastOnline,
   } = conversation;
-
   const onRoomChange = () => {
     onSelectRoom(conversation);
   };
-
   return (
-    <Wrapper>
+    <Wrapper >
       <Row>
         <Col>
           <Card onClick={onRoomChange}>

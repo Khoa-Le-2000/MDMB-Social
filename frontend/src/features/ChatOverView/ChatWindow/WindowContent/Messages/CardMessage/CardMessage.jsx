@@ -14,14 +14,14 @@ const Wrapper = styled.div`
 const WrapperContent = styled.div`
   transition: 0s;
   border-radius: ${({ owner }) =>
-    owner ? ' 25px 25px 0 25px' : ' 0px 25px 25px 25px'};
+    owner ? ' 10px 10px 0 10px' : ' 0px 10px 10px 10px'};
   border-bottom: 3px solid;
-  border-bottom-color: ${({ owner }) => (owner === 1 ? '#9b527e' : '#d0bddc')};
-  background-color: ${({ owner }) => (owner === 1 ? '#e7e5f2' : '#6049cd')};
-  color: ${({ owner }) => (owner === 1 ? '#434354' : '#ebf0ff')};
+  border-bottom-color: ${({ owner }) => (owner === 1 ? '#f8f8fa' : '#d0bddc')};
+  background-color: ${({ owner }) => (owner === 1 ? '#f0f0f6' : '#6049cd')};
+  color: ${({ owner }) => (owner === 1 ? '#000000' : '#e7e7f1')};
   max-width: 800px;
   font-size: 14px;
-  min-width: 250px;
+  min-width: 200px;
   position: ${({ owner }) => (owner === 1 ? 'relative' : 'static')};
 `;
 
@@ -55,7 +55,7 @@ const Time = styled(Form.Text)`
   font-size: 0.7rem;
   position: absolute;
   right: ${({ owner }) => (owner === 1 ? '2%' : '5%')};
-  color: #d4d3eb;
+  color: #767676;
 `;
 const SeenStatus = styled(CheckCircle)`
   width: 0.8rem;
@@ -84,7 +84,7 @@ function CardMessage(props) {
           )}
 
           <WrapperContent owner={owner ? 1 : 0}>
-            <WrapperMessage owner={owner ? 1 : 0}>
+          <WrapperMessage owner={owner ? 1 : 0}>
               <Message>
                 {type === 'text' ? content : <img src={content} alt="" />}
               </Message>

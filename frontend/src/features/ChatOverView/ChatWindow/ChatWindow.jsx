@@ -14,12 +14,7 @@ const Wrapper = styled.div`
   height: 100%;
 `;
 const RowMessageInner = styled(Row)`
-  background: linear-gradient(
-    90deg,
-    rgba(133, 123, 231, 1) 0%,
-    rgba(211, 140, 242, 1) 35%,
-    rgba(243, 81, 175, 1) 100%
-  );
+  
   margin: 0;
 `;
 const WrapperMessageContent = styled.div`

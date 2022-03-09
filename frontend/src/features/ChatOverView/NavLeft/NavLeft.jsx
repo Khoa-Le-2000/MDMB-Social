@@ -7,16 +7,16 @@ import { ReactComponent as Setting } from 'assets/images/icons/gear.svg';
 
 const Wrapper = styled.div`
     height:97% ;
-    width:80%;
-    background-color: #67125f ;
-    margin:10% ;
+    width:90%;
+    background-color: #4849a1 ;
+    margin:10%;
     display: flex;                  
     flex-direction: column;
     flex-wrap: nowrap;              /*Thiết lập chế độ wrap, khi các phần tử vượt qua kích thước hướng chính*/
     justify-content: flex-start;      /*Căn chỉnh nội dung bên trong container có flexbox*/
     align-items: stretch;           /*Căn chỉnh phần tử con theo hướng vuông góc hướng chính*/
     align-content: stretch;
-    border-radius: 30px;
+    border-radius: 20px;
 
   *{
     color :#ffffff;
@@ -45,7 +45,7 @@ const HoverWraper = styled.div`
     transform: scale(1.2 );
     cursor: pointer;
     *{
-      background-color: #73266b;
+      background-color: #6364af;
     }
 
   }
@@ -62,19 +62,20 @@ const HoverWraper = styled.div`
 const MessageIcon = styled(Message)`
   width: 3rem;
   height: 3rem;
-  background-color:  ${props=>props.choosed?"#7b3e75":""};
+  background-color:  ${props=>props.choosed?"#6364af":""};
 `
 const PhoneBookIcon = styled(PhoneBook)`
   width: 3rem;
   height: 3rem;
-  background-color:  ${props=>props.choosed?"#7b3e75":""};
+  background-color:  ${props=>props.choosed?"#6364af":""};
+
 
 `
 const SettingIcon = styled(Setting)`
   height: 3rem;
   width: 3rem;
   margin-left:24px;
-  background-color:  ${props=>props.choosed?"#7b3e75":""};
+  background-color:  ${props=>props.choosed?"#6364af":""};
 `
 function LefBar() {
   return (
