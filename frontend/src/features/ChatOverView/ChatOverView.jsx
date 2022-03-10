@@ -97,7 +97,6 @@ function ChatOverView() {
   React.useEffect(() => {
     socket.on('user-online', function (accountId) {
       if (+accountId === +roomId) {
-        console.log('user-online: ' + accountId);
         setIsOnline(true);
       }
     });
@@ -137,7 +136,10 @@ function ChatOverView() {
           <Sidebar />
         </LeftBar>
         <ColBS1 lg={3} xs={3} md={3}>
-          <ChatConversations onSelectRoom={handleSelectRoomClick} />
+          <ChatConversations
+            onSelectRoom={handleSelectRoomClick}
+            messagesLatest={messagesLatest}
+          />
         </ColBS1>
         <ColBS2 lg={8} xs={8} md={8}>
           {+roomId === +currentWindow ? (
