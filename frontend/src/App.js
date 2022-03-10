@@ -12,7 +12,6 @@ import UpdateProfile from 'features/UpdateProfile/UpdateProfile';
 import React from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Route, Routes, useLocation } from 'react-router-dom';
-import { GlobalStyles } from 'styles/globalStyles';
 import './App.scss';
 
 function App() {
@@ -20,7 +19,6 @@ function App() {
 
   return (
     <>
-      <GlobalStyles />
       <Routes location={location}>
         <Route path="/" element={<Home />}>
           <Route
@@ -31,7 +29,7 @@ function App() {
               </RequireAuth>
             }
           />
-          <Route path="update-profile" element={<UpdateProfile />} />
+          <Route path="/update-profile" element={<UpdateProfile />} />
           <Route path="*" element={<NotFound />} />
         </Route>
         <Route path="/register" element={<Register />} />

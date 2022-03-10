@@ -13,6 +13,7 @@ function RequireAuth({ children }) {
     children
   ) : (
     <Navigate to="/" replace state={{ path: location.pathname }} />
+
   );
 }
 
