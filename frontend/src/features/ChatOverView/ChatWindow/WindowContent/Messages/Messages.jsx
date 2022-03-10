@@ -3,6 +3,7 @@ import React from 'react';
 import { getAuth } from 'app/selectors/login';
 import { useSelector } from 'react-redux';
 import styled, { keyframes } from 'styled-components';
+import { getSeenLatest } from 'app/selectors/chat';
 
 const dotTyping = keyframes`
   0% {
@@ -43,7 +44,6 @@ const WrapperContent = styled.div`
 `;
 const WrapperMessage = styled.div`
   padding: 10px;
-
 `;
 
 const CardTyping = styled.div`
@@ -63,21 +63,28 @@ const DotFalling = styled.div`
   animation: ${dotTyping} 1.5s infinite linear;
 `;
 
-function Messages({ messages, partner, typing }) {
+function Messages({ messages, partner, typing, onSeenMessage }) {
   const myAccountId = useSelector(getAuth)?.accountId;
+  const seenDateLatest = useSelector(getSeenLatest);
+
   return (
     <>
       {messages.map((item) => (
         <CardMessage
           key={item.MessageId}
           messageId={item.MessageId}
-          seenDate={item.seenDate}
+          seenDate={item.SeenDate}
           sentDate={item.SentDate}
           name={partner.Name}
           avatar={partner.Avatar}
+          fromAccount={item.FromAccount}
           content={item.Content}
           type={item.Type === 0 ? 'text' : 'image'}
           owner={item.FromAccount === myAccountId}
+          onSeenMessage={onSeenMessage}
+          seenLatest={
+            item.seenLatest || seenDateLatest?.MessageId === item.MessageId
+          }
         />
       ))}
       {typing && (

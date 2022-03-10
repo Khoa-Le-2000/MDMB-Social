@@ -5,14 +5,18 @@ import styled from 'styled-components';
 
 const Wrapper = styled.div`
   padding: 0px 5px;
-  
 `;
 
-function WindowContent({ messages, partner, typing }) {
+function WindowContent({ messages, partner, typing, onSeenMessage }) {
   return (
     <Wrapper>
       {messages.length > 0 ? (
-        <Messages messages={messages} partner={partner} typing={typing} />
+        <Messages
+          messages={messages}
+          partner={partner}
+          typing={typing}
+          onSeenMessage={onSeenMessage}
+        />
       ) : (
         <MessageEmpty />
       )}
