@@ -1,6 +1,7 @@
 import {
   getMessagesLatest,
   receiveMessage,
+  seenMessage,
   selectRoom,
   sendMessage,
 } from 'app/actions/chat';
@@ -20,19 +21,27 @@ import Sidebar from 'features/ChatOverView/Sidebar/Sidebar';
 const Wrapper = styled(Container)`
   height: 100vh;
   overflow: hidden;
+  padding-right: 0;
 `;
 const RowBS = styled(Row)`
   height: inherit;
 `;
-const ColBS = styled(Col)`
+const ColBS1 = styled(Col)`
+  padding-left: 0;
+  padding-right: 0;
+  background-color: #efeff3;
+`;
+const ColBS2 = styled(Col)`
   padding-left: 0;
   padding-right: 0;
 `;
 const LeftBar = styled(Col)`
   padding-left: 0;
   padding-right: 0;
-  width: 8%;
+  width: 6%;
+  background-color: #efeff3;
 `;
+
 let socket;
 function ChatOverView() {
   const auth = useSelector(getAuth);
@@ -43,6 +52,7 @@ function ChatOverView() {
   const [typing, setTyping] = React.useState(false);
   const navigate = useNavigate();
   const messagesLatest = useSelector(getListMessageLatest);
+
   const partner = useSelector(getPartner);
 
   React.useEffect(() => {
@@ -67,6 +77,12 @@ function ChatOverView() {
   }, [roomId]);
 
   React.useEffect(() => {
+    socket?.on('seen message', (messageId) => {
+      dispatch(seenMessage(messageId));
+    });
+  }, [dispatch]);
+
+  React.useEffect(() => {
     socket?.on('chat message yourself', (data) => {
       dispatch(receiveMessage(data));
     });
@@ -84,7 +100,7 @@ function ChatOverView() {
         setIsOnline(true);
       }
     });
-  });
+  }, [roomId]);
 
   const handleTyping = ({ isTyping }) => {
     if (isTyping) {
@@ -109,16 +125,23 @@ function ChatOverView() {
     dispatch(getMessagesLatest(auth?.accountId, conversation.AccountId));
   };
 
+  const handleSeenMessage = (messageId) => {
+    socket?.emit('seen message', messageId);
+  };
+
   return (
     <Wrapper fluid>
       <RowBS>
         <LeftBar lg={1} xs={1} md={1}>
           <Sidebar />
         </LeftBar>
-        <ColBS lg={3} xs={3} md={3}>
-          <ChatConversations onSelectRoom={handleSelectRoomClick} />
-        </ColBS>
-        <ColBS lg={8} xs={8} md={8}>
+        <ColBS1 lg={3} xs={3} md={3}>
+          <ChatConversations
+            onSelectRoom={handleSelectRoomClick}
+            messagesLatest={messagesLatest}
+          />
+        </ColBS1>
+        <ColBS2 lg={8} xs={8} md={8}>
           {+roomId === +currentWindow ? (
             <ChatWindow
               onSendMessage={handleSendMessage}
@@ -129,11 +152,12 @@ function ChatOverView() {
               currentWindow={currentWindow}
               typing={typing}
               isOnline={isOnline}
+              onSeenMessage={handleSeenMessage}
             />
           ) : (
             <WindowEmpty />
           )}
-        </ColBS>
+        </ColBS2>
       </RowBS>
     </Wrapper>
   );

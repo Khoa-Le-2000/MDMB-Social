@@ -21,10 +21,9 @@ const SideBar = styled.div`
   border-right: 1px solid rgba(24, 23, 23, 0.75);
 `;
 const Logo = styled.div`
-  height:7% ;
+  height: 7%;
   align-self: center;
-  padding-top:3%;
-
+  padding-top: 3%;
 `;
 const InputGroup = styled(BsInputGroup)`
   margin-bottom: 10px;
@@ -59,34 +58,39 @@ const Tab = styled.div`
   border-radius: 5px;
   cursor: pointer;
   position: relative;
+
+  ${(props) => (props.selected ? 'color:#7a7abb' : '')};
+  ::after {
+    content: '';
+    display: block;
+    width: 2rem;
+    height: 2px;
+    background: #7a7abb;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    opacity: ${(props) => (props.selected ? '1' : '0')};
+  }
   &:hover {
     background: #f5f5f5;
-    &::after {
-      content: '';
-      display: block;
-      width: 2rem;
-      height: 2px;
-      background: #38d0ff;
-      position: absolute;
-      bottom: 0;
-      left: 0;
+    ::after {
+      opacity: 1;
     }
   }
-  background-color: ${(props) => (props.selected ? '#eae1eb' : 'none')};
 `;
 
-function ChatConversations({ onSelectRoom }) {
+function ChatConversations({ onSelectRoom, messagesLatest }) {
   const dispatch = useDispatch();
   const accountId = useSelector(getAuth)?.accountId;
   const listConversation = useSelector(getConversations);
 
   React.useEffect(() => {
     dispatch(getListConversation(accountId));
-  }, [accountId, dispatch]);
+  }, [accountId, dispatch, messagesLatest]);
 
   return (
     <SideBar>
-      <Logo > MDMB Social</Logo >
+      <Logo> MDMB Social</Logo>
       <InputGroup>
         <Form.Control placeholder="Searching" />
         <InputSearch>

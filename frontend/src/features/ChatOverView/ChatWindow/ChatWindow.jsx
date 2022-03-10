@@ -1,7 +1,6 @@
 import ChatInput from 'features/ChatOverView/ChatBox/ChatBox';
 import ChatHeader from 'features/ChatOverView/ChatHeader/ChatHeader';
 import WindowContent from 'features/ChatOverView/ChatWindow/WindowContent/WindowContent';
-import WindowEmpty from 'features/ChatOverView/ChatWindow/WindowEmpty/WindowEmpty';
 import React from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
@@ -14,12 +13,6 @@ const Wrapper = styled.div`
   height: 100%;
 `;
 const RowMessageInner = styled(Row)`
-  background: linear-gradient(
-    90deg,
-    rgba(133, 123, 231, 1) 0%,
-    rgba(211, 140, 242, 1) 35%,
-    rgba(243, 81, 175, 1) 100%
-  );
   margin: 0;
 `;
 const WrapperMessageContent = styled.div`
@@ -44,27 +37,35 @@ function ChatWindow({
   partner,
   typing,
   isOnline,
+  onSeenMessage,
 }) {
   const { roomId } = useParams();
   return (
     <Wrapper>
-      <ChatHeader partner={partner} isOnline={isOnline} WindowEmpty={+roomId === +currentWindow ? false : true} />
+      <ChatHeader
+        partner={partner}
+        isOnline={isOnline}
+        WindowEmpty={+roomId === +currentWindow ? false : true}
+      />
       <RowMessageInner>
         <WrapperMessageContent>
           <Col lg={12}>
-              <WindowContent
-                messages={messages}
-                partner={partner}
-                typing={typing}
-              />
+            <WindowContent
+              messages={messages}
+              partner={partner}
+              typing={typing}
+              onSeenMessage={onSeenMessage}
+            />
           </Col>
         </WrapperMessageContent>
       </RowMessageInner>
       <RowBS>
         <ColBS>
-          <ChatInput onSendMessage={onSendMessage} onTyping={onTyping} WindowEmpty={+roomId === +currentWindow ? false : true} />
-
-
+          <ChatInput
+            onSendMessage={onSendMessage}
+            onTyping={onTyping}
+            WindowEmpty={+roomId === +currentWindow ? false : true}
+          />
         </ColBS>
       </RowBS>
     </Wrapper>
