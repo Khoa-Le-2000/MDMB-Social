@@ -59,20 +59,25 @@ const Tab = styled.div`
   border-radius: 5px;
   cursor: pointer;
   position: relative;
-  &:hover {
-    background: #f5f5f5;
-    &::after {
+  
+  ${(props) => (props.selected ? 'color:#7a7abb' : '')};
+  ::after {
       content: '';
       display: block;
       width: 2rem;
       height: 2px;
-      background: #38d0ff;
+      background: #7a7abb;
       position: absolute;
       bottom: 0;
       left: 0;
+      opacity:${(props) => (props.selected ? '1' : '0')};
+  }
+  &:hover {
+    background: #f5f5f5;
+    ::after{
+      opacity:1;
     }
   }
-  background-color: ${(props) => (props.selected ? '#eae1eb' : 'none')};
 `;
 
 function ChatConversations({ onSelectRoom }) {
@@ -100,6 +105,7 @@ function ChatConversations({ onSelectRoom }) {
       <Wrapper>
         {listConversation &&
           listConversation?.map((item, index) => (
+  
             <CardConvention
               key={index}
               onSelectRoom={onSelectRoom}

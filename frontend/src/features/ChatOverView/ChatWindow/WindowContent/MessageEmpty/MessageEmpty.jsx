@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { ReactComponent as MessengerPic } from 'assets/images/icons/messenger.svg';
-import { ReactComponent as Cat } from 'assets/images/icons/cat.svg';
 
 const Wrapper = styled.div`
   display: flex;
@@ -12,7 +11,7 @@ const Wrapper = styled.div`
     background-color: #ffffff;
     border-radius: 10px;
     padding:-10%;
-    box-shadow: -4px 4px 4px 4px #c985c6;
+    box-shadow: -4px 4px 4px 4px #d8d5d8;
   /* box-shadow: inset 0 20px 20px -20px #000000; */
 `;
 const Title = styled.div`
