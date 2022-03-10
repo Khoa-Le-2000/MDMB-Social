@@ -92,3 +92,21 @@ export const receiveMessage = (message) => async (dispatch) => {
   dispatch(receiveMessageStart());
   dispatch(receiveMessageSuccess(message));
 };
+
+const seenMessageStart = () => {
+  return {
+    type: ChatActionTypes.SEEN_MESSAGE_START,
+  };
+};
+
+const seenMessageSuccess = (messageId) => {
+  return {
+    type: ChatActionTypes.SEEN_MESSAGE_SUCCESS,
+    payload: messageId,
+  };
+};
+
+export const seenMessage = (messageId) => async (dispatch) => {
+  dispatch(seenMessageStart());
+  dispatch(seenMessageSuccess(messageId));
+};

@@ -1,7 +1,6 @@
 import ChatInput from 'features/ChatOverView/ChatBox/ChatBox';
 import ChatHeader from 'features/ChatOverView/ChatHeader/ChatHeader';
 import WindowContent from 'features/ChatOverView/ChatWindow/WindowContent/WindowContent';
-import WindowEmpty from 'features/ChatOverView/ChatWindow/WindowEmpty/WindowEmpty';
 import React from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
@@ -12,7 +11,6 @@ const Wrapper = styled.div`
   flex-direction: column;
   flex-grow: 1;
   height: 100%;
-
 `;
 const RowMessageInner = styled(Row)`
   margin: 0;
@@ -24,14 +22,12 @@ const WrapperMessageContent = styled.div`
   display: flex;
   flex-direction: column-reverse;
   align-items: flex-start;
-  
 `;
 const RowBS = styled(Row)`
   height: inherit;
   margin: 0;
 `;
-const ColBS = styled(Col)`
-`;
+const ColBS = styled(Col)``;
 
 function ChatWindow({
   onSendMessage,
@@ -41,27 +37,35 @@ function ChatWindow({
   partner,
   typing,
   isOnline,
+  onSeenMessage,
 }) {
   const { roomId } = useParams();
   return (
     <Wrapper>
-      <ChatHeader partner={partner} isOnline={isOnline} WindowEmpty={+roomId === +currentWindow ? false : true} />
+      <ChatHeader
+        partner={partner}
+        isOnline={isOnline}
+        WindowEmpty={+roomId === +currentWindow ? false : true}
+      />
       <RowMessageInner>
         <WrapperMessageContent>
           <Col lg={12}>
-              <WindowContent
-                messages={messages}
-                partner={partner}
-                typing={typing}
-              />
+            <WindowContent
+              messages={messages}
+              partner={partner}
+              typing={typing}
+              onSeenMessage={onSeenMessage}
+            />
           </Col>
         </WrapperMessageContent>
       </RowMessageInner>
       <RowBS>
         <ColBS>
-          <ChatInput onSendMessage={onSendMessage} onTyping={onTyping} WindowEmpty={+roomId === +currentWindow ? false : true} />
-
-
+          <ChatInput
+            onSendMessage={onSendMessage}
+            onTyping={onTyping}
+            WindowEmpty={+roomId === +currentWindow ? false : true}
+          />
         </ColBS>
       </RowBS>
     </Wrapper>

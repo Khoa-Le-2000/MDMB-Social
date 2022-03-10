@@ -36,7 +36,7 @@ const Logo = styled.img`
     transform: scale(1.1);
   }
 `;
-const HoverWraper = styled.div`
+const HoverWrapper = styled.div`
   color: #ffffff;
   justify-content: center;
   display: flex;
@@ -58,57 +58,57 @@ const HoverWraper = styled.div`
 const MessageIcon = styled(Message)`
   width: 3rem;
   height: 3rem;
-  background-color: ${(props) => (props.choosed ? '#6364af' : '')};
+  background-color: ${(props) => (props.active ? '#6364af' : '')};
 `;
 const PhoneBookIcon = styled(PhoneBook)`
   width: 3rem;
   height: 3rem;
-  background-color: ${(props) => (props.choosed ? '#6364af' : '')};
+  background-color: ${(props) => (props.active ? '#6364af' : '')};
 `;
 const SettingIcon = styled(Setting)`
   height: 3rem;
   width: 3rem;
   margin-left: 15px;
-  background-color: ${(props) => (props.choosed ? '#6364af' : '')};
+  background-color: ${(props) => (props.active ? '#6364af' : '')};
 `;
 const List = styled.ul`
-  position:absolute;
-  display:flex;
+  position: absolute;
+  display: flex;
   flex-direction: column;
-  bottom:30px;
-  left:68px;
+  bottom: 30px;
+  left: 68px;
   list-style-type: none;
-  background-color:#939393;
-  padding:10px;
-  border-radius:10px 10px 10px 0px;
-  width:150px ;
-  `;
-const ListMember = styled.li`
+  background-color: #939393;
+  padding: 10px;
+  border-radius: 10px 10px 10px 0px;
+  width: 150px;
 `;
+const ListMember = styled.li``;
 function LefBar() {
   const [ShowList, setShowList] = useState(false);
 
-  const handleSettingclick = ()=>{
-    setShowList(prev=>!prev)
-  }
+  const handleSettingClick = () => {
+    setShowList((prev) => !prev);
+  };
   return (
     <Wrapper>
       <Logo />
-      <HoverWraper>
-        <MessageIcon choosed />
-      </HoverWraper>
-      <HoverWraper>
+      <HoverWrapper>
+        <MessageIcon active={true ? 1 : 0} />
+      </HoverWrapper>
+      <HoverWrapper>
         <PhoneBookIcon />
-      </HoverWraper>
-      <HoverWraper position="bottom">
-        <SettingIcon onClick={handleSettingclick}/>
-       {ShowList&& <List >
-          <ListMember >Edit Profile</ListMember>
-          <ListMember>Edit Profile</ListMember>
-          <ListMember>Edit Profile</ListMember>
-        </List>
-        }
-      </HoverWraper>
+      </HoverWrapper>
+      <HoverWrapper position="bottom">
+        <SettingIcon onClick={handleSettingClick} />
+        {ShowList && (
+          <List>
+            <ListMember>Edit Profile</ListMember>
+            <ListMember>Edit Profile</ListMember>
+            <ListMember>Edit Profile</ListMember>
+          </List>
+        )}
+      </HoverWrapper>
     </Wrapper>
   );
 }
