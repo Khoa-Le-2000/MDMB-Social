@@ -69,6 +69,7 @@ function CardConvention({ onSelectRoom, conversation }) {
     LastMessage: lastMessage,
     LastOnline,
   } = conversation;
+  
   const onRoomChange = () => {
     onSelectRoom(conversation);
   };
