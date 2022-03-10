@@ -36,7 +36,7 @@ const LeftBar = styled(Col)`
   padding-left: 0;
   padding-right: 0;
   width:6% ;
-  background-color:#e0e0e6 ;
+  background-color:#efeff3 ;
 
 `
 
