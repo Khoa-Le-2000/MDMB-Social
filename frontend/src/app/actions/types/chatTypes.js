@@ -13,4 +13,8 @@ export const ChatActionTypes = {
   RECEIVE_MESSAGE_START: 'chat/receiveMessage/start',
   RECEIVE_MESSAGE_SUCCESS: 'chat/receiveMessage/success',
   RECEIVE_MESSAGE_FAILURE: 'chat/receiveMessage/failure',
+
+  SEEN_MESSAGE_START: 'chat/seenMessage/start',
+  SEEN_MESSAGE_SUCCESS: 'chat/seenMessage/success',
+  SEEN_MESSAGE_FAILURE: 'chat/seenMessage/failure',
 };

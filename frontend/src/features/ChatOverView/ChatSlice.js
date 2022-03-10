@@ -5,7 +5,18 @@ const initialState = {
   error: false,
   success: false,
   message: null,
-  listMessage: [],
+  listMessage: [
+    {
+      seenLatest: null,
+      Content: null,
+      FromAccount: null,
+      MessageId: null,
+      SeenDate: null,
+      SentDate: null,
+      ToAccount: null,
+      Type: null,
+    },
+  ],
   partner: {
     Avatar: null,
     Name: null,
@@ -81,7 +92,19 @@ const chatReducer = (state = initialState, action) => {
         error: false,
         success: true,
         message: null,
-        listMessage: [...state.listMessage, action.payload],
+        listMessage: [
+          ...state.listMessage,
+          {
+            seenLatest: false,
+            Content: action.payload.Content,
+            FromAccount: action.payload.FromAccount,
+            MessageId: action.payload.MessageId,
+            SeenDate: action.payload.SeenDate,
+            SentDate: action.payload.SentDate,
+            ToAccount: action.payload.ToAccount,
+            Type: action.payload.Type,
+          },
+        ],
       };
 
     case ChatActionTypes.SEND_MESSAGE_FAILURE:
@@ -109,7 +132,45 @@ const chatReducer = (state = initialState, action) => {
         error: false,
         success: true,
         message: null,
-        listMessage: [...state.listMessage, action.payload],
+        listMessage: [
+          ...state.listMessage,
+          {
+            seenLatest: false,
+            Content: action.payload.Content,
+            FromAccount: action.payload.FromAccount,
+            MessageId: action.payload.MessageId,
+            SeenDate: action.payload.SeenDate,
+            SentDate: action.payload.SentDate,
+            ToAccount: action.payload.ToAccount,
+            Type: action.payload.Type,
+          },
+        ],
+      };
+
+    case ChatActionTypes.SEEN_MESSAGE_START:
+      return {
+        ...state,
+        isFetching: true,
+        error: false,
+        success: false,
+        message: null,
+      };
+    case ChatActionTypes.SEEN_MESSAGE_SUCCESS:
+      return {
+        ...state,
+        isFetching: false,
+        error: false,
+        success: true,
+        message: null,
+        listMessage: state.listMessage.map((item) => {
+          if (item.MessageId === action.payload) {
+            item.SeenDate = new Date();
+            item.seenLatest = true;
+          } else {
+            item.seenLatest = false;
+          }
+          return item;
+        }),
       };
     default:
       return state;
