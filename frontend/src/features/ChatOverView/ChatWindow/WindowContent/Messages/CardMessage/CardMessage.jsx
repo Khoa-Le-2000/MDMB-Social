@@ -4,7 +4,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import React from 'react';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
-import styled from 'styled-components';
+import { CheckCircle } from '@styled-icons/heroicons-solid';
 
 dayjs.extend(relativeTime);
 
