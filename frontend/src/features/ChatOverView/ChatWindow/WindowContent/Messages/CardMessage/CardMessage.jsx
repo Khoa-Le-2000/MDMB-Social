@@ -31,6 +31,7 @@ const WrapperContent = styled.div`
 const WrapperMessage = styled.div`
   padding: 10px;
   position: ${({ owner }) => (owner === 1 ? 'relative' : 'static')};
+  word-break:break-all;
 `;
 
 const Avatar = styled.div`
