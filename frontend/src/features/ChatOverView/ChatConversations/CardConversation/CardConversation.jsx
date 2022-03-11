@@ -66,6 +66,9 @@ const Status = styled.div`
 const Time = styled.div`
   font-size: 0.8rem;
   min-width: 120px;
+  text-align:left; 
+  text-overflow: ellipsis;
+
 `;
 const SentStatus = styled(CheckCircle)`
   width:1rem;
@@ -110,8 +113,8 @@ function CardConvention({ onSelectRoom, conversation }) {
               </Message>
             </CardContent>
             <Status>
-              <Time>{dayjs(SentDate).fromNow()}</Time>
-              {SeenDate?<SeenStatus Avatar={avatar}/>:<SentStatus/>}
+              <Time>{lastMessage?dayjs(SentDate).fromNow():""}</Time>
+              {lastMessage?(SeenDate?<SeenStatus Avatar={avatar}/>:<SentStatus/>):""}
             </Status>
           </Card>
         </Col>
