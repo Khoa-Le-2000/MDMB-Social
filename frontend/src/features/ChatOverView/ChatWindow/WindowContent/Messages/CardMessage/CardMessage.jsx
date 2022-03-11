@@ -33,6 +33,7 @@ const WrapperMessage = styled.div`
   padding: 10px;
   position: ${({ owner }) => (owner === 1 ? 'relative' : 'static')};
   word-break: break-all;
+  overflow: hidden;
 `;
 
 const Avatar = styled.div`
@@ -61,7 +62,7 @@ const Time = styled(Form.Text)`
   position: absolute;
   right: ${({ owner }) => (owner === 1 ? '2%' : '5%')};
   color: #767676;
-  margin-top: ${({ owner }) => (owner === 1 ? '' : '5%')};
+  margin-top: ${({ owner }) => (owner === 1 ? '' : '10px')};
   left: ${({ owner }) => (owner === 1 ? '' : '0px')};
 `;
 
