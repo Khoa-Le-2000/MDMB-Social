@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import { Col, Row } from 'react-bootstrap';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useParams } from '../../../../../node_modules/react-router-dom/index';
+import { CheckCircle } from '@styled-icons/heroicons-outline';
 dayjs.extend(relativeTime);
 
 const Wrapper = styled.div`
@@ -59,10 +60,24 @@ const Message = styled.p`
   text-overflow: ellipsis;
   white-space: nowrap;
 `;
+const Status = styled.div``;
 const Time = styled.div`
   font-size: 0.8rem;
-  display: inline-block;
-  min-width: 80px;
+  min-width: 120px;
+  text-align: left;
+  text-overflow: ellipsis;
+`;
+const SentStatus = styled(CheckCircle)`
+  width: 1rem;
+  height: 1rem;
+  margin-left: 50%;
+`;
+const SeenStatus = styled.img`
+  content: url(${(props) => props.Avatar});
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  margin-left: 50%;
 `;
 
 function CardConversation({ onSelectRoom, conversation }) {
@@ -70,9 +85,9 @@ function CardConversation({ onSelectRoom, conversation }) {
     Name: name,
     Avatar: avatar,
     LastMessage: lastMessage,
-    LastOnline,
+    SentDate,
+    SeenDate,
   } = conversation;
-
   const onRoomChange = () => {
     onSelectRoom(conversation);
   };
@@ -94,7 +109,18 @@ function CardConversation({ onSelectRoom, conversation }) {
                   : 'You are now connected on MDMB Social'}
               </Message>
             </CardContent>
-            <Time>{dayjs(LastOnline).fromNow()}</Time>
+            <Status>
+              <Time>{lastMessage ? dayjs(SentDate).fromNow() : ''}</Time>
+              {lastMessage ? (
+                SeenDate ? (
+                  <SeenStatus Avatar={avatar} />
+                ) : (
+                  <SentStatus />
+                )
+              ) : (
+                ''
+              )}
+            </Status>
           </Card>
         </Col>
       </Row>

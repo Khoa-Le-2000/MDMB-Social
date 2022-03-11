@@ -31,6 +31,7 @@ const WrapperContent = styled.div`
 const WrapperMessage = styled.div`
   padding: 10px;
   position: ${({ owner }) => (owner === 1 ? 'relative' : 'static')};
+  word-break:break-all;
 `;
 
 const Avatar = styled.div`
@@ -59,6 +60,8 @@ const Time = styled(Form.Text)`
   position: absolute;
   right: ${({ owner }) => (owner === 1 ? '2%' : '5%')};
   color: #767676;
+  margin-top: ${({ owner }) => (owner === 1 ? '' : '5%')};
+  left: ${({ owner }) => (owner === 1 ? '' : '0px')};
 `;
 
 const AvatarSeen = styled.div`
@@ -106,7 +109,7 @@ function CardMessage(props) {
         <Col lg={12}>
           {!owner && (
             <Name>
-              {name} <Time>{dayjs(sentDate).fromNow()}</Time>
+              {name} 
             </Name>
           )}
 
@@ -117,6 +120,11 @@ function CardMessage(props) {
               </Message>
             </WrapperMessage>
 
+            {!owner && (
+            <Name>
+              <Time owner={owner ? 1 : 0}>{dayjs(sentDate).fromNow()}</Time>
+            </Name>
+          )}
             {owner && (
               <Time owner={owner ? 1 : 0}>{dayjs(sentDate).fromNow()}</Time>
             )}
@@ -125,6 +133,7 @@ function CardMessage(props) {
             <AvatarSeen>
               <img src={avatar} alt="" />
             </AvatarSeen>
+            
           )}
         </Col>
       </Row>
