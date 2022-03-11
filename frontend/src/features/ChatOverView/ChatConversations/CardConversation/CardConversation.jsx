@@ -110,7 +110,7 @@ function CardConvention({ onSelectRoom, conversation }) {
               <img src={avatar} alt="" />
             </Avatar>
             <CardContent>
-              <Name> {name}{name}{name}</Name>
+              <Name> {name}</Name>
               <Message>
                 {lastMessage
                   ? lastMessage

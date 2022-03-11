@@ -80,8 +80,7 @@ const AvatarSeen = styled.div`
 const SentStatus = styled(CheckCircle)`
   width: 1rem;
   height: 1rem;
-  color:#4849a1;
-
+  color: #4849a1;
 `;
 
 function CardMessage(props) {
@@ -135,11 +134,13 @@ function CardMessage(props) {
             <AvatarSeen>
               <img src={avatar} alt="" />
             </AvatarSeen>
-          ):
-          idLastMessage === messageId && (
-            <AvatarSeen>
-              <SentStatus />
-            </AvatarSeen>
+          ) : (
+            idLastMessage === messageId &&
+            owner && (
+              <AvatarSeen>
+                <SentStatus />
+              </AvatarSeen>
+            )
           )}
         </Col>
       </Row>
