@@ -3,20 +3,25 @@ import dayjs from 'dayjs';
 import { Col, Row } from 'react-bootstrap';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useParams } from '../../../../../node_modules/react-router-dom/index';
+import { CheckCircle } from '@styled-icons/heroicons-outline';
+
 dayjs.extend(relativeTime);
 
 const Wrapper = styled.div`
-  padding:10px 0 10px 0;
+  padding: 10px 0 10px 0;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
   transition-duration: 0.2s;
   overflow-y: hidden;
   overflow-x: hidden;
-  border-left: ${props=>props.checked? "3px solid #cd556b":"none"};
-  background: ${props=>props.checked? "linear-gradient(90deg, #f1a7ac 0%, #eeb0b4 50%, #fad0d0 60%,#e0e0e6 100%);":"none"};
-  &:hover{
-    background-color:#d8d3d3 ;
+  border-left: ${(props) => (props.checked ? '3px solid #cd556b' : 'none')};
+  background: ${(props) =>
+    props.checked
+      ? 'linear-gradient(90deg, #f1a7ac 0%, #eeb0b4 50%, #fad0d0 60%,#e0e0e6 100%);'
+      : 'none'};
+  &:hover {
+    background-color: #d8d3d3;
   }
 `;
 const Card = styled.div`
@@ -56,10 +61,23 @@ const Message = styled.p`
   text-overflow: ellipsis;
   white-space: nowrap;
 `;
+const Status = styled.div`
+`;
 const Time = styled.div`
   font-size: 0.8rem;
-  display: inline-block;
-  min-width: 80px;
+  min-width: 120px;
+`;
+const SentStatus = styled(CheckCircle)`
+  width:1rem;
+  height:1rem;
+  margin-left: 50%;
+`;
+const SeenStatus = styled.img`
+  content:url(${props=>props.Avatar});
+  width:1rem;
+  height:1rem;
+  border-radius:50%;
+  margin-left: 50%;
 `;
 
 function CardConvention({ onSelectRoom, conversation }) {
@@ -67,16 +85,16 @@ function CardConvention({ onSelectRoom, conversation }) {
     Name: name,
     Avatar: avatar,
     LastMessage: lastMessage,
-    LastOnline,
+    SentDate,
+    SeenDate
   } = conversation;
-  
   const onRoomChange = () => {
     onSelectRoom(conversation);
   };
-  const {roomId} =useParams();
+  const { roomId } = useParams();
 
   return (
-    <Wrapper checked={+roomId===+conversation.AccountId}>
+    <Wrapper checked={+roomId === +conversation.AccountId}>
       <Row>
         <Col>
           <Card onClick={onRoomChange}>
@@ -91,7 +109,10 @@ function CardConvention({ onSelectRoom, conversation }) {
                   : 'You are now connected on MDMB Social'}
               </Message>
             </CardContent>
-            <Time>{dayjs(LastOnline).fromNow()}</Time>
+            <Status>
+              <Time>{dayjs(SentDate).fromNow()}</Time>
+              {SeenDate?<SeenStatus Avatar={avatar}/>:<SentStatus/>}
+            </Status>
           </Card>
         </Col>
       </Row>
