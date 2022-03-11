@@ -116,7 +116,6 @@ function CardMessage(props) {
                 {type === 'text' ? content : <img src={content} alt="" />}
               </Message>
             </WrapperMessage>
-
             {owner && (
               <Time owner={owner ? 1 : 0}>{dayjs(sentDate).fromNow()}</Time>
             )}
