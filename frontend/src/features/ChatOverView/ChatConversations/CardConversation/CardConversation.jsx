@@ -3,8 +3,7 @@ import dayjs from 'dayjs';
 import { Col, Row } from 'react-bootstrap';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useParams } from '../../../../../node_modules/react-router-dom/index';
-import { CheckCircle } from '@styled-icons/heroicons-solid';
-
+import { CheckCircle } from '@styled-icons/heroicons-outline';
 dayjs.extend(relativeTime);
 
 const Wrapper = styled.div`
@@ -71,7 +70,7 @@ const Status = styled.div`
 `;
 const Time = styled.div`
   font-size: 0.8rem;
-  text-align:right; 
+  text-align:right;
   padding-right:10px
 `;
 const SentStatus = styled(CheckCircle)`
@@ -88,13 +87,13 @@ const SeenStatus = styled.img`
   margin-left: 80%;
 `;
 
-function CardConvention({ onSelectRoom, conversation }) {
+function CardConversation({ onSelectRoom, conversation }) {
   const {
     Name: name,
     Avatar: avatar,
     LastMessage: lastMessage,
     SentDate,
-    SeenDate
+    SeenDate,
   } = conversation;
   const onRoomChange = () => {
     onSelectRoom(conversation);
@@ -118,8 +117,16 @@ function CardConvention({ onSelectRoom, conversation }) {
               </Message>
             </CardContent>
             <Status>
-              <Time>{lastMessage?dayjs(SentDate).fromNow():""}</Time>
-              {lastMessage?(SeenDate?<SeenStatus Avatar={avatar}/>:<SentStatus/>):""}
+              <Time>{lastMessage ? dayjs(SentDate).fromNow() : ''}</Time>
+              {lastMessage ? (
+                SeenDate ? (
+                  <SeenStatus Avatar={avatar} />
+                ) : (
+                  <SentStatus />
+                )
+              ) : (
+                ''
+              )}
             </Status>
           </Card>
         </Col>
@@ -128,4 +135,4 @@ function CardConvention({ onSelectRoom, conversation }) {
   );
 }
 
-export default CardConvention;
+export default CardConversation;

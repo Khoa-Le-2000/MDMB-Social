@@ -11,14 +11,12 @@ import {
 } from 'app/selectors/register';
 import React from 'react';
 import {
-  Alert,
   Button,
   Card,
   Col,
   Form,
   FormControl,
   InputGroup,
-  Modal,
   Row,
   Spinner,
 } from 'react-bootstrap';
@@ -26,6 +24,7 @@ import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import Swal from 'sweetalert2';
 import * as yup from 'yup';
 import './register.scss';
 
@@ -81,22 +80,6 @@ const IconInner = styled.div`
     right: 0;
   }
 `;
-const ModalContainer = styled(Modal)`
-  .modal-content {
-    width: 80%;
-  }
-`;
-
-const ModalHeader = styled(Modal.Header)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.5rem;
-  font-weight: bold;
-`;
-
-const ModalContent = styled.div``;
-
 const schema = yup.object().shape({
   name: yup
     .string()
@@ -145,12 +128,16 @@ function Register() {
   const messageRegister = useSelector(getMessageRegister);
   const hasError = useSelector(getErrorRegister);
   const hasSuccess = useSelector(getSuccessRegister);
-  const [show, setShow] = React.useState(true);
   const isLocalType = useSelector(getTypeRegister)?.local;
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const dataFill = useSelector(getFillToRegister);
   const isFetching = useSelector(getFetchingRegister);
+
+  window.onbeforeunload = (event) => {
+    event.preventDefault();
+    dispatch(resetRegister());
+  };
 
   const {
     register,
@@ -167,16 +154,6 @@ function Register() {
     resolver: yupResolver(schema),
   });
 
-  const handleClose = () => {
-    if (isLocalType) {
-      setShow(false);
-      dispatch(resetRegister());
-    } else {
-      dispatch(resetRegister());
-      navigate('/login');
-    }
-  };
-
   const onRegisterHandler = (data, e) => {
     e.preventDefault();
     if (dataFill?.email) {
@@ -185,6 +162,21 @@ function Register() {
     dispatch(registerUser(data));
     reset();
   };
+
+  hasSuccess &&
+    Swal.fire({
+      icon: 'success',
+      allowOutsideClick: false,
+      title: isLocalType ? 'Awaiting Confirmation' : 'Welcome to our app',
+      text: isLocalType
+        ? "If you haven't received our email in 3 hours, please check your spam folder."
+        : messageRegister,
+    }).then((result) => {
+      if (result.value) {
+        dispatch(resetRegister());
+        navigate('/login');
+      }
+    });
 
   let priorityError = 0;
   if (errors.name?.message) {
@@ -204,35 +196,6 @@ function Register() {
   return (
     <div className="register">
       <Row className="h-100">
-        {hasSuccess && (
-          <ModalContainer
-            show={show}
-            size="lg"
-            aria-labelledby="contained-modal-title-vcenter"
-            centered
-          >
-            <ModalContainer.Body>
-              <ModalHeader className="text-center">
-                {isLocalType ? 'Awaiting Confirmation' : 'Message'}
-              </ModalHeader>
-              <ModalContent>
-                <Alert variant="success">
-                  <p>{messageRegister}</p>
-                  {isLocalType && (
-                    <p>
-                      If you haven't received our email in 3 hours, please check
-                      your spam folder.
-                    </p>
-                  )}
-                </Alert>
-              </ModalContent>
-            </ModalContainer.Body>
-            <ModalContainer.Footer>
-              <Button onClick={handleClose}>Close</Button>
-            </ModalContainer.Footer>
-          </ModalContainer>
-        )}
-
         <Col lg={7} className="register__col">
           <div className="register__hero"></div>
         </Col>
