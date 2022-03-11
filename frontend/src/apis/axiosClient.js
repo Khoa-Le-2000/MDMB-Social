@@ -40,7 +40,7 @@ export const interceptor = (store) => {
           if (rt) {
             store.dispatch(refreshToken(rt));
           }
-        } else if (error?.response?.data?.error === 'login failure') {
+        } else if (error?.response?.data?.result === 'login failure') {
           error.response.data.message = 'Wrong email or password!';
           error.response.data.status = 401;
           return Promise.reject(error);
