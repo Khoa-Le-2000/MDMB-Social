@@ -87,7 +87,6 @@ function ChatConversations({ onSelectRoom, messagesLatest }) {
     listConversation.sort(
       (a, b) => Date.parse(b.SentDate) - Date.parse(a.SentDate)
     );
-    console.log(listConversation);
 
   React.useEffect(() => {
     dispatch(getListConversation(accountId));

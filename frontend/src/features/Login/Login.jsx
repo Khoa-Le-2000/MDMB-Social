@@ -4,6 +4,7 @@ import {
   login,
   loginByGoogle,
   loginFailure,
+  resetLogin,
   verifyCaptcha,
 } from 'app/actions/login';
 import {
@@ -12,6 +13,8 @@ import {
   getErrorLogin,
   getErrorMessageLogin,
   getFetchingLogin,
+  getLogoutMessage,
+  getLogoutSuccess,
 } from 'app/selectors/login';
 import Hero1 from 'assets/images/heros/hero1.svg';
 import Hero2 from 'assets/images/heros/hero2.svg';
@@ -38,6 +41,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import * as yup from 'yup';
 import './login.scss';
+import Swal from 'sweetalert2';
 
 const IconEye = styled(Eye)`
   width: 1.2rem;
@@ -83,9 +87,28 @@ function Login() {
   const hasError = useSelector(getErrorLogin);
   const { width } = useViewport();
   const isFetching = useSelector(getFetchingLogin);
-
+  const isLogoutSuccess = useSelector(getLogoutSuccess);
+  const messageLogoutSuccess = useSelector(getLogoutMessage);
   const [showPassword, setShowPassword] = React.useState(false);
   const [message, setMessage] = React.useState('');
+
+  isLogoutSuccess &&
+    Swal.fire({
+      position: 'top',
+      width: messageLogoutSuccess ? '700px' : '400px',
+      icon: messageLogoutSuccess ? 'error' : 'success',
+      title: messageLogoutSuccess ? messageLogoutSuccess : 'Logout success',
+      showConfirmButton: false,
+      allowOutsideClick: false,
+      timer: 2000,
+    }).then(() => {
+      if (isLogoutSuccess) dispatch(resetLogin());
+    });
+
+  window.onbeforeunload = (event) => {
+    event.preventDefault();
+    dispatch(resetLogin());
+  };
 
   const {
     register,
