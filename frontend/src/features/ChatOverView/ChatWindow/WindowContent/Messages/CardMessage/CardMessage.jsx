@@ -4,6 +4,7 @@ import React from 'react';
 import { Col, Form, Row } from 'react-bootstrap';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
+import { CheckCircle } from '@styled-icons/heroicons-solid';
 
 dayjs.extend(relativeTime);
 
@@ -23,13 +24,14 @@ const WrapperContent = styled.div`
   max-width: 800px;
   font-size: 14px;
   min-width: 200px;
-  position: ${({ owner }) => (owner === 1 ? 'relative' : 'static')};
+  position: relative;
 `;
 
 const WrapperMessage = styled.div`
   padding: 10px;
   position: ${({ owner }) => (owner === 1 ? 'relative' : 'static')};
   word-break: break-all;
+  overflow: hidden;
 `;
 
 const Avatar = styled.div`
@@ -56,10 +58,9 @@ const Message = styled.div`
 const Time = styled(Form.Text)`
   font-size: 0.7rem;
   position: absolute;
-  right: ${({ owner }) => (owner === 1 ? '2%' : '5%')};
-  color: #767676;
-  margin-top: ${({ owner }) => (owner === 1 ? '' : '5%')};
-  left: ${({ owner }) => (owner === 1 ? '' : '0px')};
+  right: ${({ owner }) => (owner ? '0' : '')};
+  left: ${({ owner }) => (owner ? '' : '0')};
+  color: rgb(118, 118, 118);
 `;
 
 const AvatarSeen = styled.div`
@@ -117,6 +118,10 @@ function CardMessage(props) {
                 {type === 'text' ? content : <img src={content} alt="" />}
               </Message>
             </WrapperMessage>
+
+            {!owner && (
+              <Time owner={owner ? 1 : 0}>{dayjs(sentDate).fromNow()}</Time>
+            )}
             {owner && (
               <Time owner={owner ? 1 : 0}>{dayjs(sentDate).fromNow()}</Time>
             )}
@@ -125,6 +130,13 @@ function CardMessage(props) {
             <AvatarSeen>
               <img src={avatar} alt="" />
             </AvatarSeen>
+          ) : (
+            idLastMessage === messageId &&
+            owner && (
+              <AvatarSeen>
+                <SentStatus />
+              </AvatarSeen>
+            )
           )}
         </Col>
       </Row>
