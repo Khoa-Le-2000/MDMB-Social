@@ -3,7 +3,8 @@ import dayjs from 'dayjs';
 import { Col, Row } from 'react-bootstrap';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useParams } from '../../../../../node_modules/react-router-dom/index';
-import { CheckCircle } from '@styled-icons/heroicons-outline';
+import { CheckCircle } from '@styled-icons/heroicons-solid';
+
 dayjs.extend(relativeTime);
 
 const Wrapper = styled.div`
@@ -30,7 +31,7 @@ const Card = styled.div`
 const CardContent = styled.div`
   display: flex;
   flex-direction: column;
-  width:170px;
+  width: 170px;
 `;
 
 const Avatar = styled.div`
@@ -48,8 +49,7 @@ const Name = styled.h4`
   margin-bottom: 8px;
   overflow: hidden;
   text-overflow: ellipsis;
-  height:20px;
-
+  height: 20px;
 `;
 const Message = styled.p`
   font-size: 14px;
@@ -66,28 +66,28 @@ const Message = styled.p`
   white-space: nowrap;
 `;
 const Status = styled.div`
-  width:150px;
+  width: 150px;
 `;
 const Time = styled.div`
   font-size: 0.8rem;
-  text-align:right;
-  padding-right:10px
+  text-align: right;
+  padding-right: 10px;
 `;
 const SentStatus = styled(CheckCircle)`
-  width:1rem;
-  height:1rem;
+  width: 1rem;
+  height: 1rem;
   margin-left: 80%;
-  color:#4849a1;
+  color: #4849a1;
 `;
 const SeenStatus = styled.img`
-  content:url(${props=>props.Avatar});
-  width:1rem;
-  height:1rem;
-  border-radius:50%;
+  content: url(${(props) => props.Avatar});
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
   margin-left: 80%;
 `;
 
-function CardConversation({ onSelectRoom, conversation }) {
+function CardConvention({ onSelectRoom, conversation }) {
   const {
     Name: name,
     Avatar: avatar,
@@ -135,4 +135,4 @@ function CardConversation({ onSelectRoom, conversation }) {
   );
 }
 
-export default CardConversation;
+export default CardConvention;
