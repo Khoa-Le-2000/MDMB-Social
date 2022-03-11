@@ -5,6 +5,7 @@ import { useToggle } from 'hooks';
 import React from 'react';
 import { Col, Row } from 'react-bootstrap';
 import styled from 'styled-components';
+import { getConversations } from 'app/selectors/conversations';
 
 const Wrapper = styled.div`
   display: flex;
@@ -104,7 +105,7 @@ function ChatHeader({ partner, isOnline, WindowEmpty }) {
                 <Name>{partner.Name}</Name>
                 <Status>
                   <Online />
-                  <StatusText>Online</StatusText>
+                  <StatusText>{isOnline?"Online":"NotOnline"}</StatusText>
                 </Status>
               </WrapperText>
             </WrapperInfo>
