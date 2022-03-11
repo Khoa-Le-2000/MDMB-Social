@@ -1,13 +1,12 @@
 import { Search } from '@styled-icons/heroicons-solid';
-import LogoImg from 'assets/images/logos/logo.jpg';
-import CardConvention from 'features/ChatOverView/ChatConversations/CardConversation/CardConversation';
-import { Form, InputGroup as BsInputGroup } from 'react-bootstrap';
-import styled from 'styled-components';
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { getListConversation } from 'app/actions/conversations';
-import { getAuth } from 'app/selectors/login';
 import { getConversations } from 'app/selectors/conversations';
+import { getAuth } from 'app/selectors/login';
+import CardConvention from 'features/ChatOverView/ChatConversations/CardConversation/CardConversation';
+import React from 'react';
+import { Form, InputGroup as BsInputGroup } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import styled from 'styled-components';
 
 const SideBar = styled.div`
   width: 100%;

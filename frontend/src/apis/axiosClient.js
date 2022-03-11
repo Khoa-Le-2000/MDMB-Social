@@ -13,7 +13,6 @@ const axiosClient = axios.create({
 export const interceptor = (store) => {
   axiosClient.interceptors.request.use(
     async (config) => {
-      debugger;
       const auth = store?.getState()?.login?.auth;
       if (!config.headers['Authorization'] && auth?.accessToken) {
         config.headers['Authorization'] = auth?.accessToken;
