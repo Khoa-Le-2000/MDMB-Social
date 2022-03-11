@@ -3,7 +3,12 @@ import dayjs from 'dayjs';
 import { Col, Row } from 'react-bootstrap';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useParams } from '../../../../../node_modules/react-router-dom/index';
+<<<<<<< HEAD
 import { CheckCircle } from '@styled-icons/heroicons-outline';
+=======
+import { CheckCircle } from '@styled-icons/heroicons-solid';
+
+>>>>>>> 5ca35b8fcc2a89f46bf5f55fa35680d727a2adaf
 dayjs.extend(relativeTime);
 
 const Wrapper = styled.div`
@@ -30,6 +35,7 @@ const Card = styled.div`
 const CardContent = styled.div`
   display: flex;
   flex-direction: column;
+  width: 170px;
 `;
 
 const Avatar = styled.div`
@@ -45,6 +51,9 @@ const Name = styled.h4`
   font-size: 16px;
   font-weight: bold;
   margin-bottom: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 20px;
 `;
 const Message = styled.p`
   font-size: 14px;
@@ -60,24 +69,26 @@ const Message = styled.p`
   text-overflow: ellipsis;
   white-space: nowrap;
 `;
-const Status = styled.div``;
+const Status = styled.div`
+  width: 150px;
+`;
 const Time = styled.div`
   font-size: 0.8rem;
-  min-width: 120px;
-  text-align: left;
-  text-overflow: ellipsis;
+  text-align: right;
+  padding-right: 10px;
 `;
 const SentStatus = styled(CheckCircle)`
   width: 1rem;
   height: 1rem;
-  margin-left: 50%;
+  margin-left: 80%;
+  color: #4849a1;
 `;
 const SeenStatus = styled.img`
   content: url(${(props) => props.Avatar});
   width: 1rem;
   height: 1rem;
   border-radius: 50%;
-  margin-left: 50%;
+  margin-left: 80%;
 `;
 
 function CardConversation({ onSelectRoom, conversation }) {
@@ -102,7 +113,7 @@ function CardConversation({ onSelectRoom, conversation }) {
               <img src={avatar} alt="" />
             </Avatar>
             <CardContent>
-              <Name>{name}</Name>
+              <Name> {name}</Name>
               <Message>
                 {lastMessage
                   ? lastMessage
