@@ -5,16 +5,14 @@ import PropTypes from 'prop-types';
 import { getAuth } from 'app/selectors/login';
 
 function RequireAuth({ children }) {
-  const location = useLocation();
-
   const isAuthenticated = useSelector(getAuth)?.accessToken;
+  let location = useLocation();
 
-  return isAuthenticated ? (
-    children
-  ) : (
-    <Navigate to="/" replace state={{ path: location.pathname }} />
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
 
-  );
+  return children;
 }
 
 export default RequireAuth;

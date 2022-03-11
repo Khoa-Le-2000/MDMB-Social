@@ -9,6 +9,7 @@ export const AuthActionTypes = {
 
   LOGIN_SUCCESS: 'auth/login/success',
   LOGIN_GOOGLE_SUCCESS: 'auth/login/google',
+  LOGIN_RESET: 'auth/login/reset',
 
   LOGOUT_START: 'auth/logout',
   LOGOUT_FAILURE: 'auth/logout/failure',
