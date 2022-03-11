@@ -131,12 +131,12 @@ function CardMessage(props) {
               <Time owner={owner ? 1 : 0}>{dayjs(sentDate).fromNow()}</Time>
             )}
           </WrapperContent>
-          {seenLatest && owner && (
+          {seenLatest && owner ? (
             <AvatarSeen>
               <img src={avatar} alt="" />
             </AvatarSeen>
-          )}
-          {idLastMessage === messageId && (
+          ):
+          idLastMessage === messageId && (
             <AvatarSeen>
               <SentStatus />
             </AvatarSeen>
