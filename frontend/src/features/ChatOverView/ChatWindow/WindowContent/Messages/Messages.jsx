@@ -63,29 +63,42 @@ const DotFalling = styled.div`
   animation: ${dotTyping} 1.5s infinite linear;
 `;
 
+const WrapperScroll = styled.div``;
+
 function Messages({ messages, partner, typing, onSeenMessage }) {
   const myAccountId = useSelector(getAuth)?.accountId;
   const seenDateLatest = useSelector(getSeenLatest);
+  const messagesEndRef = React.useRef();
+
+  React.useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'end',
+      inline: 'nearest',
+    });
+  }, [messages]);
 
   return (
     <>
       {messages.map((item) => (
-        <CardMessage
-          key={item.MessageId}
-          messageId={item.MessageId}
-          seenDate={item.SeenDate}
-          sentDate={item.SentDate}
-          name={partner.Name}
-          avatar={partner.Avatar}
-          fromAccount={item.FromAccount}
-          content={item.Content}
-          type={item.Type === 0 ? 'text' : 'image'}
-          owner={item.FromAccount === myAccountId}
-          onSeenMessage={onSeenMessage}
-          seenLatest={
-            item.seenLatest || seenDateLatest?.MessageId === item.MessageId
-          }
-        />
+        <WrapperScroll key={item.MessageId}>
+          <CardMessage
+            messageId={item.MessageId}
+            seenDate={item.SeenDate}
+            sentDate={item.SentDate}
+            name={partner.Name}
+            avatar={partner.Avatar}
+            fromAccount={item.FromAccount}
+            content={item.Content}
+            type={item.Type === 0 ? 'text' : 'image'}
+            owner={item.FromAccount === myAccountId}
+            onSeenMessage={onSeenMessage}
+            seenLatest={
+              item.seenLatest || seenDateLatest?.MessageId === item.MessageId
+            }
+          />
+          <div ref={messagesEndRef} />
+        </WrapperScroll>
       ))}
       {typing && (
         <Wrapper>

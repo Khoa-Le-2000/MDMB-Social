@@ -4,8 +4,6 @@ import React from 'react';
 import { Col, Form, Row } from 'react-bootstrap';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { getRoomId, getSeenLatest } from 'app/selectors/chat';
 
 dayjs.extend(relativeTime);
 
@@ -31,7 +29,7 @@ const WrapperContent = styled.div`
 const WrapperMessage = styled.div`
   padding: 10px;
   position: ${({ owner }) => (owner === 1 ? 'relative' : 'static')};
-  word-break:break-all;
+  word-break: break-all;
 `;
 
 const Avatar = styled.div`
@@ -107,11 +105,7 @@ function CardMessage(props) {
       </Avatar>
       <Row>
         <Col lg={12}>
-          {!owner && (
-            <Name>
-              {name} 
-            </Name>
-          )}
+          {!owner && <Name>{name}</Name>}
 
           <WrapperContent owner={owner ? 1 : 0}>
             <WrapperMessage owner={owner ? 1 : 0}>
@@ -119,12 +113,6 @@ function CardMessage(props) {
                 {type === 'text' ? content : <img src={content} alt="" />}
               </Message>
             </WrapperMessage>
-
-            {!owner && (
-            <Name>
-              <Time owner={owner ? 1 : 0}>{dayjs(sentDate).fromNow()}</Time>
-            </Name>
-          )}
             {owner && (
               <Time owner={owner ? 1 : 0}>{dayjs(sentDate).fromNow()}</Time>
             )}
@@ -133,7 +121,6 @@ function CardMessage(props) {
             <AvatarSeen>
               <img src={avatar} alt="" />
             </AvatarSeen>
-            
           )}
         </Col>
       </Row>
