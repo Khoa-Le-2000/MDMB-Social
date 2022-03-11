@@ -1,5 +1,18 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Eye, EyeOff } from '@styled-icons/heroicons-solid';
+import {
+  login,
+  loginByGoogle,
+  loginFailure,
+  verifyCaptcha,
+} from 'app/actions/login';
+import {
+  getCaptcha,
+  getErrorCount,
+  getErrorLogin,
+  getErrorMessageLogin,
+  getFetchingLogin,
+} from 'app/selectors/login';
 import Hero1 from 'assets/images/heros/hero1.svg';
 import Hero2 from 'assets/images/heros/hero2.svg';
 import Hero3 from 'assets/images/heros/hero3.svg';
@@ -22,19 +35,6 @@ import ReCAPTCHA from 'react-google-recaptcha';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import {
-  login,
-  loginByGoogle,
-  loginFailure,
-  verifyCaptcha,
-} from 'app/actions/login';
-import {
-  getCaptcha,
-  getErrorCount,
-  getErrorLogin,
-  getErrorMessageLogin,
-  getFetchingLogin,
-} from 'app/selectors/login';
 import styled from 'styled-components';
 import * as yup from 'yup';
 import './login.scss';
@@ -83,7 +83,7 @@ function Login() {
   const hasError = useSelector(getErrorLogin);
   const { width } = useViewport();
   const isFetching = useSelector(getFetchingLogin);
- 
+
   const [showPassword, setShowPassword] = React.useState(false);
   const [message, setMessage] = React.useState('');
 
@@ -107,14 +107,13 @@ function Login() {
         return;
       }
       if (isHuman) {
-        dispatch(login(data));
+        dispatch(login(data), navigate);
         refRecapCha.current?.reset();
-        navigate('/');
       }
     }
-    dispatch(login(data));
+    dispatch(login(data, navigate));
     if (!hasError) {
-      navigate('/');
+      navigate('/login');
     }
     reset();
   };

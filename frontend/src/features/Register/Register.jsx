@@ -173,7 +173,7 @@ function Register() {
       dispatch(resetRegister());
     } else {
       dispatch(resetRegister());
-      navigate('/');
+      navigate('/login');
     }
   };
 
