@@ -1,9 +1,12 @@
-import React from 'react';
-import styled from 'styled-components';
-import { Form, Row, Col } from 'react-bootstrap';
-import { CheckCircle } from '@styled-icons/boxicons-solid';
-import relativeTime from 'dayjs/plugin/relativeTime';
 import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import React from 'react';
+import { Col, Form, Row } from 'react-bootstrap';
+import styled from 'styled-components';
+import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { getRoomId, getSeenLatest } from 'app/selectors/chat';
+
 dayjs.extend(relativeTime);
 
 const Wrapper = styled.div`
@@ -57,18 +60,42 @@ const Time = styled(Form.Text)`
   right: ${({ owner }) => (owner === 1 ? '2%' : '5%')};
   color: #767676;
 `;
-const SeenStatus = styled(CheckCircle)`
-  width: 0.8rem;
-  height: 0.8rem;
-  position: absolute;
-  display: block;
-  right: -15px;
-  bottom: 0;
-  color: ${({ seen }) => (seen ? '#551ecc' : 'none')};
+
+const AvatarSeen = styled.div`
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  img {
+    width: 32px;
+    height: 32px;
+    padding: 4px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
 `;
 
 function CardMessage(props) {
-  const { name, avatar, content, sentDate, seenDate, owner, type } = props;
+  const {
+    name,
+    avatar,
+    content,
+    sentDate,
+    seenDate,
+    owner,
+    type,
+    onSeenMessage,
+    fromAccount,
+    messageId,
+    seenLatest,
+  } = props;
+
+  const { roomId } = useParams();
+
+  React.useEffect(() => {
+    if (!seenDate && +roomId === fromAccount) {
+      onSeenMessage(messageId);
+    }
+  }, [roomId, fromAccount, seenDate, messageId]);
 
   return (
     <Wrapper owner={owner ? 1 : 0}>
@@ -84,18 +111,21 @@ function CardMessage(props) {
           )}
 
           <WrapperContent owner={owner ? 1 : 0}>
-          <WrapperMessage owner={owner ? 1 : 0}>
+            <WrapperMessage owner={owner ? 1 : 0}>
               <Message>
                 {type === 'text' ? content : <img src={content} alt="" />}
               </Message>
-              {seenDate && owner && (
-                <SeenStatus seen={seenDate ? true : false} />
-              )}
             </WrapperMessage>
+
             {owner && (
               <Time owner={owner ? 1 : 0}>{dayjs(sentDate).fromNow()}</Time>
             )}
           </WrapperContent>
+          {seenLatest && owner && (
+            <AvatarSeen>
+              <img src={avatar} alt="" />
+            </AvatarSeen>
+          )}
         </Col>
       </Row>
     </Wrapper>
