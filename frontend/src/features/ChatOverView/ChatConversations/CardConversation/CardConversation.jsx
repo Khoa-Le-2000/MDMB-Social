@@ -3,12 +3,8 @@ import dayjs from 'dayjs';
 import { Col, Row } from 'react-bootstrap';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useParams } from '../../../../../node_modules/react-router-dom/index';
-<<<<<<< HEAD
-import { CheckCircle } from '@styled-icons/heroicons-outline';
-=======
 import { CheckCircle } from '@styled-icons/heroicons-solid';
 
->>>>>>> 5ca35b8fcc2a89f46bf5f55fa35680d727a2adaf
 dayjs.extend(relativeTime);
 
 const Wrapper = styled.div`
