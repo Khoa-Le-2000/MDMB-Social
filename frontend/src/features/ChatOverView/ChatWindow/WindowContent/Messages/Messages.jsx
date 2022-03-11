@@ -66,7 +66,6 @@ const DotFalling = styled.div`
 function Messages({ messages, partner, typing, onSeenMessage }) {
   const myAccountId = useSelector(getAuth)?.accountId;
   const seenDateLatest = useSelector(getSeenLatest);
-
   return (
     <>
       {messages.map((item) => (
@@ -85,6 +84,7 @@ function Messages({ messages, partner, typing, onSeenMessage }) {
           seenLatest={
             item.seenLatest || seenDateLatest?.MessageId === item.MessageId
           }
+          idLastMessage={messages[messages.length-1].MessageId}
         />
       ))}
       {typing && (

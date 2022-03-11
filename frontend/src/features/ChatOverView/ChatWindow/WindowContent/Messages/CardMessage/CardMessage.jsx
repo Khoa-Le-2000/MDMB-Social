@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { getRoomId, getSeenLatest } from 'app/selectors/chat';
+import { CheckCircle } from '@styled-icons/heroicons-solid';
 
 dayjs.extend(relativeTime);
 
@@ -31,7 +32,7 @@ const WrapperContent = styled.div`
 const WrapperMessage = styled.div`
   padding: 10px;
   position: ${({ owner }) => (owner === 1 ? 'relative' : 'static')};
-  word-break:break-all;
+  word-break: break-all;
 `;
 
 const Avatar = styled.div`
@@ -76,6 +77,12 @@ const AvatarSeen = styled.div`
     object-fit: cover;
   }
 `;
+const SentStatus = styled(CheckCircle)`
+  width: 1rem;
+  height: 1rem;
+  color:#4849a1;
+
+`;
 
 function CardMessage(props) {
   const {
@@ -90,10 +97,9 @@ function CardMessage(props) {
     fromAccount,
     messageId,
     seenLatest,
+    idLastMessage,
   } = props;
-
   const { roomId } = useParams();
-
   React.useEffect(() => {
     if (!seenDate && +roomId === fromAccount) {
       onSeenMessage(messageId);
@@ -107,11 +113,7 @@ function CardMessage(props) {
       </Avatar>
       <Row>
         <Col lg={12}>
-          {!owner && (
-            <Name>
-              {name} 
-            </Name>
-          )}
+          {!owner && <Name>{name}</Name>}
 
           <WrapperContent owner={owner ? 1 : 0}>
             <WrapperMessage owner={owner ? 1 : 0}>
@@ -121,10 +123,10 @@ function CardMessage(props) {
             </WrapperMessage>
 
             {!owner && (
-            <Name>
-              <Time owner={owner ? 1 : 0}>{dayjs(sentDate).fromNow()}</Time>
-            </Name>
-          )}
+              <Name>
+                <Time owner={owner ? 1 : 0}>{dayjs(sentDate).fromNow()}</Time>
+              </Name>
+            )}
             {owner && (
               <Time owner={owner ? 1 : 0}>{dayjs(sentDate).fromNow()}</Time>
             )}
@@ -133,7 +135,11 @@ function CardMessage(props) {
             <AvatarSeen>
               <img src={avatar} alt="" />
             </AvatarSeen>
-            
+          )}
+          {idLastMessage === messageId && (
+            <AvatarSeen>
+              <SentStatus />
+            </AvatarSeen>
           )}
         </Col>
       </Row>
