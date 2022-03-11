@@ -4,9 +4,6 @@ import React from 'react';
 import { Col, Form, Row } from 'react-bootstrap';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { getRoomId, getSeenLatest } from 'app/selectors/chat';
-import { CheckCircle } from '@styled-icons/heroicons-solid';
 
 dayjs.extend(relativeTime);
 
@@ -120,12 +117,6 @@ function CardMessage(props) {
                 {type === 'text' ? content : <img src={content} alt="" />}
               </Message>
             </WrapperMessage>
-
-            {!owner && (
-              <Name>
-                <Time owner={owner ? 1 : 0}>{dayjs(sentDate).fromNow()}</Time>
-              </Name>
-            )}
             {owner && (
               <Time owner={owner ? 1 : 0}>{dayjs(sentDate).fromNow()}</Time>
             )}
@@ -134,13 +125,6 @@ function CardMessage(props) {
             <AvatarSeen>
               <img src={avatar} alt="" />
             </AvatarSeen>
-          ) : (
-            idLastMessage === messageId &&
-            owner && (
-              <AvatarSeen>
-                <SentStatus />
-              </AvatarSeen>
-            )
           )}
         </Col>
       </Row>
