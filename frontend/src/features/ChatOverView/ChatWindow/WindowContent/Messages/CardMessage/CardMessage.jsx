@@ -1,8 +1,8 @@
+import { CheckCircle } from '@styled-icons/heroicons-solid';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import React from 'react';
 import { Col, Form, Row } from 'react-bootstrap';
-import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { CheckCircle } from '@styled-icons/heroicons-solid';
 
