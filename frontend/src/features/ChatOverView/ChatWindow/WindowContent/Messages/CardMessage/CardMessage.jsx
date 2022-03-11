@@ -1,12 +1,10 @@
+import { CheckCircle } from '@styled-icons/heroicons-solid';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import React from 'react';
 import { Col, Form, Row } from 'react-bootstrap';
-import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { getRoomId, getSeenLatest } from 'app/selectors/chat';
-import { CheckCircle } from '@styled-icons/heroicons-solid';
+import styled from 'styled-components';
 
 dayjs.extend(relativeTime);
 
