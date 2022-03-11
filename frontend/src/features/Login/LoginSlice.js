@@ -27,6 +27,15 @@ const initialState = {
 
 const loginReducer = (state = initialState, action) => {
   switch (action.type) {
+    case AuthActionTypes.LOGIN_RESET:
+      return {
+        ...state,
+        error: false,
+        isFetching: false,
+        success: false,
+        message: null,
+      };
+
     case AuthActionTypes.LOGIN_START:
       return {
         ...state,

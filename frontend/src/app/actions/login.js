@@ -1,6 +1,12 @@
 import authApi from 'apis/authApi';
 import { AuthActionTypes } from 'app/actions/types/authTypes';
 
+const resetLogin = () => {
+  return {
+    type: AuthActionTypes.LOGIN_RESET,
+  };
+};
+
 export const loginStart = () => {
   return {
     type: AuthActionTypes.LOGIN_START,
@@ -77,7 +83,8 @@ export const loginByGoogle = (googleData, navigate) => async (dispatch) => {
           password: 'Abcd123',
         })
       );
-      navigate('register');
+      dispatch(resetLogin());
+      navigate('/register');
     } else {
       dispatch(loginFailure(`Can't sign in to your Google Account`));
     }
