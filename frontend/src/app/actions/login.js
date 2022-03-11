@@ -25,7 +25,7 @@ export const loginSuccess = (auth) => {
   };
 };
 
-export const login = (user) => async (dispatch) => {
+export const login = (user, navigate) => async (dispatch) => {
   dispatch(loginStart());
   try {
     const data = await authApi.login(user);
@@ -38,6 +38,7 @@ export const login = (user) => async (dispatch) => {
           accountId,
         })
       );
+      navigate('/');
     }
   } catch (error) {
     if (error.error?.response?.status === 401) {
@@ -67,6 +68,7 @@ export const loginByGoogle = (googleData, navigate) => async (dispatch) => {
           accountId,
         })
       );
+      navigate('/');
     } else if (data?.result === 'login failure') {
       dispatch(
         fillToRegister({

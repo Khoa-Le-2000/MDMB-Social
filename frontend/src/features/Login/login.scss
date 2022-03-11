@@ -4,6 +4,7 @@
   &__inner {
     //override css bootstrap\
     height: 100vh;
+    overflow-x: hidden;
 
     .form-check {
       margin-bottom: 0;

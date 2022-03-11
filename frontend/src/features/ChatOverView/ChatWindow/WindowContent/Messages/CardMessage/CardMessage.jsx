@@ -95,7 +95,7 @@ function CardMessage(props) {
     if (!seenDate && +roomId === fromAccount) {
       onSeenMessage(messageId);
     }
-  }, [roomId, fromAccount, seenDate, messageId]);
+  }, [roomId, fromAccount, seenDate]);
 
   return (
     <Wrapper owner={owner ? 1 : 0}>
