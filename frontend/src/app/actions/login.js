@@ -1,7 +1,7 @@
 import authApi from 'apis/authApi';
 import { AuthActionTypes } from 'app/actions/types/authTypes';
 
-const resetLogin = () => {
+export const resetLogin = () => {
   return {
     type: AuthActionTypes.LOGIN_RESET,
   };
@@ -47,9 +47,9 @@ export const login = (user, navigate) => async (dispatch) => {
       navigate('/');
     }
   } catch (error) {
-    if (error.error?.response?.status === 401) {
-      if (error.error.response.data.result === 'login failure') {
-        dispatch(loginFailure('Wrong email or password!'));
+    if (error?.status === 401) {
+      if (error.data.result === 'login failure') {
+        dispatch(loginFailure(error.data.message));
       }
     } else if (!error?.status) {
       dispatch(loginFailure('Server not responding'));
@@ -118,9 +118,10 @@ export const logoutStart = () => {
   };
 };
 
-export const logoutSuccess = () => {
+export const logoutSuccess = (message) => {
   return {
     type: AuthActionTypes.LOGOUT_SUCCESS,
+    payload: message,
   };
 };
 
@@ -147,9 +148,13 @@ export const verifyCaptchaFailure = (data) => {
   };
 };
 
-export const logout = (accessToken) => async (dispatch) => {
+export const logout = (data) => async (dispatch) => {
   dispatch(logoutStart());
-  dispatch(logoutSuccess());
+  if (data?.type === 'error') {
+    dispatch(logoutSuccess(data?.message));
+  } else {
+    dispatch(logoutSuccess());
+  }
 };
 
 export const redirectToLogin = () => {

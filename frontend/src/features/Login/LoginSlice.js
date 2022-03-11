@@ -34,6 +34,12 @@ const loginReducer = (state = initialState, action) => {
         isFetching: false,
         success: false,
         message: null,
+        logout: {
+          ...state.logout,
+          error: false,
+          isFetching: false,
+          success: false,
+        },
       };
 
     case AuthActionTypes.LOGIN_START:
@@ -132,7 +138,7 @@ const loginReducer = (state = initialState, action) => {
           isFetching: false,
           error: false,
           success: true,
-          message: null,
+          message: action.payload,
         },
       };
 

@@ -32,7 +32,7 @@ export const interceptor = (store) => {
     },
     (error) => {
       if (!error?.status && !error?.response?.status) {
-        return Promise.reject({ error });
+        return Promise.reject(error);
       }
       if (error?.response?.status === 401) {
         if (error.response.data.error === 'Token expired') {
@@ -40,13 +40,17 @@ export const interceptor = (store) => {
           if (rt) {
             store.dispatch(refreshToken(rt));
           }
-        } else if (error?.response?.data?.result === 'login failure') {
+        } else if (error.response.data.result === 'login failure') {
           error.response.data.message = 'Wrong email or password!';
-          error.response.data.status = 401;
-          return Promise.reject(error);
+          return Promise.reject(error.response);
         } else if (error?.response?.data.error === 'Refresh token expired') {
-          store.dispatch(logout());
-          return Promise.reject(error);
+          store.dispatch(
+            logout({
+              message: 'Your session has expired. Please login again.',
+              type: 'error',
+            })
+          );
+          return Promise.reject(error.response);
         }
       }
       return Promise.reject({ error });
