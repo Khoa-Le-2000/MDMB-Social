@@ -64,13 +64,18 @@ function ChatOverView() {
   }, [auth?.accessToken, auth?.refreshToken, auth?.accountId]);
 
   React.useEffect(() => {
-    socket?.on('typing', (typingId) => {
-      if (+typingId === +roomId) {
+    socket?.on('typing', (userId) => {
+      if (+userId === +roomId) {
         setTyping(true);
+      } else {
+        setTyping(false);
       }
     });
-    socket?.on('stop typing', (typingId) => {
-      if (+typingId === +roomId) {
+
+    socket?.on('stop typing', (userId) => {
+      if (+userId === +roomId) {
+        setTyping(false);
+      } else {
         setTyping(false);
       }
     });
@@ -102,11 +107,11 @@ function ChatOverView() {
     });
   }, [roomId]);
 
-  const handleTyping = ({ isTyping }) => {
+  const handleTyping = ({ isTyping, partnerId }) => {
     if (isTyping) {
-      socket.emit('typing', roomId);
+      socket.emit('typing', partnerId);
     } else {
-      socket.emit('stop typing', roomId);
+      socket.emit('stop typing', partnerId);
     }
   };
 
