@@ -87,17 +87,20 @@ function ChatOverView() {
     });
   }, [dispatch]);
 
-  React.useEffect(() => {
-    socket?.on('chat message yourself', (data) => {
-      dispatch(receiveMessage(data));
-    });
-  }, [dispatch]);
+  // React.useEffect(() => {
+  //   socket?.on('chat message yourself', (data) => {
+  //     dispatch(receiveMessage(data));
+  //   });
+  // }, [dispatch]);
 
   React.useEffect(() => {
     socket?.on('chat message', (data) => {
-      dispatch(receiveMessage(data));
+      if (+data.FromAccount === +roomId && data.ToAccount !== +roomId) {
+        dispatch(receiveMessage(data));
+      }
+      dispatch(getMessagesLatest(auth?.accountId, data.ToAccount));
     });
-  }, [dispatch]);
+  }, [dispatch, roomId, auth?.accountId]);
 
   React.useEffect(() => {
     socket.on('user-online', function (accountId) {
@@ -141,10 +144,7 @@ function ChatOverView() {
           <Sidebar />
         </LeftBar>
         <ColBS1 lg={3} xs={3} md={3}>
-          <ChatConversations
-            onSelectRoom={handleSelectRoomClick}
-            messagesLatest={messagesLatest}
-          />
+          <ChatConversations onSelectRoom={handleSelectRoomClick} />
         </ColBS1>
         <ColBS2 lg={8} xs={8} md={8}>
           {+roomId === +currentWindow ? (

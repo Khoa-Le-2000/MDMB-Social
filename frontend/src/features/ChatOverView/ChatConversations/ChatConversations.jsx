@@ -1,5 +1,6 @@
 import { Search } from '@styled-icons/heroicons-solid';
 import { getListConversation } from 'app/actions/conversations';
+import { getListMessageLatest } from 'app/selectors/chat';
 import { getConversations } from 'app/selectors/conversations';
 import { getAuth } from 'app/selectors/login';
 import CardConvention from 'features/ChatOverView/ChatConversations/CardConversation/CardConversation';
@@ -78,10 +79,11 @@ const Tab = styled.div`
   }
 `;
 
-function ChatConversations({ onSelectRoom, messagesLatest }) {
+function ChatConversations({ onSelectRoom }) {
   const dispatch = useDispatch();
   const accountId = useSelector(getAuth)?.accountId;
   const listConversation = useSelector(getConversations);
+  const messagesLatest = useSelector(getListMessageLatest);
   if (listConversation.length > 0)
     listConversation.sort(
       (a, b) => Date.parse(b.SentDate) - Date.parse(a.SentDate)
@@ -89,7 +91,7 @@ function ChatConversations({ onSelectRoom, messagesLatest }) {
 
   React.useEffect(() => {
     dispatch(getListConversation(accountId));
-  }, [accountId, dispatch, messagesLatest]);
+  }, [dispatch, messagesLatest, accountId]);
 
   return (
     <SideBar>
