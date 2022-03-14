@@ -4,6 +4,7 @@ import { Col, Row } from 'react-bootstrap';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useParams } from '../../../../../node_modules/react-router-dom/index';
 import { CheckCircle } from '@styled-icons/heroicons-solid';
+import { useEffect,useState} from 'react';
 import userApi from 'apis/userApi';
 
 dayjs.extend(relativeTime);
@@ -99,12 +100,10 @@ function CardConvention({ onSelectRoom, conversation }) {
     SeenDate,
     FromAccount,
   } = conversation;
-  const {
-    Avartar:partnerAvatar
-  } = userApi.getAccountInfor(roomId)
 
   const onRoomChange = () => {
     onSelectRoom(conversation);
+    
   };
 
   return (
@@ -126,11 +125,11 @@ function CardConvention({ onSelectRoom, conversation }) {
             <Status>
               <Time>{lastMessage ? dayjs(SentDate).fromNow() : ''}</Time>
               {lastMessage && SeenDate ? (
-                FromAccount===roomId? 
-                <SeenStatus Avatar={partnerAvatar} />
-                :
                 <SeenStatus Avatar={avatar} />
               ) : (
+                FromAccount!==roomId?
+                <SeenStatus Avatar={avatar} />
+                :
                 <SentStatus /> 
               )}
             </Status>

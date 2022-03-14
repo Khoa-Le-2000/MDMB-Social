@@ -10,10 +10,7 @@ const userApi = {
       Birthday: data.birthday,
     });
   },
-  getAccountInfor: async (accountId) => {
-    const url = `/account/account-information?accountId=${accountId}`;
-    return axiosClient.get(url);
-  },
+ 
 };
 
 export default userApi;
