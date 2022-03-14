@@ -87,15 +87,17 @@ function ChatOverView() {
     });
   }, [dispatch]);
 
-  React.useEffect(() => {
-    socket?.on('chat message yourself', (data) => {
-      dispatch(receiveMessage(data));
-    });
-  }, [dispatch]);
+  // React.useEffect(() => {
+  //   socket?.on('chat message yourself', (data) => {
+  //     dispatch(receiveMessage(data));
+  //   });
+  // }, [dispatch]);
 
   React.useEffect(() => {
     socket?.on('chat message', (data) => {
-      dispatch(receiveMessage(data));
+      if (+data.FromAccount === +roomId && data.ToAccount !== +roomId) {
+        dispatch(receiveMessage(data));
+      }
     });
   }, [dispatch]);
 

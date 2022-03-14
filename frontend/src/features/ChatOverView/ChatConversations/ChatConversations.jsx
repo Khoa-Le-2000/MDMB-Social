@@ -82,6 +82,7 @@ function ChatConversations({ onSelectRoom, messagesLatest }) {
   const dispatch = useDispatch();
   const accountId = useSelector(getAuth)?.accountId;
   const listConversation = useSelector(getConversations);
+
   if (listConversation.length > 0)
     listConversation.sort(
       (a, b) => Date.parse(b.SentDate) - Date.parse(a.SentDate)
