@@ -86,7 +86,7 @@ const SeenStatus = styled.img`
   margin-left: 80%;
 `;
 
-function CardConversation({ onSelectRoom, conversation }) {
+function CardConvention({ onSelectRoom, conversation }) {
   const {
     Name: name,
     Avatar: avatar,
@@ -134,4 +134,4 @@ function CardConversation({ onSelectRoom, conversation }) {
   );
 }
 
-export default CardConversation;
+export default CardConvention;
