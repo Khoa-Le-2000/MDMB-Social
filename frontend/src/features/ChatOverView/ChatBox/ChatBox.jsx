@@ -9,6 +9,7 @@ import { HoverMixin } from 'styles/mixinStyles';
 import { NimblePicker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
 import data from 'emoji-mart/data/google.json';
+import { useParams } from 'react-router-dom';
 
 const Wrapper = styled.div`
   height: 100%;
@@ -107,11 +108,13 @@ function ChatBox({ onSendMessage, onTyping, WindowEmpty }) {
   const [message, setMessage] = React.useState('');
   const typingTimeoutRef = React.useRef(null);
   const [showPicker, setShowPicker] = React.useState(false);
+  const { roomId } = useParams();
 
   const handleKeyPress = (e) => {
     clearTimeout(typingTimeoutRef.current);
     onTyping({
       isTyping: true,
+      partnerId: roomId,
     });
   };
 
@@ -123,6 +126,7 @@ function ChatBox({ onSendMessage, onTyping, WindowEmpty }) {
     typingTimeoutRef.current = setTimeout(() => {
       onTyping({
         isTyping: false,
+        partnerId: roomId,
       });
     }, 1000);
   };
