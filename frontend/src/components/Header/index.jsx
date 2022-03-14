@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Bell } from '@styled-icons/heroicons-outline';
+import { MessageAltDots } from '@styled-icons/boxicons-solid';
 import { Link } from 'react-router-dom';
 import Logo from 'assets/images/logos/logo.jpg';
 
@@ -61,9 +61,9 @@ const HeaderLeft = styled.div`
 const HeaderNotification = styled.div`
   padding: 0.5rem 1rem;
 `;
-const NotificationIcon = styled(Bell)`
-  width: 1.5rem;
-  height: 1.5rem;
+const NotificationIcon = styled(MessageAltDots)`
+  width: 2rem;
+  height: 2rem;
 `;
 
 const HeaderProfile = styled.div`
@@ -128,7 +128,9 @@ function Header() {
           </HeaderLogoLink>
           <HeaderLeft>
             <HeaderNotification>
-              <NotificationIcon />
+              <Link to={'/chat'}>
+                <NotificationIcon />
+              </Link>
             </HeaderNotification>
             <HeaderProfile>
               <ProfileAvatarLink to={'/'}>

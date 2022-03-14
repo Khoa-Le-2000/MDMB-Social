@@ -97,32 +97,31 @@ const ButtonWrapper = styled.div`
   width: 100%;
 `;
 
+const max = new Date().getUTCFullYear();
+const min = max - 40;
+const years = _.range(min, max + 1);
+
+const months = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
 function UpdateProfile() {
   const fileImageRef = React.useRef(null);
 
   const [startDate, setStartDate] = React.useState(new Date());
   const [gender, setGender] = React.useState(0);
-  const [image, setImage] = React.useState({});
   const [uploading, setUploading] = React.useState(false);
-
-  const max = new Date().getUTCFullYear();
-  const min = max - 40;
-  const years = _.range(min, max + 1);
-
-  const months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
 
   const onGenderChange = (e) => {
     setGender(e.target.value);
@@ -197,7 +196,17 @@ function UpdateProfile() {
                               </Form.Group>
                             </BootstrapCol>
                           </BootstrapRow>
-
+                          <BootstrapRow>
+                            <BootstrapCol lg={12}>
+                              <Form.Group className="mb-3 w-100">
+                                <Form.Label>Name</Form.Label>
+                                <Form.Control
+                                  type="string"
+                                  placeholder="Enter you name"
+                                />
+                              </Form.Group>
+                            </BootstrapCol>
+                          </BootstrapRow>
                           <BootstrapRow>
                             <Col
                               lg={12}
@@ -205,7 +214,7 @@ function UpdateProfile() {
                                 justifyContent: 'flex-start',
                               }}
                             >
-                              <Form.Group className="mb-3 3 w-100">
+                              <Form.Group className="mb-3 w-100">
                                 <Form.Label>Birth day </Form.Label>
                                 <DatePicker
                                   renderCustomHeader={({
@@ -272,7 +281,6 @@ function UpdateProfile() {
                               </Form.Group>
                             </Col>
                           </BootstrapRow>
-
                           <BootstrapRow>
                             <Col lg={12}>
                               <Form.Group className="mb-3 w-100">
@@ -325,7 +333,6 @@ function UpdateProfile() {
                               </Form.Group>
                             </Col>
                           </BootstrapRow>
-
                           <BootstrapRow className="mt-5">
                             <Col>
                               <ButtonWrapper>
@@ -336,11 +343,7 @@ function UpdateProfile() {
                                 >
                                   Skip
                                 </Button>
-                                <Button
-                                  type="submit"
-                                  variant="primary"
-                                  size="sm"
-                                >
+                                <Button type="submit" variant="primary">
                                   Update
                                 </Button>
                               </ButtonWrapper>
