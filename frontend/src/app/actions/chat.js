@@ -90,7 +90,7 @@ const receiveMessageSuccess = (message) => {
 
 export const receiveMessage = (message) => async (dispatch) => {
   dispatch(receiveMessageStart());
-  dispatch(receiveMessageSuccess(message));
+  if (message) dispatch(receiveMessageSuccess(message));
 };
 
 const seenMessageStart = () => {
