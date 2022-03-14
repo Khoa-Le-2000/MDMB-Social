@@ -15,3 +15,4 @@ API Endpoint |  HTTP Verb | Descrpition | Parmameter In | Return
 /chat/old-message | GET | Get lastest 10 messages | accountId, friendId | List message
 /chat/older-message | GET | Get older 10 messages from messageId | accountId, friendId, messageId | List message
 /chat/chat-list | GET | Get chat list | AccountId | result: "No messenger found"/[{FromAccount,ToAccount,Content,SentDateSeenDate,Type},...]
+/account/account-information | GET | Get chat list | AccountId | result: "get Account infor failed"/ [{AccountId, Phone, Email, Name, Avatar, Birthday, Gender, CreatedDate,LastOnline}]

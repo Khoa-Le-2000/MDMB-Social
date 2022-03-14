@@ -145,7 +145,7 @@ function getListFriend(AccountId) {
           // console.log('accounr ' + accounts);
           for (let i = 0; i < result.length; i++) {
             let account = new Account.Account(result[i].AccountId, null,
-              result[i].Phone, result[i].Email, result[i].Name, result[i].Avatar, result[i].Birthday, 
+              result[i].Phone, result[i].Email, result[i].Name, result[i].Avatar, result[i].Birthday,
               result[i].Gender, result[i].CreatedDate, result[i].LastOnline);
             accounts.push(account);
           }
@@ -189,6 +189,22 @@ function updateLastOnline(AccountId) {
     });
   });
 }
+function getAccountInfor(AccountId) {
+  var con = connection.createConnection();
+  return new Promise((resolve, reject) => {
+    con.connect(async function (err) {
+      if (err) throw err;
+      var sql = `select AccountId, Phone, Email, Name, Avatar, Birthday, Gender, CreatedDate,LastOnline from MDMB.Account where AccountId=?;`;
+      con.query(sql, [AccountId],
+        function (err, result) {
+          connection.closeConnection(con);
+          if (err) reject(err);
+          res = result;
+          resolve(res);
+        });
+    });
+  });
+}
 
 module.exports = {
   getAccount,
@@ -198,5 +214,6 @@ module.exports = {
   updateAccount,
   getListFriend,
   getListFriendWithLastMessage,
-  updateLastOnline
+  updateLastOnline,
+  getAccountInfor
 }
