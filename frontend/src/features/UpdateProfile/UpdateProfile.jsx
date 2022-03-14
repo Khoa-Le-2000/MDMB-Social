@@ -13,6 +13,25 @@ import DatePicker from 'react-datepicker';
 import styled from 'styled-components';
 import _ from 'lodash';
 import './updateProfile.scss';
+// import { AdvancedImage } from '@cloudinary/react';
+// import { CloudinaryImage } from '@cloudinary/url-gen';
+// import { URLConfig } from '@cloudinary/url-gen';
+// import { CloudConfig } from '@cloudinary/url-gen';
+// import {Cloudinary} from "@cloudinary/url-gen";
+// import userApi from 'apis/userApi';
+
+// const cld = new Cloudinary({
+//   cloud: {
+//     ccloud_name: 'dqkdfl2lp', 
+//     api_key: '827926361528927', 
+//     api_secret: 'lUyCnTzAiliF_QIKB__inlp_41E',
+//     secure: true
+//   }
+// });
+
+// // cld.image returns a CloudinaryImage with the configuration set.
+// const myImage = cld.image('sample');
+// console.log(myImage);
 
 const Col = styled.div`
   display: inline-flex;
@@ -90,38 +109,45 @@ const UploadImageInput = styled.input.attrs({
 })`
   width: 100%;
 `;
-
+const NameInput = styled.input.attrs({
+  type: 'text',
+})`
+  width: 100%;
+`;
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: space-around;
   width: 100%;
 `;
 
-const max = new Date().getUTCFullYear();
-const min = max - 40;
-const years = _.range(min, max + 1);
-
-const months = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
-
 function UpdateProfile() {
   const fileImageRef = React.useRef(null);
 
   const [startDate, setStartDate] = React.useState(new Date());
   const [gender, setGender] = React.useState(0);
+  const [image, setImage] = React.useState(
+    'https://images.unsplash.com/photo-1645504812848-29c2ebd5cd54?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyOXx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60'
+  );
   const [uploading, setUploading] = React.useState(false);
+
+  const max = new Date().getUTCFullYear();
+  const min = max - 40;
+  const years = _.range(min, max + 1);
+
+  const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
 
   const onGenderChange = (e) => {
     setGender(e.target.value);
@@ -140,7 +166,7 @@ function UpdateProfile() {
     console.log('🚀 :: onImageChange :: file', file);
     let formData = new FormData();
     formData.append('image', file);
-    console.log('🚀 :: onImageChange :: formData', formData.get('image'));
+
     try {
       // setImage({
       //   url: data.url,
@@ -175,14 +201,11 @@ function UpdateProfile() {
                           </Card.Subtitle>
                         </div>
                         <Form onSubmit={onUpdateProfileHandler}>
-                          <BootstrapRow>
+                          <BootstrapRow className="card-row">
                             <BootstrapCol lg={12}>
                               <Form.Group className="mb-">
                                 <AvatarWrapper>
-                                  <img
-                                    src="https://images.unsplash.com/photo-1645504812848-29c2ebd5cd54?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyOXx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60"
-                                    alt=""
-                                  />
+                                  <img src={image} alt="" />
                                   <IconWrapper onClick={onUploadImage}>
                                     <UploadIcon />
                                     <UploadImageWrapper>
@@ -196,17 +219,22 @@ function UpdateProfile() {
                               </Form.Group>
                             </BootstrapCol>
                           </BootstrapRow>
-                          <BootstrapRow>
+                          <BootstrapRow className="card-row">
                             <BootstrapCol lg={12}>
-                              <Form.Group className="mb-3 w-100">
-                                <Form.Label>Name</Form.Label>
-                                <Form.Control
-                                  type="string"
-                                  placeholder="Enter you name"
-                                />
+                              <Form.Group className="mb- email-phone">
+                                <input placeholder="gmail" disabled />
+                                <input placeholder="phone" disabled />
                               </Form.Group>
                             </BootstrapCol>
                           </BootstrapRow>
+                          <BootstrapRow className="card-row">
+                            <BootstrapCol lg={12}>
+                              <Form.Group className="mb-">
+                                <NameInput placeholder="Name" />
+                              </Form.Group>
+                            </BootstrapCol>
+                          </BootstrapRow>
+
                           <BootstrapRow>
                             <Col
                               lg={12}
@@ -214,8 +242,8 @@ function UpdateProfile() {
                                 justifyContent: 'flex-start',
                               }}
                             >
-                              <Form.Group className="mb-3 w-100">
-                                <Form.Label>Birth day </Form.Label>
+                              <Form.Group className="mb-3 3 w-100">
+                                <Form.Label>Birthday </Form.Label>
                                 <DatePicker
                                   renderCustomHeader={({
                                     date,
@@ -281,6 +309,7 @@ function UpdateProfile() {
                               </Form.Group>
                             </Col>
                           </BootstrapRow>
+
                           <BootstrapRow>
                             <Col lg={12}>
                               <Form.Group className="mb-3 w-100">
@@ -327,12 +356,13 @@ function UpdateProfile() {
                                     className="option option-3"
                                   >
                                     <div className="dot" />
-                                    <span>Custom</span>
+                                    <span>Unset</span>
                                   </label>
                                 </div>
                               </Form.Group>
                             </Col>
                           </BootstrapRow>
+
                           <BootstrapRow className="mt-5">
                             <Col>
                               <ButtonWrapper>
@@ -343,7 +373,11 @@ function UpdateProfile() {
                                 >
                                   Skip
                                 </Button>
-                                <Button type="submit" variant="primary">
+                                <Button
+                                  type="submit"
+                                  variant="primary"
+                                  size="sm"
+                                >
                                   Update
                                 </Button>
                               </ButtonWrapper>
