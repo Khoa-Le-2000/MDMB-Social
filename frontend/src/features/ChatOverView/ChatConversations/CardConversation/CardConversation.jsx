@@ -131,7 +131,7 @@ function CardConvention({ onSelectRoom, conversation }) {
                 :
                 <SeenStatus Avatar={avatar} />
               ) : (
-                <SentStatus />
+                <SentStatus /> 
               )}
             </Status>
           </Card>
