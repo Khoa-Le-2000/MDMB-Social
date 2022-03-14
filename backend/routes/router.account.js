@@ -13,4 +13,5 @@ api.post("/update", authMiddleware.verifyToken, accountController.update);
 api.get("/verify", accountController.verifyEmail)
 api.get("/list-friend", authMiddleware.verifyToken, accountController.getListFriend);
 api.get("/list-friend-with-last-message", authMiddleware.verifyToken, accountController.getListFriendWithLastMessage);
+api.get("/account-information", authMiddleware.verifyToken, accountController.getAccountInfor);
 module.exports = api;

@@ -10,6 +10,7 @@ const userApi = {
       Birthday: data.birthday,
     });
   },
+ 
 };
 
 export default userApi;

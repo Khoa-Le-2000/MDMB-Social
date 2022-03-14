@@ -6,13 +6,14 @@ import React from 'react';
 import { Col, Row } from 'react-bootstrap';
 import styled from 'styled-components';
 import { HoverMixin } from 'styles/mixinStyles';
-import EmojiInput from 'features/ChatOverView/ChatBox/EmojiInput/EmojiInput';
+import { NimblePicker } from 'emoji-mart';
+import 'emoji-mart/css/emoji-mart.css';
+import data from 'emoji-mart/data/google.json';
 
 const Wrapper = styled.div`
   height: 100%;
   width: 100%;
-  Visibility : ${(props) => (props.WindowEmpty ? "hidden" : "none")};
-
+  visibility: ${(props) => (props.WindowEmpty ? 'hidden' : 'none')};
 `;
 const WrapperInput = styled.div`
   display: flex;
@@ -96,9 +97,17 @@ const IconSticker = styled(StickerTest)`
   ${HoverMixin.default};
 `;
 
+const WrapperDialog = styled.div`
+  position: absolute;
+  transform: translateY(-100%);
+  right: 0;
+`;
+
 function ChatBox({ onSendMessage, onTyping, WindowEmpty }) {
   const [message, setMessage] = React.useState('');
   const typingTimeoutRef = React.useRef(null);
+  const [showPicker, setShowPicker] = React.useState(false);
+
   const handleKeyPress = (e) => {
     clearTimeout(typingTimeoutRef.current);
     onTyping({
@@ -108,9 +117,8 @@ function ChatBox({ onSendMessage, onTyping, WindowEmpty }) {
 
   const handleKeyUp = (e) => {
     clearTimeout(typingTimeoutRef.current);
-  const value = e.currentTarget.value;
+    const value = e.currentTarget.value;
     setMessage(value);
-
     if (!onTyping) return;
     typingTimeoutRef.current = setTimeout(() => {
       onTyping({
@@ -125,10 +133,13 @@ function ChatBox({ onSendMessage, onTyping, WindowEmpty }) {
     onSendMessage(message);
     setMessage('');
   };
-  const chatBoxRef = React.useRef(null);
 
-  const emojiInserted = (messageWithEmoji) => {
-    chatBoxRef.current.focus();
+  const onPreviewEmoji = () => {
+    setShowPicker((prev) => !prev);
+  };
+
+  const onEmojiClick = (emoji) => {
+    setMessage(message + emoji.native);
   };
 
   return (
@@ -142,21 +153,35 @@ function ChatBox({ onSendMessage, onTyping, WindowEmpty }) {
           </FeaturesTop>
         </Col>
       </Row>
+
       <Row>
         <Col lg={12}>
           <WrapperInput>
             <Input
-              ref={chatBoxRef}
               onKeyUp={handleKeyUp}
               onKeyPress={handleKeyPress}
               onChange={(e) => setMessage(e.target.value)}
               value={message}
               onKeyDown={(e) => e.key === 'Enter' && onSendClick(e)}
+              onFocus={() => setShowPicker(false)}
             />
             <FeaturesRight>
-              <EmojiIcon>
-                <EmojiInput value={message} onSelection={emojiInserted} />
-              </EmojiIcon>
+              <WrapperDialog>
+                {showPicker && (
+                  <NimblePicker
+                    onSelect={onEmojiClick}
+                    native={true}
+                    data={data}
+                    set={'google'}
+                    emojiSize={32}
+                    perLine={6}
+                    sheetSize={32}
+                    showSkinTones={false}
+                    showPreview={false}
+                  />
+                )}
+              </WrapperDialog>
+              <EmojiIcon onClick={onPreviewEmoji} />
               <SendMessenger onClick={onSendClick} />
             </FeaturesRight>
           </WrapperInput>

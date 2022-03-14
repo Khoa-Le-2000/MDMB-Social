@@ -96,6 +96,7 @@ function Messages({ messages, partner, typing, onSeenMessage }) {
             seenLatest={
               item.seenLatest || seenDateLatest?.MessageId === item.MessageId
             }
+            idLastMessage={messages[messages.length-1].MessageId}
           />
           <div ref={messagesEndRef} />
         </WrapperScroll>

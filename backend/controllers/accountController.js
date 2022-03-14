@@ -483,6 +483,13 @@ async function getListFriendWithLastMessage(req, res) {
   else res.status(401).send({ result: "get list friend failed" });
 }
 
+async function getAccountInfor(req,res){
+  var accountId = req.query.accountId;
+  let AccountInfor = await AccountDAO.getAccountInfor(accountId);
+  if(AccountInfor[0])  res.status(200).send({ result: AccountInfor[0] }); 
+  else res.status(201).send({ result: "get Account infor failed" });
+}
+
 module.exports = {
   login,
   loginByGoogle,
@@ -493,4 +500,5 @@ module.exports = {
   getListFriend,
   getListFriendWithLastMessage,
   registerByGoogle,
+  getAccountInfor
 };
