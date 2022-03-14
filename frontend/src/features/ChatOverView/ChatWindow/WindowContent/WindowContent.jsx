@@ -7,7 +7,12 @@ const Wrapper = styled.div`
   padding: 0px 5px;
 `;
 
-function WindowContent({ messages, partner, typing, onSeenMessage }) {
+function WindowContent({
+  messages,
+  partner,
+  typing,
+  onSeenMessage,
+}) {
   return (
     <Wrapper>
       {messages.length > 0 ? (
