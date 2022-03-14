@@ -5,6 +5,8 @@ import React from 'react';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
+const HtmlToReactParser = require('html-to-react').Parser;
+const htmlToReactParser = new HtmlToReactParser();
 dayjs.extend(relativeTime);
 
 const Wrapper = styled.div`
@@ -53,6 +55,11 @@ const Name = styled.h4`
 `;
 const Message = styled.div`
   font-size: 14px;
+  a {
+    :hover {
+      text-decoration: underline;
+    }
+  }
 `;
 const Time = styled(Form.Text)`
   font-size: 0.7rem;
@@ -95,12 +102,18 @@ function CardMessage(props) {
     seenLatest,
     idLastMessage,
   } = props;
+
   const { roomId } = useParams();
   React.useEffect(() => {
     if (!seenDate && +roomId === fromAccount) {
       onSeenMessage(messageId);
     }
   }, [roomId, fromAccount, seenDate, messageId]);
+
+  const msg = content.replaceAll(
+    /(((https?:\/\/)|(www\.))[^\s]+)/g,
+    '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a></br>'
+  );
 
   return (
     <Wrapper owner={owner ? 1 : 0}>
@@ -114,7 +127,11 @@ function CardMessage(props) {
           <WrapperContent owner={owner ? 1 : 0}>
             <WrapperMessage owner={owner ? 1 : 0}>
               <Message>
-                {type === 'text' ? content : <img src={content} alt="" />}
+                {type === 'text' ? (
+                  htmlToReactParser.parse(msg)
+                ) : (
+                  <img src={content} alt="" />
+                )}
               </Message>
             </WrapperMessage>
 

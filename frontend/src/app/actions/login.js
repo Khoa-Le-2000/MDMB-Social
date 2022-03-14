@@ -45,6 +45,8 @@ export const login = (user, navigate) => async (dispatch) => {
         })
       );
       navigate('/');
+    } else if (data?.result === 'login failure') {
+      dispatch(loginFailure('Wrong email or password!'));
     }
   } catch (error) {
     if (error?.status === 401) {

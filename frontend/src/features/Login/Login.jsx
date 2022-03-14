@@ -142,7 +142,12 @@ function Login() {
   };
 
   const handleGoogleLoginFailure = (error) => {
-    dispatch(loginFailure(error.message));
+    if (
+      !error.error === 'popup_closed_by_user' ||
+      !error.error === 'user_cancelled'
+    ) {
+      dispatch(loginFailure(error.message));
+    }
   };
 
   const handleGoogleLoginSuccess = (googleData) => {

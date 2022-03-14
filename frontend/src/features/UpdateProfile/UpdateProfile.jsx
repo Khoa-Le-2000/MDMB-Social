@@ -1,5 +1,4 @@
 import { Pencil } from '@styled-icons/heroicons-outline';
-import { getMonth, getYear } from 'date-fns';
 import MainLayout from 'layouts/MainLayout';
 import React from 'react';
 import {
@@ -12,6 +11,7 @@ import {
 } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
 import styled from 'styled-components';
+import _ from 'lodash';
 import './updateProfile.scss';
 
 const Col = styled.div`
@@ -97,10 +97,6 @@ const ButtonWrapper = styled.div`
   width: 100%;
 `;
 
-const range = (start, end) => {
-  return new Array(end - start).fill().map((d, i) => i + start);
-};
-
 function UpdateProfile() {
   const fileImageRef = React.useRef(null);
 
@@ -109,7 +105,10 @@ function UpdateProfile() {
   const [image, setImage] = React.useState({});
   const [uploading, setUploading] = React.useState(false);
 
-  const years = range(1990, getYear(new Date()) + 1, 1);
+  const max = new Date().getUTCFullYear();
+  const min = max - 40;
+  const years = _.range(min, max + 1);
+
   const months = [
     'January',
     'February',
@@ -232,7 +231,7 @@ function UpdateProfile() {
                                         {'<'}
                                       </button>
                                       <select
-                                        value={getYear(date)}
+                                        value={new Date(date).getFullYear()}
                                         onChange={({ target: { value } }) =>
                                           changeYear(value)
                                         }
@@ -245,7 +244,9 @@ function UpdateProfile() {
                                       </select>
 
                                       <select
-                                        value={months[getMonth(date)]}
+                                        value={
+                                          months[new Date(date).getMonth()]
+                                        }
                                         onChange={({ target: { value } }) =>
                                           changeMonth(months.indexOf(value))
                                         }
