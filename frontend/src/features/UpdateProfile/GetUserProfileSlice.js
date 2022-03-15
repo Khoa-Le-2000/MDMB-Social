@@ -1,15 +1,15 @@
-import { updateProfileActionTypes } from 'app/actions/types/updateProfileTypes';
+import { userProfileActionTypes } from 'app/actions/types/userProfileTypes';
 
 const initialState = {
     isFetching: false,
     error: false,
     success: false,
     message: null,
-    result: ''
+    userInfor: {}
 };
-const updateProfileReducer = (state = initialState, action) => {
+const userProfileReducer = (state = initialState, action) => {
     switch (action.type) {
-        case updateProfileActionTypes.UPDATE_PROFILE_START:
+        case userProfileActionTypes.USER_PROFILE_START:
             return {
                 ...state,
                 isFetching: true,
@@ -17,26 +17,26 @@ const updateProfileReducer = (state = initialState, action) => {
                 success: false,
                 message: null,
             };
-        case updateProfileActionTypes.UPDATE_PROFILE_SUCCESS:
+        case userProfileActionTypes.USER_PROFILE_SUCCESS:
             return {
                 ...state,
                 isFetching: false,
                 error: false,
                 success: true,
                 message: null,
-                result: action.payload,
+                userInfor: action.payload,
             };
-        case updateProfileActionTypes.UPDATE_PROFILE_FAILURE:
+        case userProfileActionTypes.USER_PROFILE_FAILURE:
             return {
                 ...state,
                 isFetching: false,
                 error: true,
                 success: false,
-                result: action.payload.message,
+                message: action.payload.message,
             };
         default:
             return state;
     }
 };
 
-export default updateProfileReducer;
+export default userProfileReducer;

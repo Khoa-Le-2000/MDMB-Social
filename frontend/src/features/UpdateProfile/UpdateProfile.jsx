@@ -17,6 +17,8 @@ import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import { getUserProfileSelector } from 'app/selectors/userProfile';
 import { getUserProfile } from 'app/actions/userProfile';
+import { updateUserProfile } from 'app/actions/updateProfile';
+import { updateProfileSelector } from 'app/selectors/updateProfile';
 import { getAuth } from 'app/selectors/login';
 
 const Col = styled.div`
@@ -115,7 +117,6 @@ function UpdateProfile() {
   }, []);
   const userInfor = useSelector(getUserProfileSelector);
 
-  // console.log(userInfor);
 
   const fileImageRef = React.useRef(null);
 
@@ -125,7 +126,8 @@ function UpdateProfile() {
   const [gender, setGender] = React.useState(userInfor.Gender);
   const [image, setImage] = React.useState(userInfor.Avatar);
   const [name, setName] = React.useState(userInfor.Name);
-  const [uploading, setUploading] = React.useState(false);
+  const [message, setMessage] = React.useState('');
+  
 
   const max = new Date().getUTCFullYear();
   const min = max - 40;
@@ -157,21 +159,29 @@ function UpdateProfile() {
     const regBirthday =
       /^(?:19|20)\d\d([\/.-])(?:0[1-9]|1[012])\1(?:0[1-9]|[12]\d|3[01])$/;
     const regGender = /^\d$/;
-    const regName =
-      /^((?![0-9\~\!\@\#\$\%\^\&\*\(\)\_\+\=\-\[\]\{\}\;\:\"\\\/\<\>\?]).){2,45}/;
-      
+    const regName = /^([ \u00c0-\u01ffa-zA-Z'\-])+$/;
+
     const regLink =
       /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
-
-      console.log(userUpdate.Name);
-    if (!regName.test(userUpdate.Name))
-      return { result: 'error', message: `Name invalid! ${(userUpdate.Name.length<2||userUpdate.Name.length>45)? "Length must be 2-45 char":"Name not contains special character"}` };
+    if (
+      !regName.test(userUpdate.Name) ||
+      userUpdate.Name.length < 2 ||
+      userUpdate.Name.length > 45
+    )
+      return {
+        result: 'error',
+        message: `Name invalid! ${
+          userUpdate.Name.length < 2 || userUpdate.Name.length > 45
+            ? 'Length must be 2-45 char'
+            : 'Name not contains special character'
+        }`,
+      };
     if (!regGender.test(userUpdate.Gender))
       return { result: 'error', message: 'Gender invalid' };
     if (!regBirthday.test(userUpdate.Birthday))
       return { result: 'error', message: 'Birthday invalid' };
     if (userUpdate.Avatar ? !regLink.test(userUpdate.Avatar) : false)
-      return { result: 'error', message: "Avatar Url invalid" };
+      return { result: 'error', message: 'Avatar Url invalid' };
 
     return { result: 'success' };
   };
@@ -194,10 +204,16 @@ function UpdateProfile() {
           let imageTemp = Response.data.secure_url;
           userUpdate.Avatar = imageTemp;
         });
-
-    console.log(checkRegex(userUpdate));
-  };
-  // setUploading(false);
+    let tempCheck=checkRegex(userUpdate);
+    if(tempCheck.result==='error') setMessage(tempCheck.message);
+    else {
+      setMessage('');
+    // dispatch(updateUserProfile(userUpdate));
+    // alert(result1)
+  }
+  setTimeout(()=>{setMessage('');},8000)
+};
+const result1 = useSelector(updateProfileSelector);
 
   const onUploadImage = (e) => {
     fileImageRef.current.click();
@@ -253,6 +269,16 @@ function UpdateProfile() {
 
                           <BootstrapRow className="card-row">
                             <BootstrapCol lg={12}>
+                              <Form.Label>Name </Form.Label>
+                              <Form.Label
+                                style={{
+                                  position: 'absolute',
+                                  right: '4%',
+                                  color:'red'
+                                }}
+                              >
+                                {message}
+                              </Form.Label>
                               <Form.Group className="mb-">
                                 <NameInput
                                   value={name}
