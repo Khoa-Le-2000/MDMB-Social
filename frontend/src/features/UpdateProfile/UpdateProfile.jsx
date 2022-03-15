@@ -208,8 +208,9 @@ function UpdateProfile() {
     if(tempCheck.result==='error') setMessage(tempCheck.message);
     else {
       setMessage('');
-    // dispatch(updateUserProfile(userUpdate));
-    // alert(result1)
+      //still err
+    dispatch(updateUserProfile(userUpdate));
+    alert(result1)
   }
   setTimeout(()=>{setMessage('');},8000)
 };
