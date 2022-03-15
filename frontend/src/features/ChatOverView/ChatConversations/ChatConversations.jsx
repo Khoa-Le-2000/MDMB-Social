@@ -79,19 +79,28 @@ const Tab = styled.div`
   }
 `;
 
-function ChatConversations({ onSelectRoom }) {
-  const dispatch = useDispatch();
-  const accountId = useSelector(getAuth)?.accountId;
+function ChatConversations({ onSelectRoom, socket }) {
   const listConversation = useSelector(getConversations);
-  const messagesLatest = useSelector(getListMessageLatest);
+
+  const [listAccountOnline, setListAccountOnline] = React.useState([]);
+
   if (listConversation.length > 0)
     listConversation.sort(
       (a, b) => Date.parse(b.SentDate) - Date.parse(a.SentDate)
     );
 
   React.useEffect(() => {
-    dispatch(getListConversation(accountId));
-  }, [dispatch, messagesLatest, accountId]);
+    const listConversationId = listConversation?.map(
+      (message) => message.AccountId
+    );
+    if (listConversationId?.length > 0) {
+      if (socket?.current) {
+        socket?.current?.emit('get online', listConversationId, (data) => {
+          setListAccountOnline(data);
+        });
+      }
+    }
+  }, [listConversation, socket]);
 
   return (
     <SideBar>
