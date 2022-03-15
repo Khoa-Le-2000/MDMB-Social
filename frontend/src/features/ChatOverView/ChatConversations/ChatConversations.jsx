@@ -79,7 +79,7 @@ const Tab = styled.div`
   }
 `;
 
-function ChatConversations({ onSelectRoom }) {
+function ChatConversations({ onSelectRoom, messagesLatest, listAccountOnline }) {
   const dispatch = useDispatch();
   const accountId = useSelector(getAuth)?.accountId;
   const listConversation = useSelector(getConversations);
@@ -113,6 +113,7 @@ function ChatConversations({ onSelectRoom }) {
               key={index}
               onSelectRoom={onSelectRoom}
               conversation={item}
+              listAccountOnline={listAccountOnline}
             />
           ))}
       </Wrapper>
