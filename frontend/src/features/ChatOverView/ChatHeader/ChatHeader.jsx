@@ -82,8 +82,16 @@ const Online = styled(Circle)`
   vertical-align: middle;
   margin-right: 5px;
   margin-bottom: 0.2rem;
-  color: #8025d5;
+  color: #16dc80;
 `;
+const Offline = styled(Circle)`
+  width: 0.5rem;
+  vertical-align: middle;
+  margin-right: 5px;
+  margin-bottom: 0.2rem;
+  color: #aaa;
+`;
+
 const FutureSwitchWrapper = styled(Feature)``;
 
 const StatusText = styled.span``;
@@ -104,8 +112,8 @@ function ChatHeader({ partner, isOnline, WindowEmpty }) {
               <WrapperText>
                 <Name>{partner.Name}</Name>
                 <Status>
-                  <Online />
-                  <StatusText>{isOnline?"Online":"NotOnline"}</StatusText>
+                  {isOnline?<Online />:<Offline />}
+                  <StatusText>{isOnline?"Online":"Offline"}</StatusText>
                 </Status>
               </WrapperText>
             </WrapperInfo>

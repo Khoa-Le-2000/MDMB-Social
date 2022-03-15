@@ -17,4 +17,12 @@ export const ChatActionTypes = {
   SEEN_MESSAGE_START: 'chat/seenMessage/start',
   SEEN_MESSAGE_SUCCESS: 'chat/seenMessage/success',
   SEEN_MESSAGE_FAILURE: 'chat/seenMessage/failure',
+
+  USER_ONLINE_START: 'chat/userOnline/start',
+  USER_ONLINE_SUCCESS: 'chat/userOnline/success',
+  USER_ONLINE_FAILURE: 'chat/userOnline/failure',
+
+  USER_OFFLINE_START: 'chat/userOffline/start',
+  USER_OFFLINE_SUCCESS: 'chat/userOffline/success',
+  USER_OFFLINE_FAILURE: 'chat/userOffline/failure',
 };

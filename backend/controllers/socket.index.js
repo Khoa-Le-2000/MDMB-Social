@@ -2,6 +2,7 @@ const { Server } = require('socket.io');
 const authMiddleware = require('../middlewares/auth.middleware');
 const socketUser = require('../models/socket.user');
 const socketChatController = require('./socket.chat.controller');
+const socketStatusController = require('./socket.status.controller');
 const acccountDao = require('../models/data-access/accountDAO');
 
 async function checkAuthen(io, socket) {
@@ -13,19 +14,35 @@ async function checkAuthen(io, socket) {
         console.log("socketio authenticated");
         socket.emit('authenticated');
         socketUser.addUser({ accountId, socketId: socket.id });
-        console.log(socketUser.getUserBySocketId(socket.id));
+        // console.log(socketUser.getUserBySocketId(socket.id));
 
 
-        acccountDao.getListFriend(accountId, (result) => {
-            result.forEach(async friend => {
-                let socketIds = await socketUser.getUserByAccountId(friend.AccountId);
-                if (socketIds) {
-                    socketIds.socketId.forEach(socketId => {
-                        io.to(socketId).emit('user-online', accountId);
+        // acccountDao.getListFriend(accountId, (result) => {
+        //     result.forEach(async friend => {
+        //         let users = await socketUser.getUserByAccountId(friend.AccountId);
+        //         if (users) {
+        //             users.socketId.forEach(socketId => {
+        //                 io.to(socketId).emit('user-online', accountId);
+        //                 console.log(`emit user ${accountId} online to ${friend.AccountId}`);
+        //             });
+        //         }
+        //     });
+        // });
+        // console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+        let listFriend = await acccountDao.getListFriendAsync(accountId);
+        // console.log('###########################3');
+        // console.log(listFriend);
+        if (listFriend) {
+            listFriend.forEach(async friend => {
+                let users = await socketUser.getUserByAccountId(friend.AccountId);
+                if (users) {
+                    users.socketId.forEach(socketId => {
+                        io.to(socketId).emit('user-online', Number(accountId));
+                        console.log(`emit user ${accountId} online to ${friend.AccountId}`);
                     });
                 }
             });
-        });
+        }
 
         console.log(socketUser.getUsers());
         return true;
@@ -54,15 +71,18 @@ function socket(server) {
                 if (socket.auth) {
                     let user = await socketUser.getUserBySocketId(socket.id);
                     if (user.socketId.length == 1) {
-                        let friend = [];
-                        let listFriend = await acccountDao.getListFriend(socket.accountId);
+                        let listFriend = await acccountDao.getListFriendAsync(socket.accountId);
                         // console.log('list friend :')
                         // console.log(listFriend);
-                        friend.forEach(friend => {
-                            let socketIds = socketUser.getSocketIdByAccountId(friend.accountId);
-                            socketIds.forEach(socketId => {
-                                io.to(socketId).emit('user-offline', socket.accountId);
-                            });
+                        listFriend.forEach(async friend => {
+                            let user = await socketUser.getUserByAccountId(friend.AccountId);
+                            // console.log(socketIds);
+                            if (user) {
+                                user.socketId.forEach(socketId => {
+                                    io.to(socketId).emit('user-offline', Number(socket.accountId));
+                                    console.log(`emit user ${socket.accountId} offline to ${friend.AccountId}`);
+                                });
+                            }
                         });
                         acccountDao.updateLastOnline(socket.accountId);
                     }
@@ -71,6 +91,8 @@ function socket(server) {
             });
 
             socketChatController(io, socket);
+            socketStatusController(io, socket);
+
             // socket.on('chat message', (msg) => {
             //     io.emit('chat message', msg);
             //     console.log("socketio chat message");
