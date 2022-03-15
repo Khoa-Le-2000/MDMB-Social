@@ -1,7 +1,7 @@
 import axiosClient from "apis/axiosClient";
 
 const userApi = {
-  updateProfile: async (data) => {
+  updateProfile: (data) => {
     const url = 'account/update-profile';
     return axiosClient.post(url, {
       Email: data.email.trim().toLowerCase(),
@@ -10,7 +10,7 @@ const userApi = {
       Birthday: data.birthday,
     });
   },
-  getAccountInfor: async (accountId) => {
+  getAccountInfor: (accountId) => {
     const url = `/account/account-information?accountId=${accountId}`;
     return axiosClient.get(url);
   },

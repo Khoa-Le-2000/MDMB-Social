@@ -1,6 +1,6 @@
 import { Pencil } from '@styled-icons/heroicons-outline';
 import MainLayout from 'layouts/MainLayout';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Button,
   Card,
@@ -13,25 +13,11 @@ import DatePicker from 'react-datepicker';
 import styled from 'styled-components';
 import _ from 'lodash';
 import './updateProfile.scss';
-// import { AdvancedImage } from '@cloudinary/react';
-// import { CloudinaryImage } from '@cloudinary/url-gen';
-// import { URLConfig } from '@cloudinary/url-gen';
-// import { CloudConfig } from '@cloudinary/url-gen';
-// import {Cloudinary} from "@cloudinary/url-gen";
-// import userApi from 'apis/userApi';
-
-// const cld = new Cloudinary({
-//   cloud: {
-//     ccloud_name: 'dqkdfl2lp', 
-//     api_key: '827926361528927', 
-//     api_secret: 'lUyCnTzAiliF_QIKB__inlp_41E',
-//     secure: true
-//   }
-// });
-
-// // cld.image returns a CloudinaryImage with the configuration set.
-// const myImage = cld.image('sample');
-// console.log(myImage);
+import axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
+import { getUserProfileSelector } from 'app/selectors/userProfile';
+import { getUserProfile } from 'app/actions/userProfile';
+import { getAuth } from 'app/selectors/login';
 
 const Col = styled.div`
   display: inline-flex;
@@ -121,13 +107,24 @@ const ButtonWrapper = styled.div`
 `;
 
 function UpdateProfile() {
+  const dispatch = useDispatch();
+  const accountId = useSelector(getAuth)?.accountId;
+
+  useEffect(() => {
+    dispatch(getUserProfile(accountId));
+  }, []);
+  const userInfor = useSelector(getUserProfileSelector);
+
+  // console.log(userInfor);
+
   const fileImageRef = React.useRef(null);
 
-  const [startDate, setStartDate] = React.useState(new Date());
-  const [gender, setGender] = React.useState(0);
-  const [image, setImage] = React.useState(
-    'https://images.unsplash.com/photo-1645504812848-29c2ebd5cd54?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyOXx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60'
+  const [startDate, setStartDate] = React.useState(
+    new Date(userInfor.Birthday)
   );
+  const [gender, setGender] = React.useState(userInfor.Gender);
+  const [image, setImage] = React.useState(userInfor.Avatar);
+  const [name, setName] = React.useState(userInfor.Name);
   const [uploading, setUploading] = React.useState(false);
 
   const max = new Date().getUTCFullYear();
@@ -152,34 +149,68 @@ function UpdateProfile() {
   const onGenderChange = (e) => {
     setGender(e.target.value);
   };
-
-  const onUpdateProfileHandler = (e) => {
-    e.preventDefault();
-    console.log(gender);
+  const onNameChange = (e) => {
+    setName(e.target.value);
   };
+
+  const checkRegex = (userUpdate) => {
+    const regBirthday =
+      /^(?:19|20)\d\d([\/.-])(?:0[1-9]|1[012])\1(?:0[1-9]|[12]\d|3[01])$/;
+    const regGender = /^\d$/;
+    const regName =
+      /^((?![0-9\~\!\@\#\$\%\^\&\*\(\)\_\+\=\-\[\]\{\}\;\:\"\\\/\<\>\?]).){2,45}/;
+      
+    const regLink =
+      /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
+
+      console.log(userUpdate.Name);
+    if (!regName.test(userUpdate.Name))
+      return { result: 'error', message: `Name invalid! ${(userUpdate.Name.length<2||userUpdate.Name.length>45)? "Length must be 2-45 char":"Name not contains special character"}` };
+    if (!regGender.test(userUpdate.Gender))
+      return { result: 'error', message: 'Gender invalid' };
+    if (!regBirthday.test(userUpdate.Birthday))
+      return { result: 'error', message: 'Birthday invalid' };
+    if (userUpdate.Avatar ? !regLink.test(userUpdate.Avatar) : false)
+      return { result: 'error', message: "Avatar Url invalid" };
+
+    return { result: 'success' };
+  };
+  const onUpdateProfileHandler = async (e) => {
+    e.preventDefault();
+    let userUpdate = {};
+    userUpdate.Email = userInfor.Email;
+    userUpdate.Name = name;
+    userUpdate.Birthday = startDate.toISOString().split('T')[0];
+    userUpdate.Gender = gender;
+    let formData = new FormData();
+    let blob = await fetch(image).then((r) => r.blob());
+    formData.append('file', blob);
+    formData.append('upload_preset', 'exh5f6wa');
+    formData.append('api_key', '827926361528927');
+    if (image !== userInfor.Avatar)
+      await axios
+        .post('https://api.cloudinary.com/v1_1/dqkdfl2lp/upload', formData)
+        .then((Response) => {
+          let imageTemp = Response.data.secure_url;
+          userUpdate.Avatar = imageTemp;
+        });
+
+    console.log(checkRegex(userUpdate));
+  };
+  // setUploading(false);
+
   const onUploadImage = (e) => {
     fileImageRef.current.click();
   };
 
   const onImageChange = (e) => {
     const file = e.target.files[0];
-    console.log('🚀 :: onImageChange :: file', file);
-    let formData = new FormData();
-    formData.append('image', file);
-
-    try {
-      // setImage({
-      //   url: data.url,
-      //   public_id: data.public_id,
-      // });
-    } catch (error) {
-      console.log(error);
-      setUploading(false);
-    }
+    setImage(URL.createObjectURL(file));
   };
+
   return (
     <BootstrapContainer fluid>
-      <MainLayout>
+      <MainLayout Name={userInfor.Name} Avatar={userInfor.Avatar}>
         <BootstrapContainer>
           <BootstrapRow>
             <Col
@@ -219,18 +250,14 @@ function UpdateProfile() {
                               </Form.Group>
                             </BootstrapCol>
                           </BootstrapRow>
-                          <BootstrapRow className="card-row">
-                            <BootstrapCol lg={12}>
-                              <Form.Group className="mb- email-phone">
-                                <input placeholder="gmail" disabled />
-                                <input placeholder="phone" disabled />
-                              </Form.Group>
-                            </BootstrapCol>
-                          </BootstrapRow>
+
                           <BootstrapRow className="card-row">
                             <BootstrapCol lg={12}>
                               <Form.Group className="mb-">
-                                <NameInput placeholder="Name" />
+                                <NameInput
+                                  value={name}
+                                  onChange={onNameChange}
+                                />
                               </Form.Group>
                             </BootstrapCol>
                           </BootstrapRow>
@@ -320,7 +347,10 @@ function UpdateProfile() {
                                     name="select"
                                     value="0"
                                     id="option-1"
-                                    defaultChecked
+                                    defaultChecked={
+                                      userInfor.Gender === 0 ||
+                                      userInfor.Gender === null
+                                    }
                                     onChange={onGenderChange}
                                   />
                                   <input
@@ -328,6 +358,7 @@ function UpdateProfile() {
                                     name="select"
                                     id="option-2"
                                     value="1"
+                                    defaultChecked={userInfor.Gender === 1}
                                     onChange={onGenderChange}
                                   />
                                   <input
@@ -335,6 +366,7 @@ function UpdateProfile() {
                                     name="select"
                                     value="2"
                                     id="option-3"
+                                    defaultChecked={userInfor.Gender === 2}
                                     onChange={onGenderChange}
                                   />
                                   <label
@@ -361,6 +393,15 @@ function UpdateProfile() {
                                 </div>
                               </Form.Group>
                             </Col>
+                          </BootstrapRow>
+
+                          <BootstrapRow className="card-row">
+                            <BootstrapCol lg={12}>
+                              <Form.Group className="mb- email-phone">
+                                <input placeholder={userInfor.Email} disabled />
+                                <input placeholder={userInfor.Phone} disabled />
+                              </Form.Group>
+                            </BootstrapCol>
                           </BootstrapRow>
 
                           <BootstrapRow className="mt-5">
