@@ -4,6 +4,7 @@ import { Col, Row } from 'react-bootstrap';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useParams } from '../../../../../node_modules/react-router-dom/index';
 import { CheckCircle } from '@styled-icons/heroicons-outline';
+import { Conversation } from '../../../../../node_modules/@styled-icons/boxicons-solid/index';
 dayjs.extend(relativeTime);
 
 const Wrapper = styled.div`
@@ -86,7 +87,7 @@ const SeenStatus = styled.img`
   margin-left: 80%;
 `;
 
-function CardConvention({ onSelectRoom, conversation }) {
+function CardConvention({ onSelectRoom, conversation, listAccountOnline }) {
   const {
     Name: name,
     Avatar: avatar,
@@ -94,6 +95,9 @@ function CardConvention({ onSelectRoom, conversation }) {
     SentDate,
     SeenDate,
   } = conversation;
+  console.log(listAccountOnline);
+  const isOnline = typeof(listAccountOnline.find((item) => item == conversation.AccountId)) !== 'undefined';
+  console.log(`${conversation.AccountId} is online: ${isOnline}`);
   const onRoomChange = () => {
     onSelectRoom(conversation);
   };
@@ -127,6 +131,7 @@ function CardConvention({ onSelectRoom, conversation }) {
                 ''
               )}
             </Status>
+            {isOnline ? <div>Online</div> : <div>Offline</div>}
           </Card>
         </Col>
       </Row>

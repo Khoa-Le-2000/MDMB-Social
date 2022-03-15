@@ -17,6 +17,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import io from 'socket.io-client';
 import styled from 'styled-components';
 import Sidebar from 'features/ChatOverView/Sidebar/Sidebar';
+import { result } from 'lodash';
+import { getConversations } from 'app/selectors/conversations';
 
 const Wrapper = styled(Container)`
   height: 100vh;
@@ -50,6 +52,7 @@ function ChatOverView() {
   const [currentWindow, setCurrentWindow] = React.useState(roomId);
   const [isOnline, setIsOnline] = React.useState(false);
   const [typing, setTyping] = React.useState(false);
+  const [listAccountOnline, setListAccountOnline] = React.useState([]);
   const navigate = useNavigate();
   const messagesLatest = useSelector(getListMessageLatest);
 
@@ -96,8 +99,22 @@ function ChatOverView() {
 
   React.useEffect(() => {
     socket.on('user-online', function (accountId) {
+      listAccountOnline.push(accountId);
+      setListAccountOnline(listAccountOnline);
       if (+accountId === +roomId) {
         setIsOnline(true);
+      }
+    });
+  }, [roomId]);
+
+  React.useEffect(() => {
+    socket.on('user-offline', function (accountId) {
+      if (listAccountOnline.indexOf(accountId) !== -1) {
+        listAccountOnline.splice(listAccountOnline.indexOf(accountId), 1);
+        setListAccountOnline(listAccountOnline);
+      }
+      if (+accountId === +roomId) {
+        setIsOnline(false);
       }
     });
   }, [roomId]);
@@ -118,7 +135,31 @@ function ChatOverView() {
     });
   };
 
+  const listConversation = useSelector(getConversations);
+
+  React.useEffect(async () => {
+    let listAccount = [];
+    await listConversation.forEach(element => {
+      listAccount.push(element.AccountId);
+    });
+
+    socket.emit('get online', listAccount, (result) => {
+      setListAccountOnline(result);
+    });
+
+    // socket.emit('ping', (result) => {
+    //   console.log(result);
+    // });
+  }, [listConversation]);
+
   const handleSelectRoomClick = (conversation) => {
+    socket.emit('check online', conversation.AccountId, (result) => {
+      if (result) {
+        setIsOnline(true);
+      } else {
+        setIsOnline(false);
+      }
+    });
     setCurrentWindow(conversation.AccountId);
     dispatch(selectRoom(conversation));
     navigate(`/chat/${conversation.AccountId}`);
@@ -139,6 +180,7 @@ function ChatOverView() {
           <ChatConversations
             onSelectRoom={handleSelectRoomClick}
             messagesLatest={messagesLatest}
+            listAccountOnline={listAccountOnline}
           />
         </ColBS1>
         <ColBS2 lg={8} xs={8} md={8}>
@@ -151,8 +193,8 @@ function ChatOverView() {
               messages={messagesLatest}
               currentWindow={currentWindow}
               typing={typing}
-              isOnline={isOnline}
               onSeenMessage={handleSeenMessage}
+              isOnline={isOnline}
             />
           ) : (
             <WindowEmpty />
