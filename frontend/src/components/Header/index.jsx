@@ -99,6 +99,7 @@ const ProfileAvatar = styled.div`
     width: 100%;
     height: 100%;
     object-fit: cover;
+    border-radius: 50%;
   }
 `;
 
@@ -118,7 +119,7 @@ const ProfileName = styled.div`
   border-radius: 100px;
 `;
 
-function Header() {
+function Header({Name,Avatar}) {
   return (
     <HeaderWrapper>
       <Container>
@@ -136,13 +137,13 @@ function Header() {
               <ProfileAvatarLink to={'/'}>
                 <ProfileAvatar>
                   <img
-                    src="https://images.unsplash.com/photo-1645524569551-bb14589a4d56?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyMHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60"
+                    src={Avatar}
                     alt=""
                   />
                 </ProfileAvatar>
               </ProfileAvatarLink>
               <ProfileName>
-                <ProfileLink to={'/update-profile'}>Sara</ProfileLink>
+                <ProfileLink to={'/update-profile'}>{Name}</ProfileLink>
               </ProfileName>
             </HeaderProfile>
           </HeaderLeft>

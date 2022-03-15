@@ -1,9 +1,9 @@
 import Header from 'components/Header';
 import React from 'react';
-function MainLayout({ children }) {
+function MainLayout({ Name, Avatar,children }) {
   return (
     <>
-      <Header />
+      <Header Name={Name} Avatar={Avatar}/>
       {children}
     </>
   );

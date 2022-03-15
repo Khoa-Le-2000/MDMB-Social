@@ -7,6 +7,7 @@ import React from 'react';
 import { Form, InputGroup as BsInputGroup } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { useState } from 'react';
 
 const SideBar = styled.div`
   width: 100%;
@@ -81,12 +82,18 @@ const Tab = styled.div`
 function ChatConversations({ onSelectRoom, messagesLatest }) {
   const dispatch = useDispatch();
   const accountId = useSelector(getAuth)?.accountId;
-  const listConversation = useSelector(getConversations);
-  if (listConversation.length > 0)
-    listConversation.sort(
-      (a, b) => Date.parse(b.SentDate) - Date.parse(a.SentDate)
-    );
+  const listConversationTemp = useSelector(getConversations);
 
+  const [listConversation, SetListConversation] = useState(listConversationTemp);
+
+  React.useEffect(() => {
+    if (listConversationTemp.length > 0)
+      listConversationTemp.sort((a, b) => {
+        if (a.messagesLatest) return -1;
+        return Date.parse(b.SentDate) - Date.parse(a.SentDate);
+      });
+    SetListConversation(listConversationTemp);
+  });
   React.useEffect(() => {
     dispatch(getListConversation(accountId));
   }, [accountId, dispatch, messagesLatest]);

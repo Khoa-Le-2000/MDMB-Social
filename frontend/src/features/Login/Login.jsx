@@ -44,7 +44,7 @@ import './login.scss';
 import Swal from 'sweetalert2';
 
 const IconEye = styled(Eye)`
-  width: 1.2rem;
+width: 1.2rem;
 `;
 
 const IconEyeOff = styled(EyeOff)`

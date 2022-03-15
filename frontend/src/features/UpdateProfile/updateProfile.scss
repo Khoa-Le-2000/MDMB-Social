@@ -1,5 +1,8 @@
 @use '../../styles/' as *;
 
+input{
+  padding:10px
+}
 .wrapper {
   display: flex;
   background: #fff;
@@ -120,4 +123,14 @@ input[type='radio'] {
 #option-2:checked:checked ~ .option-2 span,
 #option-3:checked:checked ~ .option-3 span {
   color: #fff;
+}
+.card-row{
+  margin-bottom: 20px;
+}
+.email-phone{
+  display:flex;
+  justify-content: space-between;
+  input{
+    width: 45%;
+  }
 }
