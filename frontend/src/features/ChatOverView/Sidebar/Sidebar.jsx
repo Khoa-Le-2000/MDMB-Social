@@ -26,6 +26,7 @@ const HoverEffect = css`
   }
 `;
 const Wrapper = styled.div`
+  background:red;
   height: 97%;
   width: 90%;
   background-color: #4849a1;
@@ -139,7 +140,7 @@ function LefBar() {
   }
 
   return (
-    <Wrapper>
+    <Wrapper className="LeftBar">
       <Logo onClick={handleLogoClick}/>
       <HoverWrapper>
         <MessageIcon active={true ? 1 : 0} />

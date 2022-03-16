@@ -191,16 +191,15 @@ function UpdateProfile() {
     userUpdate.Email = userInfor?.Email;
     userUpdate.Name = name;
     userUpdate.Birthday = startDate.toISOString().split('T')[0];
-    // userUpdate.Birthday = startDate;
     userUpdate.Gender = gender;
     let formData = new FormData();
     let blob = await fetch(image).then((r) => r.blob());
     formData.append('file', blob);
-    formData.append('upload_preset', 'exh5f6wa');
-    formData.append('api_key', '827926361528927');
+    formData.append('upload_preset', `${'exh5f6wa'}`);
+    formData.append('api_key', `${'827926361528927'}`);
     if (image !== userInfor?.Avatar)
       await axios
-        .post('https://api.cloudinary.com/v1_1/dqkdfl2lp/upload', formData)
+        .post(`https://api.cloudinary.com/v1_1/${'dqkdfl2lp'}/upload`, formData)
         .then((Response) => {
           let imageTemp = Response.data.secure_url;
           userUpdate.Avatar = imageTemp;
@@ -209,16 +208,16 @@ function UpdateProfile() {
     if (tempCheck.result === 'error') setMessage(tempCheck.message);
     else {
       setMessage('');
-      //still err
       dispatch(updateUserProfile(userUpdate));
-      alert(result1);
+      alert("Update successfully, please reset page");
       
     }
   };
+
   setTimeout(() => {
     setMessage('');
   }, 8000);
-  const result1 = useSelector(updateProfileSelector);
+  // const result1 = useSelector(updateProfileSelector);
 
   const onUploadImage = (e) => {
     fileImageRef.current.click();
@@ -470,6 +469,7 @@ function UpdateProfile() {
         </BootstrapContainer>
       </MainLayout>
     </BootstrapContainer>
+    
   );
 }
 export default UpdateProfile;
