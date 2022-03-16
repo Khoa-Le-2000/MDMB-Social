@@ -20,6 +20,7 @@ import { getUserProfile } from 'app/actions/userProfile';
 import { updateUserProfile } from 'app/actions/updateProfile';
 import { updateProfileSelector } from 'app/selectors/updateProfile';
 import { getAuth } from 'app/selectors/login';
+import { useNavigate} from 'react-router-dom';
 
 const Col = styled.div`
   display: inline-flex;
@@ -110,6 +111,7 @@ const ButtonWrapper = styled.div`
 
 function UpdateProfile() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const accountId = useSelector(getAuth)?.accountId;
   React.useEffect(()=>{
     dispatch(getUserProfile(accountId));
@@ -122,7 +124,7 @@ function UpdateProfile() {
     new Date(userInfor?.Birthday)
   );
 
-  const [gender, setGender] = React.useState(userInfor?.Gender);
+  const [gender, setGender] = React.useState(userInfor?.Gender||2);
   const [image, setImage] = React.useState(userInfor?.Avatar);
   const [name, setName] = React.useState(userInfor?.Name);
   const [message, setMessage] = React.useState('');
@@ -226,6 +228,9 @@ function UpdateProfile() {
     const file = e.target.files[0];
     setImage(URL.createObjectURL(file));
   };
+  const handleBtnSkipClick = (e)=>{
+    navigate('/')
+  }
 
   return (
     <BootstrapContainer fluid>
@@ -377,8 +382,7 @@ function UpdateProfile() {
                                     value="0"
                                     id="option-1"
                                     defaultChecked={
-                                      userInfor.Gender === 0 ||
-                                      userInfor.Gender === null
+                                      userInfor.Gender === 0 
                                     }
                                     onChange={onGenderChange}
                                   />
@@ -395,7 +399,8 @@ function UpdateProfile() {
                                     name="select"
                                     value="2"
                                     id="option-3"
-                                    defaultChecked={userInfor.Gender === 2}
+                                    defaultChecked={userInfor.Gender === 2||
+                                      userInfor.Gender === null}
                                     onChange={onGenderChange}
                                   />
                                   <label
@@ -440,6 +445,7 @@ function UpdateProfile() {
                                   type="submit"
                                   variant="default"
                                   size="sm"
+                                  onClick ={handleBtnSkipClick}
                                 >
                                   Skip
                                 </Button>
