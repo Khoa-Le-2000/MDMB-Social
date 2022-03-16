@@ -1,6 +1,11 @@
 import { Pencil } from '@styled-icons/heroicons-outline';
+import { updateUserProfile } from 'app/actions/updateProfile';
+import { updateProfileSelector } from 'app/selectors/updateProfile';
+import { getUserProfileSelector } from 'app/selectors/userProfile';
+import axios from 'axios';
 import MainLayout from 'layouts/MainLayout';
-import React, { useEffect } from 'react';
+import _ from 'lodash';
+import React from 'react';
 import {
   Button,
   Card,
@@ -10,16 +15,9 @@ import {
   Row as BootstrapRow,
 } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import _ from 'lodash';
 import './updateProfile.scss';
-import axios from 'axios';
-import { useSelector, useDispatch } from 'react-redux';
-import { getUserProfileSelector } from 'app/selectors/userProfile';
-import { getUserProfile } from 'app/actions/userProfile';
-import { updateUserProfile } from 'app/actions/updateProfile';
-import { updateProfileSelector } from 'app/selectors/updateProfile';
-import { getAuth } from 'app/selectors/login';
 
 const Col = styled.div`
   display: inline-flex;
@@ -110,24 +108,17 @@ const ButtonWrapper = styled.div`
 
 function UpdateProfile() {
   const dispatch = useDispatch();
-  const accountId = useSelector(getAuth)?.accountId;
-
-  dispatch(getUserProfile(accountId));
-  // useEffect(() => {
-  // }, []);
-  const userInfor = useSelector(getUserProfileSelector);
-
+  const userInfo = useSelector(getUserProfileSelector);
 
   const fileImageRef = React.useRef(null);
 
   const [startDate, setStartDate] = React.useState(
-    new Date(userInfor?.Birthday)
+    new Date(userInfo?.Birthday)
   );
-  const [gender, setGender] = React.useState(userInfor.Gender);
-  const [image, setImage] = React.useState(userInfor.Avatar);
-  const [name, setName] = React.useState(userInfor.Name);
+  const [gender, setGender] = React.useState(userInfo.Gender);
+  const [image, setImage] = React.useState(userInfo.Avatar);
+  const [name, setName] = React.useState(userInfo.Name);
   const [message, setMessage] = React.useState('');
-  
 
   const max = new Date().getUTCFullYear();
   const min = max - 40;
@@ -157,12 +148,12 @@ function UpdateProfile() {
 
   const checkRegex = (userUpdate) => {
     const regBirthday =
-      /^(?:19|20)\d\d([\/.-])(?:0[1-9]|1[012])\1(?:0[1-9]|[12]\d|3[01])$/;
+      /^(?:19|20)\d\d([\\/.-])(?:0[1-9]|1[012])\1(?:0[1-9]|[12]\d|3[01])$/;
     const regGender = /^\d$/;
-    const regName = /^([ \u00c0-\u01ffa-zA-Z'\-])+$/;
+    const regName = /^([ \u00c0-\u01ffa-zA-Z'\\-])+$/;
 
     const regLink =
-      /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
+      /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\\.-]+)+[\w\-\\._~:/?#[\]@!\\$&'\\(\\)\\*\\+,;=.]+$/;
     if (
       !regName.test(userUpdate.Name) ||
       userUpdate.Name.length < 2 ||
@@ -188,34 +179,34 @@ function UpdateProfile() {
   const onUpdateProfileHandler = async (e) => {
     e.preventDefault();
     let userUpdate = {};
-    userUpdate.Email = userInfor.Email;
+    userUpdate.Email = userInfo.Email;
     userUpdate.Name = name;
     userUpdate.Birthday = startDate.toISOString().split('T')[0];
-    // userUpdate.Birthday = startDate;
     userUpdate.Gender = gender;
     let formData = new FormData();
     let blob = await fetch(image).then((r) => r.blob());
     formData.append('file', blob);
     formData.append('upload_preset', 'exh5f6wa');
     formData.append('api_key', '827926361528927');
-    if (image !== userInfor.Avatar)
+    if (image !== userInfo.Avatar)
       await axios
         .post('https://api.cloudinary.com/v1_1/dqkdfl2lp/upload', formData)
         .then((Response) => {
           let imageTemp = Response.data.secure_url;
           userUpdate.Avatar = imageTemp;
         });
-    let tempCheck=checkRegex(userUpdate);
-    if(tempCheck.result==='error') setMessage(tempCheck.message);
+    let tempCheck = checkRegex(userUpdate);
+    if (tempCheck.result === 'error') setMessage(tempCheck.message);
     else {
       setMessage('');
-      //still err
-    dispatch(updateUserProfile(userUpdate));
-    alert(result1.message)
-  }
-  setTimeout(()=>{setMessage('');},8000)
-};
-const result1 = useSelector(updateProfileSelector);
+      dispatch(updateUserProfile(userUpdate));
+      alert(result1.message);
+    }
+    setTimeout(() => {
+      setMessage('');
+    }, 8000);
+  };
+  const result1 = useSelector(updateProfileSelector);
 
   const onUploadImage = (e) => {
     fileImageRef.current.click();
@@ -228,7 +219,7 @@ const result1 = useSelector(updateProfileSelector);
 
   return (
     <BootstrapContainer fluid>
-      <MainLayout Name={userInfor.Name} Avatar={userInfor.Avatar}>
+      <MainLayout Name={userInfo.Name} Avatar={userInfo.Avatar}>
         <BootstrapContainer>
           <BootstrapRow>
             <Col
@@ -276,7 +267,7 @@ const result1 = useSelector(updateProfileSelector);
                                 style={{
                                   position: 'absolute',
                                   right: '4%',
-                                  color:'red'
+                                  color: 'red',
                                 }}
                               >
                                 {message}
@@ -289,7 +280,7 @@ const result1 = useSelector(updateProfileSelector);
                               </Form.Group>
                             </BootstrapCol>
                           </BootstrapRow>
- 
+
                           <BootstrapRow>
                             <Col
                               lg={12}
@@ -376,8 +367,8 @@ const result1 = useSelector(updateProfileSelector);
                                     value="0"
                                     id="option-1"
                                     defaultChecked={
-                                      userInfor.Gender === 0 ||
-                                      userInfor.Gender === null
+                                      userInfo.Gender === 0 ||
+                                      userInfo.Gender === null
                                     }
                                     onChange={onGenderChange}
                                   />
@@ -386,7 +377,7 @@ const result1 = useSelector(updateProfileSelector);
                                     name="select"
                                     id="option-2"
                                     value="1"
-                                    defaultChecked={userInfor.Gender === 1}
+                                    defaultChecked={userInfo.Gender === 1}
                                     onChange={onGenderChange}
                                   />
                                   <input
@@ -394,7 +385,7 @@ const result1 = useSelector(updateProfileSelector);
                                     name="select"
                                     value="2"
                                     id="option-3"
-                                    defaultChecked={userInfor.Gender === 2}
+                                    defaultChecked={userInfo.Gender === 2}
                                     onChange={onGenderChange}
                                   />
                                   <label
@@ -426,8 +417,8 @@ const result1 = useSelector(updateProfileSelector);
                           <BootstrapRow className="card-row">
                             <BootstrapCol lg={12}>
                               <Form.Group className="mb- email-phone">
-                                <input placeholder={userInfor.Email} disabled />
-                                <input placeholder={userInfor.Phone} disabled />
+                                <input placeholder={userInfo.Email} disabled />
+                                <input placeholder={userInfo.Phone} disabled />
                               </Form.Group>
                             </BootstrapCol>
                           </BootstrapRow>
