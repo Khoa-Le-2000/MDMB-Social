@@ -12,6 +12,7 @@ API Endpoint |  HTTP Verb | Descrpition | Parmameter In | Return
 /account/register-by-google | POST | Register new account | Phone, Email, Name| result 
 /account/list-friend | GET | Get list friend | accountId | List friend
 /chat/list-friend-with-last-message | GET | Get list friend with last message | accountId | List friend
+/chat//list-friend-with-last-message-count-unseen | GET | Get list friend with last message and count unseen message | accountId | List friend
 /chat/old-message | GET | Get lastest 10 messages | accountId, friendId | List message
 /chat/older-message | GET | Get older 10 messages from messageId | accountId, friendId, messageId | List message
 /chat/chat-list | GET | Get chat list | AccountId | result: "No messenger found"/[{FromAccount,ToAccount,Content,SentDateSeenDate,Type},...]

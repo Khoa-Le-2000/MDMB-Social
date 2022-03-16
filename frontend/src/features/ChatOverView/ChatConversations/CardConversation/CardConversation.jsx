@@ -100,9 +100,7 @@ const LengthNewMessage = styled.div`
   font-weight: bold;
 `;
 
-function CardConvention({ onSelectRoom, conversation }) {
-  const { roomId } = useParams();
-
+function CardConvention({ onSelectRoom, conversation, listAccountOnline }) {
   const {
     Name: name,
     Avatar: avatar,
@@ -116,6 +114,9 @@ function CardConvention({ onSelectRoom, conversation }) {
 
   const lengthNewMessages = useSelector(getLengthNewMessage(AccountId));
 
+  console.log(listAccountOnline);
+  const isOnline = typeof(listAccountOnline.find((item) => item == conversation.AccountId)) !== 'undefined';
+  console.log(`${conversation.AccountId} is online: ${isOnline}`);
   const onRoomChange = () => {
     onSelectRoom(conversation);
   };
@@ -154,6 +155,7 @@ function CardConvention({ onSelectRoom, conversation }) {
                 )}
               </StatusInner>
             </Status>
+            {isOnline ? <div>Online</div> : <div>Offline</div>}
           </Card>
         </Col>
       </Row>

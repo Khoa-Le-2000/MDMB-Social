@@ -21,6 +21,7 @@ const initialState = {
     Avatar: null,
     Name: null,
     AccountId: null,
+    Online: false,
   },
   roomId: null,
 };
@@ -155,6 +156,7 @@ const chatReducer = (state = initialState, action) => {
         success: false,
         message: null,
       };
+
     case ChatActionTypes.SEEN_MESSAGE_SUCCESS:
       return {
         ...state,
@@ -172,6 +174,51 @@ const chatReducer = (state = initialState, action) => {
           return item;
         }),
       };
+
+    case ChatActionTypes.USER_ONLINE_START:
+      return {
+        ...state,
+        isFetching: true,
+        error: false,
+        success: false,
+        message: null,
+      };
+
+    case ChatActionTypes.USER_ONLINE_SUCCESS:
+      return {
+        ...state,
+        isFetching: false,
+        error: false,
+        success: true,
+        message: null,
+        partner: {
+          ...state.partner,
+          Online: action.payload,
+        },
+      };
+
+    case ChatActionTypes.USER_OFFLINE_START:
+      return {
+        ...state,
+        isFetching: true,
+        error: false,
+        success: false,
+        message: null,
+      };
+
+    case ChatActionTypes.USER_OFFLINE_SUCCESS:
+      return {
+        ...state,
+        isFetching: false,
+        error: false,
+        success: true,
+        message: null,
+        partner: {
+          ...state.partner,
+          Online: action.payload,
+        },
+      };
+
     default:
       return state;
   }

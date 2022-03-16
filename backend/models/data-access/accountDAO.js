@@ -155,8 +155,55 @@ function getListFriend(AccountId) {
   });
 }
 
+function getListFriendAsync(AccountId) {
+  let sql = `select * 
+  from MDMB.Account
+  where AccountId in (
+    select RelatedAccountId
+      from MDMB.AccountRelationship
+      where RelatingAccountId = ? and Type = 'friend'
+  )`;
+  return new Promise((resolve, reject) => {
+    var con = connection.createConnection();
+    con.connect(function (err) {
+      if (err) throw err;
+      con.query(sql, [AccountId],
+        function (err, result) {
+          connection.closeConnection(con);
+          if (err) return reject(err);
+          let accounts = [];
+          // console.log(result);
+          // console.log('accounr ' + accounts);
+          for (let i = 0; i < result.length; i++) {
+            let account = new Account.Account(result[i].AccountId, null,
+              result[i].Phone, result[i].Email, result[i].Name, result[i].Avatar, result[i].Birthday, 
+              result[i].Gender, result[i].CreatedDate, result[i].LastOnline);
+            accounts.push(account);
+          }
+          resolve(accounts);
+        });
+    });
+  });
+}
+
 function getListFriendWithLastMessage(AccountId) {
   let sql = `CALL MDMB.proc_get_list_friend_with_last_message(?);`
+  return new Promise((resolve, reject) => {
+    var con = connection.createConnection();
+    con.connect(function (err) {
+      if (err) throw err;
+      con.query(sql, [AccountId],
+        function (err, result) {
+          connection.closeConnection(con);
+          if (err) return reject(err);
+          resolve(result);
+        });
+    });
+  });
+}
+
+function getListFriendWithLastMessageCountUnseen(AccountId) {
+  let sql = `CALL MDMB.proc_get_list_friend_with_last_message_count_unseen(?);`
   return new Promise((resolve, reject) => {
     var con = connection.createConnection();
     con.connect(function (err) {
@@ -189,6 +236,7 @@ function updateLastOnline(AccountId) {
     });
   });
 }
+
 function getAccountInfor(AccountId) {
   var con = connection.createConnection();
   return new Promise((resolve, reject) => {
@@ -213,7 +261,9 @@ module.exports = {
   getAccountId,
   updateAccount,
   getListFriend,
+  getListFriendAsync,
   getListFriendWithLastMessage,
+  getListFriendWithLastMessageCountUnseen,
   updateLastOnline,
   getAccountInfor
 }
