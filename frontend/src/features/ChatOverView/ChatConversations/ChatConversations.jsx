@@ -1,8 +1,10 @@
 import { Search } from '@styled-icons/heroicons-solid';
 import { getListConversation } from 'app/actions/conversations';
+import { getListUsersOnline, initSocket } from 'app/actions/socket';
 import { getConversations } from 'app/selectors/conversations';
 import { getAuth } from 'app/selectors/login';
-import CardConvention from 'features/ChatOverView/ChatConversations/CardConversation/CardConversation';
+import { getSocket } from 'app/selectors/socket';
+import CardConversation from 'features/ChatOverView/ChatConversations/CardConversation/CardConversation';
 import React from 'react';
 import { Form, InputGroup as BsInputGroup } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
@@ -78,18 +80,11 @@ const Tab = styled.div`
   }
 `;
 
-function ChatConversations({ onSelectRoom, messagesLatest }) {
-  const dispatch = useDispatch();
-  const accountId = useSelector(getAuth)?.accountId;
+function ChatConversations({ onSelectRoom }) {
   const listConversation = useSelector(getConversations);
-  if (listConversation.length > 0)
-    listConversation.sort(
-      (a, b) => Date.parse(b.SentDate) - Date.parse(a.SentDate)
-    );
-
-  React.useEffect(() => {
-    dispatch(getListConversation(accountId));
-  }, [accountId, dispatch, messagesLatest]);
+  const listConversationSorted = listConversation.sort(
+    (a, b) => Date.parse(b.SentDate) - Date.parse(a.SentDate)
+  );
 
   return (
     <SideBar>
@@ -105,14 +100,13 @@ function ChatConversations({ onSelectRoom, messagesLatest }) {
         <Tab>Message unread</Tab>
       </Tabs>
       <Wrapper>
-        {listConversation &&
-          listConversation?.map((item, index) => (
-            <CardConvention
-              key={index}
-              onSelectRoom={onSelectRoom}
-              conversation={item}
-            />
-          ))}
+        {listConversationSorted?.map((item, index) => (
+          <CardConversation
+            key={index}
+            onSelectRoom={onSelectRoom}
+            conversation={item}
+          />
+        ))}
       </Wrapper>
     </SideBar>
   );

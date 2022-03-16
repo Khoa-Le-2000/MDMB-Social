@@ -4,8 +4,9 @@ import { Col, Row } from 'react-bootstrap';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useParams } from '../../../../../node_modules/react-router-dom/index';
 import { CheckCircle } from '@styled-icons/heroicons-solid';
-import { useEffect,useState} from 'react';
-import userApi from 'apis/userApi';
+import { getLengthNewMessage } from 'app/selectors/chat';
+import { useSelector } from 'react-redux';
+import { getUsersOnline } from 'app/selectors/socket';
 
 dayjs.extend(relativeTime);
 
@@ -29,6 +30,7 @@ const Wrapper = styled.div`
 const Card = styled.div`
   display: flex;
   cursor: pointer;
+  justify-content: space-around;
 `;
 const CardContent = styled.div`
   display: flex;
@@ -37,7 +39,6 @@ const CardContent = styled.div`
 `;
 
 const Avatar = styled.div`
-  margin-right: 10px;
   img {
     width: 52px;
     height: 52px;
@@ -45,35 +46,32 @@ const Avatar = styled.div`
     object-fit: cover;
   }
 `;
+
+const MessageInner = styled.div`
+  display: flex;
+  justify-content: space-between;
+  height: 100%;
+`;
 const Name = styled.h4`
   font-size: 16px;
   font-weight: bold;
-  margin-bottom: 8px;
-  overflow: hidden;
   text-overflow: ellipsis;
-  height: 20px;
 `;
 const Message = styled.p`
-  font-size: 14px;
-  margin-bottom: 8px;
-  display: inline-block;
-  width: 230px;
-
-  padding: 0;
-  overflow: hidden;
-  position: relative;
-  display: inline-block;
-  text-decoration: none;
-  text-overflow: ellipsis;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 14px;
 `;
-const Status = styled.div`
-  width: 150px;
-`;
-const Time = styled.div`
+const Status = styled.div``;
+const Time = styled.p`
   font-size: 0.8rem;
   text-align: right;
-  padding-right: 10px;
+`;
+const StatusInner = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 `;
 const SentStatus = styled(CheckCircle)`
   width: 1rem;
@@ -86,12 +84,24 @@ const SeenStatus = styled.img`
   width: 1rem;
   height: 1rem;
   border-radius: 50%;
-  margin-left: 80%;
 `;
 
-function CardConvention({ onSelectRoom, conversation }) {
-  const { roomId } = useParams();
+const WrapperNewMessage = styled.div`
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background-color: #f15959;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+const LengthNewMessage = styled.div`
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: bold;
+`;
 
+function CardConversation({ onSelectRoom, conversation }) {
   const {
     Name: name,
     Avatar: avatar,
@@ -99,11 +109,15 @@ function CardConvention({ onSelectRoom, conversation }) {
     SentDate,
     SeenDate,
     FromAccount,
+    AccountId,
   } = conversation;
+
+  const { roomId } = useParams();
+  const lengthNewMessages = useSelector(getLengthNewMessage(AccountId));
+  const listAccountOnline = useSelector(getUsersOnline);
 
   const onRoomChange = () => {
     onSelectRoom(conversation);
-    
   };
 
   return (
@@ -116,23 +130,35 @@ function CardConvention({ onSelectRoom, conversation }) {
             </Avatar>
             <CardContent>
               <Name> {name}</Name>
-              <Message>
-                {lastMessage
-                  ? lastMessage
-                  : 'You are now connected on MDMB Social'}
-              </Message>
+              <MessageInner>
+                <Message>
+                  {lastMessage
+                    ? lastMessage
+                    : 'You are now connected on MDMB Social'}
+                </Message>
+              </MessageInner>
             </CardContent>
             <Status>
               <Time>{lastMessage ? dayjs(SentDate).fromNow() : ''}</Time>
-              {lastMessage && SeenDate ? (
-                <SeenStatus Avatar={avatar} />
-              ) : (
-                FromAccount!==roomId?
-                <SeenStatus Avatar={avatar} />
-                :
-                <SentStatus /> 
-              )}
+              <StatusInner>
+                {lengthNewMessages > 0 ? (
+                  <WrapperNewMessage>
+                    <LengthNewMessage>{lengthNewMessages}</LengthNewMessage>
+                  </WrapperNewMessage>
+                ) : lastMessage && SeenDate ? (
+                  <SeenStatus Avatar={avatar} />
+                ) : FromAccount !== roomId ? (
+                  <SeenStatus Avatar={avatar} />
+                ) : (
+                  <SentStatus />
+                )}
+              </StatusInner>
             </Status>
+            {listAccountOnline.includes(AccountId) ? (
+              <div>Online</div>
+            ) : (
+              <div>Offline</div>
+            )}
           </Card>
         </Col>
       </Row>
@@ -140,4 +166,4 @@ function CardConvention({ onSelectRoom, conversation }) {
   );
 }
 
-export default CardConvention;
+export default CardConversation;

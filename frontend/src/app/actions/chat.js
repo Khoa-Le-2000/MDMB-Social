@@ -65,7 +65,7 @@ const sendMessageFailure = (error) => {
 
 export const sendMessage = (message) => async (dispatch) => {
   dispatch(sendMessageStart());
-  dispatch(sendMessageSuccess(message));
+  if (message) dispatch(sendMessageSuccess(message));
 };
 
 const receiveMessageStart = () => {
@@ -90,7 +90,7 @@ const receiveMessageSuccess = (message) => {
 
 export const receiveMessage = (message) => async (dispatch) => {
   dispatch(receiveMessageStart());
-  dispatch(receiveMessageSuccess(message));
+  if (message) dispatch(receiveMessageSuccess(message));
 };
 
 const seenMessageStart = () => {
@@ -108,5 +108,5 @@ const seenMessageSuccess = (messageId) => {
 
 export const seenMessage = (messageId) => async (dispatch) => {
   dispatch(seenMessageStart());
-  dispatch(seenMessageSuccess(messageId));
+  if (messageId) dispatch(seenMessageSuccess(messageId));
 };
