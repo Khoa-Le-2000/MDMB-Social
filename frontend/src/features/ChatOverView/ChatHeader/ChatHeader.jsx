@@ -1,11 +1,12 @@
 import { Circle } from '@styled-icons/boxicons-solid';
 import { DotsVertical, VideoCamera } from '@styled-icons/heroicons-solid';
+import { getUsersOnline } from 'app/selectors/socket';
 import ToggleTheme from 'components/ToggleTheme';
 import { useToggle } from 'hooks';
 import React from 'react';
 import { Col, Row } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { getConversations } from 'app/selectors/conversations';
 
 const Wrapper = styled.div`
   display: flex;
@@ -14,8 +15,7 @@ const Wrapper = styled.div`
   box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset,
     rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
     rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
-    Visibility : ${(props) => (props.WindowEmpty ? "hidden" : "none")};
-
+  visibility: ${(props) => (props.WindowEmpty ? 'hidden' : 'none')};
 `;
 const WrapperInfoPadding = styled.div``;
 
@@ -95,11 +95,13 @@ const Offline = styled(Circle)`
 const FutureSwitchWrapper = styled(Feature)``;
 
 const StatusText = styled.span``;
-function ChatHeader({ partner, isOnline, WindowEmpty }) {
+function ChatHeader({ partner, WindowEmpty }) {
   const [isDark, setIsDark] = useToggle(false);
+  const listAccountOnline = useSelector(getUsersOnline);
   const toggleTheme = () => {
     setIsDark(!isDark);
   };
+
   return (
     <Wrapper WindowEmpty={WindowEmpty}>
       <Row className="w-100">
@@ -112,8 +114,17 @@ function ChatHeader({ partner, isOnline, WindowEmpty }) {
               <WrapperText>
                 <Name>{partner.Name}</Name>
                 <Status>
-                  {isOnline?<Online />:<Offline />}
-                  <StatusText>{isOnline?"Online":"Offline"}</StatusText>
+                  {listAccountOnline.includes(partner.AccountId) ? (
+                    <>
+                      <Online />
+                      <StatusText>Online</StatusText>
+                    </>
+                  ) : (
+                    <>
+                      <Offline />
+                      <StatusText>Offline</StatusText>
+                    </>
+                  )}
                 </Status>
               </WrapperText>
             </WrapperInfo>

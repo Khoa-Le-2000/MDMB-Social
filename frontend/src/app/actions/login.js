@@ -1,4 +1,5 @@
 import authApi from 'apis/authApi';
+import { initSocket } from 'app/actions/socket';
 import { AuthActionTypes } from 'app/actions/types/authTypes';
 
 export const resetLogin = () => {
@@ -76,6 +77,7 @@ export const loginByGoogle = (googleData, navigate) => async (dispatch) => {
           accountId,
         })
       );
+      dispatch(initSocket(accountId, accessToken));
       navigate('/');
     } else if (data?.result === 'login failure') {
       dispatch(
