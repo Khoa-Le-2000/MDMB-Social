@@ -15,6 +15,7 @@ import { logout } from 'app/actions/login';
 import { getAuth } from 'app/selectors/login';
 import { useNavigate, Link } from 'react-router-dom';
 import { getSocket } from 'app/selectors/socket';
+import { getUserProfile } from 'app/actions/userProfile';
 
 const HoverEffect = css`
   transition: all 0.3s ease-in-out;
@@ -109,6 +110,7 @@ const PopoverBS = styled(Popover)`
 `;
 
 function LefBar() {
+  
   const [show, setShow] = useState(false);
   const [target, setTarget] = useState(null);
   const ref = useRef(null);
@@ -127,6 +129,10 @@ function LefBar() {
     dispatch(logout(auth?.accessToken));
     navigate('/login');
   };
+  const handleUserProfileClick = ()=>{
+    dispatch(getUserProfile(auth.accountId));
+    navigate('/update-profile');
+  }
 
   return (
     <Wrapper>
@@ -144,12 +150,12 @@ function LefBar() {
             <PopoverBS>
               <Popover.Body>
                 <ListGroupBS>
-                  <Link to="/update-profile">
+                  <div onClick={handleUserProfileClick}>
                     <ListItemBS action>
                       <ProfileIcon />
                       Profile
                     </ListItemBS>
-                  </Link>
+                  </div>
                   <ListItemBS action onClick={handleLogoutClick}>
                     <LogoutIcon />
                     Logout

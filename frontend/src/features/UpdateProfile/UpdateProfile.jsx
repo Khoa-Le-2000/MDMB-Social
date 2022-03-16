@@ -112,16 +112,16 @@ function UpdateProfile() {
   const dispatch = useDispatch();
   const accountId = useSelector(getAuth)?.accountId;
 
-  useEffect(() => {
-    dispatch(getUserProfile(accountId));
-  }, []);
+  dispatch(getUserProfile(accountId));
+  // useEffect(() => {
+  // }, []);
   const userInfor = useSelector(getUserProfileSelector);
 
 
   const fileImageRef = React.useRef(null);
 
   const [startDate, setStartDate] = React.useState(
-    new Date(userInfor.Birthday)
+    new Date(userInfor?.Birthday)
   );
   const [gender, setGender] = React.useState(userInfor.Gender);
   const [image, setImage] = React.useState(userInfor.Avatar);
@@ -191,6 +191,7 @@ function UpdateProfile() {
     userUpdate.Email = userInfor.Email;
     userUpdate.Name = name;
     userUpdate.Birthday = startDate.toISOString().split('T')[0];
+    // userUpdate.Birthday = startDate;
     userUpdate.Gender = gender;
     let formData = new FormData();
     let blob = await fetch(image).then((r) => r.blob());
@@ -210,7 +211,7 @@ function UpdateProfile() {
       setMessage('');
       //still err
     dispatch(updateUserProfile(userUpdate));
-    alert(result1)
+    alert(result1.message)
   }
   setTimeout(()=>{setMessage('');},8000)
 };
@@ -288,7 +289,7 @@ const result1 = useSelector(updateProfileSelector);
                               </Form.Group>
                             </BootstrapCol>
                           </BootstrapRow>
-
+ 
                           <BootstrapRow>
                             <Col
                               lg={12}
