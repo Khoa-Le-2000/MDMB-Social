@@ -5,6 +5,7 @@ import React from 'react';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import CardLink from './CardLink';
 const HtmlToReactParser = require('html-to-react').Parser;
 const htmlToReactParser = new HtmlToReactParser();
 dayjs.extend(relativeTime);
@@ -87,6 +88,16 @@ const SentStatus = styled(CheckCircle)`
   color: #4849a1;
 `;
 
+function validURL(str) {
+  var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+      '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+      '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+      '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
+  return !!pattern.test(str);
+}
+
 function CardMessage(props) {
   const {
     name,
@@ -110,10 +121,12 @@ function CardMessage(props) {
     }
   }, [roomId, fromAccount, seenDate, messageId]);
 
-  const msg = content.replaceAll(
-    /(((https?:\/\/)|(www\.))[^\s]+)/g,
-    '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a></br>'
-  );
+  // const msg = content.replaceAll(
+  //   /(((https?:\/\/)|(www\.))[^\s]+)/g,
+  //   '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a></br>'
+  // );
+
+  const isLink = validURL(content);
 
   return (
     <Wrapper owner={owner ? 1 : 0}>
@@ -128,7 +141,9 @@ function CardMessage(props) {
             <WrapperMessage owner={owner ? 1 : 0}>
               <Message>
                 {type === 'text' ? (
-                  htmlToReactParser.parse(msg)
+                  isLink ?
+                    <CardLink url={content} />
+                  : htmlToReactParser.parse(content)                  
                 ) : (
                   <img src={content} alt="" />
                 )}
