@@ -1,11 +1,6 @@
 import { Pencil } from '@styled-icons/heroicons-outline';
-import { updateUserProfile } from 'app/actions/updateProfile';
-import { updateProfileSelector } from 'app/selectors/updateProfile';
-import { getUserProfileSelector } from 'app/selectors/userProfile';
-import axios from 'axios';
 import MainLayout from 'layouts/MainLayout';
-import _ from 'lodash';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Button,
   Card,
@@ -15,9 +10,16 @@ import {
   Row as BootstrapRow,
 } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
-import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import _ from 'lodash';
 import './updateProfile.scss';
+import axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
+import { getUserProfileSelector} from 'app/selectors/userProfile';
+import { getUserProfile } from 'app/actions/userProfile';
+import { updateUserProfile } from 'app/actions/updateProfile';
+import { updateProfileSelector } from 'app/selectors/updateProfile';
+import { getAuth } from 'app/selectors/login';
 
 const Col = styled.div`
   display: inline-flex;
@@ -108,16 +110,21 @@ const ButtonWrapper = styled.div`
 
 function UpdateProfile() {
   const dispatch = useDispatch();
-  const userInfo = useSelector(getUserProfileSelector);
+  const accountId = useSelector(getAuth)?.accountId;
+  React.useEffect(()=>{
+    dispatch(getUserProfile(accountId));
+  },[]);
 
+  const userInfor = useSelector(getUserProfileSelector);
   const fileImageRef = React.useRef(null);
 
   const [startDate, setStartDate] = React.useState(
-    new Date(userInfo?.Birthday)
+    new Date(userInfor?.Birthday)
   );
-  const [gender, setGender] = React.useState(userInfo.Gender);
-  const [image, setImage] = React.useState(userInfo.Avatar);
-  const [name, setName] = React.useState(userInfo.Name);
+
+  const [gender, setGender] = React.useState(userInfor?.Gender);
+  const [image, setImage] = React.useState(userInfor?.Avatar);
+  const [name, setName] = React.useState(userInfor?.Name);
   const [message, setMessage] = React.useState('');
 
   const max = new Date().getUTCFullYear();
@@ -148,12 +155,12 @@ function UpdateProfile() {
 
   const checkRegex = (userUpdate) => {
     const regBirthday =
-      /^(?:19|20)\d\d([\\/.-])(?:0[1-9]|1[012])\1(?:0[1-9]|[12]\d|3[01])$/;
+      /^(?:19|20)\d\d([\/.-])(?:0[1-9]|1[012])\1(?:0[1-9]|[12]\d|3[01])$/;
     const regGender = /^\d$/;
-    const regName = /^([ \u00c0-\u01ffa-zA-Z'\\-])+$/;
+    const regName = /^([ \u00c0-\u01ffa-zA-Z'\-])+$/;
 
     const regLink =
-      /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\\.-]+)+[\w\-\\._~:/?#[\]@!\\$&'\\(\\)\\*\\+,;=.]+$/;
+      /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
     if (
       !regName.test(userUpdate.Name) ||
       userUpdate.Name.length < 2 ||
@@ -179,16 +186,17 @@ function UpdateProfile() {
   const onUpdateProfileHandler = async (e) => {
     e.preventDefault();
     let userUpdate = {};
-    userUpdate.Email = userInfo.Email;
+    userUpdate.Email = userInfor?.Email;
     userUpdate.Name = name;
     userUpdate.Birthday = startDate.toISOString().split('T')[0];
+    // userUpdate.Birthday = startDate;
     userUpdate.Gender = gender;
     let formData = new FormData();
     let blob = await fetch(image).then((r) => r.blob());
     formData.append('file', blob);
     formData.append('upload_preset', 'exh5f6wa');
     formData.append('api_key', '827926361528927');
-    if (image !== userInfo.Avatar)
+    if (image !== userInfor?.Avatar)
       await axios
         .post('https://api.cloudinary.com/v1_1/dqkdfl2lp/upload', formData)
         .then((Response) => {
@@ -199,13 +207,15 @@ function UpdateProfile() {
     if (tempCheck.result === 'error') setMessage(tempCheck.message);
     else {
       setMessage('');
+      //still err
       dispatch(updateUserProfile(userUpdate));
-      alert(result1.message);
+      alert(result1);
+      
     }
-    setTimeout(() => {
-      setMessage('');
-    }, 8000);
   };
+  setTimeout(() => {
+    setMessage('');
+  }, 8000);
   const result1 = useSelector(updateProfileSelector);
 
   const onUploadImage = (e) => {
@@ -219,7 +229,7 @@ function UpdateProfile() {
 
   return (
     <BootstrapContainer fluid>
-      <MainLayout Name={userInfo.Name} Avatar={userInfo.Avatar}>
+      <MainLayout Name={name} Avatar={image}>
         <BootstrapContainer>
           <BootstrapRow>
             <Col
@@ -367,8 +377,8 @@ function UpdateProfile() {
                                     value="0"
                                     id="option-1"
                                     defaultChecked={
-                                      userInfo.Gender === 0 ||
-                                      userInfo.Gender === null
+                                      userInfor.Gender === 0 ||
+                                      userInfor.Gender === null
                                     }
                                     onChange={onGenderChange}
                                   />
@@ -377,7 +387,7 @@ function UpdateProfile() {
                                     name="select"
                                     id="option-2"
                                     value="1"
-                                    defaultChecked={userInfo.Gender === 1}
+                                    defaultChecked={userInfor.Gender === 1}
                                     onChange={onGenderChange}
                                   />
                                   <input
@@ -385,7 +395,7 @@ function UpdateProfile() {
                                     name="select"
                                     value="2"
                                     id="option-3"
-                                    defaultChecked={userInfo.Gender === 2}
+                                    defaultChecked={userInfor.Gender === 2}
                                     onChange={onGenderChange}
                                   />
                                   <label
@@ -417,8 +427,8 @@ function UpdateProfile() {
                           <BootstrapRow className="card-row">
                             <BootstrapCol lg={12}>
                               <Form.Group className="mb- email-phone">
-                                <input placeholder={userInfo.Email} disabled />
-                                <input placeholder={userInfo.Phone} disabled />
+                                <input placeholder={userInfor.Email} disabled />
+                                <input placeholder={userInfor.Phone} disabled />
                               </Form.Group>
                             </BootstrapCol>
                           </BootstrapRow>

@@ -2,6 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { Col } from 'react-bootstrap';
 import LogoImg from 'assets/images/logos/logo.jpg';
+import { getUserProfile } from 'app/actions/userProfile';
+import { getAuth } from 'app/selectors/login';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUserProfileSelector } from 'app/selectors/userProfile';
+import { useNavigate} from 'react-router-dom';
 
 const Wrapper = styled(Col)`
   display: flex;
@@ -106,17 +111,27 @@ const Link = styled.a`
 `;
 
 function WindowEmpty() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const auth = useSelector(getAuth);
+  React.useEffect(()=>{
+    dispatch(getUserProfile(auth.accountId));
+  },[])
+  const userInfo = useSelector(getUserProfileSelector);
+  const handleEditProfileClick = () =>{
+    navigate('/update-profile')
+  }
   return (
     <Wrapper>
       <WrapperTop>
         <Avatar>
-          <img src={LogoImg} alt="avatar" />
+          <img src={userInfo.Avatar} alt="avatar" />
         </Avatar>
         <Tittle>
           <Greeting>Welcome!</Greeting>
-          <Name>"Your Name"</Name>
+          <Name>{userInfo.Name}</Name>
         </Tittle>
-        <EditProfile>Edit Profile</EditProfile>
+        <EditProfile onClick={handleEditProfileClick}>Edit Profile</EditProfile>
       </WrapperTop>
       <WrapperBottom>
         <Card>
@@ -128,12 +143,12 @@ function WindowEmpty() {
           <Button>Make a call!</Button>
         </Card>
       </WrapperBottom>
-      <Footer> You are signin as "insert gmail here" </Footer>
+      <Footer> You are signin as {userInfo.Email} </Footer>
       <Footer2>
         {' '}
         Try switching accounts if you not see your contact history,{' '}
-        <Link href="">learn more</Link> on{' '}
-        <Link href="">mdmbsocial@gmail.com</Link>{' '}
+        <Link href="https://mail.google.com/">learn more</Link> on{' '}
+        <Link href="https://mail.google.com/">mdmbsocial@gmail.com</Link>{' '}
       </Footer2>
     </Wrapper>
   );

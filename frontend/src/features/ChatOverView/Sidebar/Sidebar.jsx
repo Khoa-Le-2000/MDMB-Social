@@ -40,6 +40,7 @@ const Wrapper = styled.div`
 `;
 
 const Logo = styled.img`
+  cursor:pointer;
   color: #ffffff;
   justify-content: center;
   display: flex;
@@ -133,10 +134,13 @@ function LefBar() {
     dispatch(getUserProfile(auth.accountId));
     navigate('/update-profile');
   }
+  const handleLogoClick = ()=>{
+    navigate('/');
+  }
 
   return (
     <Wrapper>
-      <Logo />
+      <Logo onClick={handleLogoClick}/>
       <HoverWrapper>
         <MessageIcon active={true ? 1 : 0} />
       </HoverWrapper>
