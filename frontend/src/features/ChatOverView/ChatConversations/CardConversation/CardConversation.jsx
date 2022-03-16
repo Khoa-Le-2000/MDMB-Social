@@ -6,6 +6,7 @@ import { useParams } from '../../../../../node_modules/react-router-dom/index';
 import { CheckCircle } from '@styled-icons/heroicons-solid';
 import { getLengthNewMessage } from 'app/selectors/chat';
 import { useSelector } from 'react-redux';
+import { getUsersOnline } from 'app/selectors/socket';
 
 dayjs.extend(relativeTime);
 
@@ -100,7 +101,7 @@ const LengthNewMessage = styled.div`
   font-weight: bold;
 `;
 
-function CardConvention({ onSelectRoom, conversation, listAccountOnline }) {
+function CardConversation({ onSelectRoom, conversation }) {
   const {
     Name: name,
     Avatar: avatar,
@@ -111,12 +112,10 @@ function CardConvention({ onSelectRoom, conversation, listAccountOnline }) {
     AccountId,
   } = conversation;
 
-
+  const { roomId } = useParams();
   const lengthNewMessages = useSelector(getLengthNewMessage(AccountId));
+  const listAccountOnline = useSelector(getUsersOnline);
 
-  console.log(listAccountOnline);
-  const isOnline = typeof(listAccountOnline.find((item) => item == conversation.AccountId)) !== 'undefined';
-  console.log(`${conversation.AccountId} is online: ${isOnline}`);
   const onRoomChange = () => {
     onSelectRoom(conversation);
   };
@@ -155,7 +154,11 @@ function CardConvention({ onSelectRoom, conversation, listAccountOnline }) {
                 )}
               </StatusInner>
             </Status>
-            {isOnline ? <div>Online</div> : <div>Offline</div>}
+            {listAccountOnline.includes(AccountId) ? (
+              <div>Online</div>
+            ) : (
+              <div>Offline</div>
+            )}
           </Card>
         </Col>
       </Row>
@@ -163,4 +166,4 @@ function CardConvention({ onSelectRoom, conversation, listAccountOnline }) {
   );
 }
 
-export default CardConvention;
+export default CardConversation;

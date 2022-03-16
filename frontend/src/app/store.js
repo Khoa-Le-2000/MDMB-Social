@@ -1,33 +1,15 @@
 import { interceptor } from 'apis/axiosClient';
 import rootReducer from 'app/reducers';
-import { omit } from 'lodash';
 import { applyMiddleware, compose, createStore } from 'redux';
 import { createLogger } from 'redux-logger';
-import { createTransform, persistReducer, persistStore } from 'redux-persist';
+import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import thunk from 'redux-thunk';
-
-const filterTransform = createTransform(
-  // inbound
-  (inboundState, key) => {
-    return inboundState
-      ? omit(inboundState, ['login', 'register'])
-      : inboundState;
-  },
-  // outbound
-  (outboundState, key) => {
-    return outboundState
-      ? omit(outboundState, ['login', 'register'])
-      : outboundState;
-  },
-  { whitelist: ['auth'] }
-);
 
 const persistConfig = {
   key: 'root',
   storage,
-  blacklist: ['conversations'],
-  transforms: [filterTransform],
+  blacklist: ['socket'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -46,6 +28,5 @@ const store = createStore(
 
 interceptor(store);
 
-export const persistor = persistStore(store);
-
 export default store;
+export const persistor = persistStore(store);
