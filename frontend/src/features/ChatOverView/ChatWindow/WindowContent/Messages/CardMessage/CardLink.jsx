@@ -1,6 +1,6 @@
-import { getLinkPreview } from "../../../../../../../node_modules/link-preview-js/build/index";
+import { getLinkPreview } from '../../../../../../../node_modules/link-preview-js/build/index';
 import React from 'react';
-import styled from "styled-components";
+import styled from 'styled-components';
 
 const WarpLink = styled.div`
   width: 300px;
@@ -19,7 +19,7 @@ const WarpRawLink = styled.a`
   }
 `;
 
-const WarpTitle = styled.a` 
+const WarpTitle = styled.a`
   font-weight: bold;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -39,7 +39,6 @@ const WarpDescription = styled.div`
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
-
 `;
 
 function CardLink({ url }) {
@@ -49,8 +48,8 @@ function CardLink({ url }) {
 
   const rawUrl = url;
 
-  if (!url.match('^https?:\/\/')) url = 'http://' + url;
-  getLinkPreview(url).then(data => {
+  if (!url.match('^https?:\\/\\/')) url = 'http://' + url;
+  getLinkPreview(url).then((data) => {
     setTitle(data.title);
     setImage(data.images[0]);
     setDescription(data.description);
@@ -61,15 +60,13 @@ function CardLink({ url }) {
   }
 
   return (
-    // <a href={url}>
-      <WarpLink onClick={handleClick}>
-        <WarpRawLink>{rawUrl}</WarpRawLink>
-        <br />
-        {image && <img src={image} alt="" />}
-        {(!image && !description) && <WarpTitle>{title}</WarpTitle>}
-        {description && <WarpDescription>{description}</WarpDescription>}
-      </WarpLink>
-    // </a>
+    <WarpLink onClick={handleClick}>
+      <WarpRawLink>{rawUrl}</WarpRawLink>
+      <br />
+      {image && <img src={image} alt="" />}
+      {!image && !description && <WarpTitle>{title}</WarpTitle>}
+      {description && <WarpDescription>{description}</WarpDescription>}
+    </WarpLink>
   );
 }
 

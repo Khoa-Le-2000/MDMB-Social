@@ -1,6 +1,7 @@
 import { CheckCircle } from '@styled-icons/heroicons-solid';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import CardLink from 'features/ChatOverView/ChatWindow/WindowContent/Messages/CardMessage/CardLink';
 import React from 'react';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
@@ -125,7 +126,7 @@ function CardMessage(props) {
               <Message>
                 {type === 'text' ? (
                   isLink ? (
-                    <div url={content} />
+                    <CardLink url={content} />
                   ) : (
                     content
                   )
