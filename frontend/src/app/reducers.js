@@ -5,6 +5,8 @@ import socketReducer from 'features/ChatOverView/SocketSlice';
 import loginReducer from 'features/Login/LoginSlice';
 import registerReducer from 'features/Register/RegisterSlice';
 import { combineReducers } from 'redux';
+import userProfileReducer from 'features/UpdateProfile/GetUserProfileSlice'
+import updateProfileReducer from 'features/UpdateProfile/UpdateProfileSlice'
 import storage from 'redux-persist/lib/storage';
 
 const appReducer = combineReducers({
@@ -12,6 +14,8 @@ const appReducer = combineReducers({
   register: registerReducer,
   conversations: conversationsReducer,
   chat: chatReducer,
+  userProfile:userProfileReducer,
+  updateProfile:updateProfileReducer,
   socket: socketReducer,
 });
 

@@ -288,7 +288,7 @@ function update(req, res) {
             Name ? Name.trim() : null,
             Avatar ? Avatar.trim() : null,
             Birthday ? Birthday.trim() : null,
-            Gender ? Gender.trim() : null,
+            Gender ? Gender : null,
             (result) => {
               if (result)
                 res.status(200).send({ result: "update successful", description: "successful" });
@@ -308,7 +308,7 @@ function update(req, res) {
           Name ? Name.trim() : null,
           Avatar ? Avatar.trim() : null,
           Birthday ? Birthday.trim() : null,
-          Gender ? Gender.trim() : null,
+          Gender ? Gender : null,
           (result) => {
             if (result) res.status(200).send({ result: "update successful" });
             else

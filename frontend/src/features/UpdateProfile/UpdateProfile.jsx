@@ -1,6 +1,6 @@
 import { Pencil } from '@styled-icons/heroicons-outline';
 import MainLayout from 'layouts/MainLayout';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Button,
   Card,
@@ -13,6 +13,13 @@ import DatePicker from 'react-datepicker';
 import styled from 'styled-components';
 import _ from 'lodash';
 import './updateProfile.scss';
+import axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
+import { getUserProfileSelector } from 'app/selectors/userProfile';
+import { getUserProfile } from 'app/actions/userProfile';
+import { updateUserProfile } from 'app/actions/updateProfile';
+import { updateProfileSelector } from 'app/selectors/updateProfile';
+import { getAuth } from 'app/selectors/login';
 
 const Col = styled.div`
   display: inline-flex;
@@ -90,70 +97,138 @@ const UploadImageInput = styled.input.attrs({
 })`
   width: 100%;
 `;
-
+const NameInput = styled.input.attrs({
+  type: 'text',
+})`
+  width: 100%;
+`;
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: space-around;
   width: 100%;
 `;
 
-const max = new Date().getUTCFullYear();
-const min = max - 40;
-const years = _.range(min, max + 1);
-
-const months = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
-
 function UpdateProfile() {
+  const dispatch = useDispatch();
+  const accountId = useSelector(getAuth)?.accountId;
+
+  dispatch(getUserProfile(accountId));
+  // useEffect(() => {
+  // }, []);
+  const userInfor = useSelector(getUserProfileSelector);
+
+
   const fileImageRef = React.useRef(null);
 
-  const [startDate, setStartDate] = React.useState(new Date());
-  const [gender, setGender] = React.useState(0);
-  const [uploading, setUploading] = React.useState(false);
+  const [startDate, setStartDate] = React.useState(
+    new Date(userInfor?.Birthday)
+  );
+  const [gender, setGender] = React.useState(userInfor.Gender);
+  const [image, setImage] = React.useState(userInfor.Avatar);
+  const [name, setName] = React.useState(userInfor.Name);
+  const [message, setMessage] = React.useState('');
+  
+
+  const max = new Date().getUTCFullYear();
+  const min = max - 40;
+  const years = _.range(min, max + 1);
+
+  const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
 
   const onGenderChange = (e) => {
     setGender(e.target.value);
   };
-
-  const onUpdateProfileHandler = (e) => {
-    e.preventDefault();
-    console.log(gender);
+  const onNameChange = (e) => {
+    setName(e.target.value);
   };
+
+  const checkRegex = (userUpdate) => {
+    const regBirthday =
+      /^(?:19|20)\d\d([\/.-])(?:0[1-9]|1[012])\1(?:0[1-9]|[12]\d|3[01])$/;
+    const regGender = /^\d$/;
+    const regName = /^([ \u00c0-\u01ffa-zA-Z'\-])+$/;
+
+    const regLink =
+      /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
+    if (
+      !regName.test(userUpdate.Name) ||
+      userUpdate.Name.length < 2 ||
+      userUpdate.Name.length > 45
+    )
+      return {
+        result: 'error',
+        message: `Name invalid! ${
+          userUpdate.Name.length < 2 || userUpdate.Name.length > 45
+            ? 'Length must be 2-45 char'
+            : 'Name not contains special character'
+        }`,
+      };
+    if (!regGender.test(userUpdate.Gender))
+      return { result: 'error', message: 'Gender invalid' };
+    if (!regBirthday.test(userUpdate.Birthday))
+      return { result: 'error', message: 'Birthday invalid' };
+    if (userUpdate.Avatar ? !regLink.test(userUpdate.Avatar) : false)
+      return { result: 'error', message: 'Avatar Url invalid' };
+
+    return { result: 'success' };
+  };
+  const onUpdateProfileHandler = async (e) => {
+    e.preventDefault();
+    let userUpdate = {};
+    userUpdate.Email = userInfor.Email;
+    userUpdate.Name = name;
+    userUpdate.Birthday = startDate.toISOString().split('T')[0];
+    // userUpdate.Birthday = startDate;
+    userUpdate.Gender = gender;
+    let formData = new FormData();
+    let blob = await fetch(image).then((r) => r.blob());
+    formData.append('file', blob);
+    formData.append('upload_preset', 'exh5f6wa');
+    formData.append('api_key', '827926361528927');
+    if (image !== userInfor.Avatar)
+      await axios
+        .post('https://api.cloudinary.com/v1_1/dqkdfl2lp/upload', formData)
+        .then((Response) => {
+          let imageTemp = Response.data.secure_url;
+          userUpdate.Avatar = imageTemp;
+        });
+    let tempCheck=checkRegex(userUpdate);
+    if(tempCheck.result==='error') setMessage(tempCheck.message);
+    else {
+      setMessage('');
+      //still err
+    dispatch(updateUserProfile(userUpdate));
+    alert(result1.message)
+  }
+  setTimeout(()=>{setMessage('');},8000)
+};
+const result1 = useSelector(updateProfileSelector);
+
   const onUploadImage = (e) => {
     fileImageRef.current.click();
   };
 
   const onImageChange = (e) => {
     const file = e.target.files[0];
-    console.log('🚀 :: onImageChange :: file', file);
-    let formData = new FormData();
-    formData.append('image', file);
-    console.log('🚀 :: onImageChange :: formData', formData.get('image'));
-    try {
-      // setImage({
-      //   url: data.url,
-      //   public_id: data.public_id,
-      // });
-    } catch (error) {
-      console.log(error);
-      setUploading(false);
-    }
+    setImage(URL.createObjectURL(file));
   };
+
   return (
     <BootstrapContainer fluid>
-      <MainLayout>
+      <MainLayout Name={userInfor.Name} Avatar={userInfor.Avatar}>
         <BootstrapContainer>
           <BootstrapRow>
             <Col
@@ -175,14 +250,11 @@ function UpdateProfile() {
                           </Card.Subtitle>
                         </div>
                         <Form onSubmit={onUpdateProfileHandler}>
-                          <BootstrapRow>
+                          <BootstrapRow className="card-row">
                             <BootstrapCol lg={12}>
                               <Form.Group className="mb-">
                                 <AvatarWrapper>
-                                  <img
-                                    src="https://images.unsplash.com/photo-1645504812848-29c2ebd5cd54?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyOXx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60"
-                                    alt=""
-                                  />
+                                  <img src={image} alt="" />
                                   <IconWrapper onClick={onUploadImage}>
                                     <UploadIcon />
                                     <UploadImageWrapper>
@@ -196,17 +268,28 @@ function UpdateProfile() {
                               </Form.Group>
                             </BootstrapCol>
                           </BootstrapRow>
-                          <BootstrapRow>
+
+                          <BootstrapRow className="card-row">
                             <BootstrapCol lg={12}>
-                              <Form.Group className="mb-3 w-100">
-                                <Form.Label>Name</Form.Label>
-                                <Form.Control
-                                  type="string"
-                                  placeholder="Enter you name"
+                              <Form.Label>Name </Form.Label>
+                              <Form.Label
+                                style={{
+                                  position: 'absolute',
+                                  right: '4%',
+                                  color:'red'
+                                }}
+                              >
+                                {message}
+                              </Form.Label>
+                              <Form.Group className="mb-">
+                                <NameInput
+                                  value={name}
+                                  onChange={onNameChange}
                                 />
                               </Form.Group>
                             </BootstrapCol>
                           </BootstrapRow>
+ 
                           <BootstrapRow>
                             <Col
                               lg={12}
@@ -214,8 +297,8 @@ function UpdateProfile() {
                                 justifyContent: 'flex-start',
                               }}
                             >
-                              <Form.Group className="mb-3 w-100">
-                                <Form.Label>Birth day </Form.Label>
+                              <Form.Group className="mb-3 3 w-100">
+                                <Form.Label>Birthday </Form.Label>
                                 <DatePicker
                                   renderCustomHeader={({
                                     date,
@@ -281,6 +364,7 @@ function UpdateProfile() {
                               </Form.Group>
                             </Col>
                           </BootstrapRow>
+
                           <BootstrapRow>
                             <Col lg={12}>
                               <Form.Group className="mb-3 w-100">
@@ -291,7 +375,10 @@ function UpdateProfile() {
                                     name="select"
                                     value="0"
                                     id="option-1"
-                                    defaultChecked
+                                    defaultChecked={
+                                      userInfor.Gender === 0 ||
+                                      userInfor.Gender === null
+                                    }
                                     onChange={onGenderChange}
                                   />
                                   <input
@@ -299,6 +386,7 @@ function UpdateProfile() {
                                     name="select"
                                     id="option-2"
                                     value="1"
+                                    defaultChecked={userInfor.Gender === 1}
                                     onChange={onGenderChange}
                                   />
                                   <input
@@ -306,6 +394,7 @@ function UpdateProfile() {
                                     name="select"
                                     value="2"
                                     id="option-3"
+                                    defaultChecked={userInfor.Gender === 2}
                                     onChange={onGenderChange}
                                   />
                                   <label
@@ -327,12 +416,22 @@ function UpdateProfile() {
                                     className="option option-3"
                                   >
                                     <div className="dot" />
-                                    <span>Custom</span>
+                                    <span>Unset</span>
                                   </label>
                                 </div>
                               </Form.Group>
                             </Col>
                           </BootstrapRow>
+
+                          <BootstrapRow className="card-row">
+                            <BootstrapCol lg={12}>
+                              <Form.Group className="mb- email-phone">
+                                <input placeholder={userInfor.Email} disabled />
+                                <input placeholder={userInfor.Phone} disabled />
+                              </Form.Group>
+                            </BootstrapCol>
+                          </BootstrapRow>
+
                           <BootstrapRow className="mt-5">
                             <Col>
                               <ButtonWrapper>
@@ -343,7 +442,11 @@ function UpdateProfile() {
                                 >
                                   Skip
                                 </Button>
-                                <Button type="submit" variant="primary">
+                                <Button
+                                  type="submit"
+                                  variant="primary"
+                                  size="sm"
+                                >
                                   Update
                                 </Button>
                               </ButtonWrapper>

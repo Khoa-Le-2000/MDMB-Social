@@ -9,6 +9,7 @@ import React from 'react';
 import { Form, InputGroup as BsInputGroup } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { useState } from 'react';
 
 const SideBar = styled.div`
   width: 100%;

@@ -1,4 +1,4 @@
-import { getLinkPreview } from '../../../../../../../node_modules/link-preview-js/build/index';
+import { getLinkPreview } from "link-preview-js";
 import React from 'react';
 import styled from 'styled-components';
 
