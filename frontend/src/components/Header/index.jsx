@@ -120,7 +120,6 @@ const ProfileName = styled.div`
 `;
 
 function Header({Name,Avatar}) {
-  console.log('render')
   return (
     <HeaderWrapper>
       <Container>
