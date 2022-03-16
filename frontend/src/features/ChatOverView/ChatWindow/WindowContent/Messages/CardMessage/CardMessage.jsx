@@ -1,12 +1,12 @@
 import { CheckCircle } from '@styled-icons/heroicons-solid';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import CardLink from 'features/ChatOverView/ChatWindow/WindowContent/Messages/CardMessage/CardLink';
 import React from 'react';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-const HtmlToReactParser = require('html-to-react').Parser;
-const htmlToReactParser = new HtmlToReactParser();
+import isValidURL from 'utils/validUrl';
 dayjs.extend(relativeTime);
 
 const Wrapper = styled.div`
@@ -110,10 +110,7 @@ function CardMessage(props) {
     }
   }, [roomId, fromAccount, seenDate, messageId]);
 
-  const msg = content.replaceAll(
-    /(((https?:\/\/)|(www\.))[^\s]+)/g,
-    '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a></br>'
-  );
+  const isLink = isValidURL(content);
 
   return (
     <Wrapper owner={owner ? 1 : 0}>
@@ -128,7 +125,11 @@ function CardMessage(props) {
             <WrapperMessage owner={owner ? 1 : 0}>
               <Message>
                 {type === 'text' ? (
-                  htmlToReactParser.parse(msg)
+                  isLink ? (
+                    <CardLink url={content} />
+                  ) : (
+                    content
+                  )
                 ) : (
                   <img src={content} alt="" />
                 )}

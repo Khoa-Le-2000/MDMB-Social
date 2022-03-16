@@ -14,9 +14,21 @@ import React from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import io from 'socket.io-client';
 import styled from 'styled-components';
 import Sidebar from 'features/ChatOverView/Sidebar/Sidebar';
+import { result } from 'lodash';
+import { getConversations } from 'app/selectors/conversations';
+import {
+  addUserOnline,
+  getListUsersOnline,
+  initSocket,
+  removeUserOffline,
+} from 'app/actions/socket';
+import {
+  getListConversation,
+  refreshListConversation,
+} from 'app/actions/conversations';
+import { getSocket } from 'app/selectors/socket';
 
 const Wrapper = styled(Container)`
   height: 100vh;
@@ -42,26 +54,37 @@ const LeftBar = styled(Col)`
   background-color: #efeff3;
 `;
 
-let socket;
 function ChatOverView() {
   const auth = useSelector(getAuth);
   const dispatch = useDispatch();
   const { roomId } = useParams();
-  const [currentWindow, setCurrentWindow] = React.useState(roomId);
-  const [isOnline, setIsOnline] = React.useState(false);
   const [typing, setTyping] = React.useState(false);
   const navigate = useNavigate();
   const messagesLatest = useSelector(getListMessageLatest);
-
   const partner = useSelector(getPartner);
+  const socket = useSelector(getSocket);
+  const listConversation = useSelector(getConversations);
 
   React.useEffect(() => {
-    socket = io?.connect(process.env.REACT_APP_API_URL, {
-      transports: ['websocket'],
-      auth: { token: auth?.accessToken },
-      query: { accountId: auth?.accountId },
+    if (!socket) {
+      dispatch(initSocket(auth?.accountId, auth?.accessToken));
+    }
+  }, [auth?.accountId, auth?.accessToken, dispatch, socket]);
+
+  React.useEffect(() => {
+    dispatch(getListConversation(auth?.accountId, auth?.accessToken));
+  }, [auth?.accountId, auth?.accessToken, dispatch]);
+
+  React.useEffect(() => {
+    const listAccountId = listConversation.map((item) => item.AccountId);
+    socket?.emit('get online', listAccountId, (data) => {
+      console.log(
+        '🚀 :: file: ChatOverView.jsx :: line 81 :: socket?.emit :: data',
+        data
+      );
+      dispatch(getListUsersOnline(data));
     });
-  }, [auth?.accessToken, auth?.refreshToken, auth?.accountId]);
+  });
 
   React.useEffect(() => {
     socket?.on('typing', (userId) => {
@@ -79,84 +102,96 @@ function ChatOverView() {
         setTyping(false);
       }
     });
-  }, [roomId]);
+  }, [roomId, socket]);
 
   React.useEffect(() => {
     socket?.on('seen message', (messageId) => {
       dispatch(seenMessage(messageId));
     });
-  }, [dispatch]);
-
-  React.useEffect(() => {
-    socket?.on('chat message yourself', (data) => {
-      dispatch(receiveMessage(data));
-    });
-  }, [dispatch]);
+  }, [dispatch, socket]);
 
   React.useEffect(() => {
     socket?.on('chat message', (data) => {
-      dispatch(receiveMessage(data));
-    });
-  }, [dispatch]);
-
-  React.useEffect(() => {
-    socket.on('user-online', function (accountId) {
-      if (+accountId === +roomId) {
-        setIsOnline(true);
+      if (+data.FromAccount === +roomId && data.ToAccount !== +roomId) {
+        dispatch(receiveMessage(data));
       }
     });
-  }, [roomId]);
+  }, [dispatch, roomId, auth?.accountId, socket]);
+
+  React.useEffect(() => {
+    console.log('check user online', socket);
+    socket?.on('user-online', function (accountId) {
+      console.log(
+        '🚀 :: file: ChatOverView.jsx :: line 121 :: Online',
+        accountId
+      );
+      debugger;
+      if (+accountId === +roomId) {
+        debugger;
+        dispatch(addUserOnline(accountId));
+      }
+    });
+    socket?.on('user-offline', function (accountId) {
+      console.log(
+        '🚀 :: file: ChatOverView.jsx :: line 128 :: OffLine',
+        accountId
+      );
+      debugger;
+      if (+accountId === +roomId) {
+        debugger;
+
+        dispatch(removeUserOffline(accountId));
+      }
+    });
+  }, [dispatch, socket]);
 
   const handleTyping = ({ isTyping, partnerId }) => {
     if (isTyping) {
-      socket.emit('typing', partnerId);
+      socket?.emit('typing', partnerId);
     } else {
-      socket.emit('stop typing', partnerId);
+      socket?.emit('stop typing', partnerId);
     }
   };
 
   const handleSendMessage = (message) => {
-    socket.emit('chat message', message, roomId, (status, data) => {
+    socket?.emit('chat message', message, roomId, (status, data) => {
       if (status === 'ok' && +data.ToAccount === +roomId) {
         dispatch(sendMessage(data));
+        dispatch(getListConversation(auth?.accountId, auth?.accessToken));
       }
     });
   };
 
   const handleSelectRoomClick = (conversation) => {
-    setCurrentWindow(conversation.AccountId);
-    dispatch(selectRoom(conversation));
-    navigate(`/chat/${conversation.AccountId}`);
-    dispatch(getMessagesLatest(auth?.accountId, conversation.AccountId));
+    if (+conversation.AccountId !== +roomId) {
+      dispatch(selectRoom(conversation));
+      navigate(`/chat/${conversation.AccountId}`);
+      dispatch(getMessagesLatest(auth?.accountId, conversation.AccountId));
+    }
   };
 
   const handleSeenMessage = (messageId) => {
     socket?.emit('seen message', messageId);
   };
 
-  return (
+  return socket ? (
     <Wrapper fluid>
       <RowBS>
         <LeftBar lg={1} xs={1} md={1}>
           <Sidebar />
         </LeftBar>
         <ColBS1 lg={3} xs={3} md={3}>
-          <ChatConversations
-            onSelectRoom={handleSelectRoomClick}
-            messagesLatest={messagesLatest}
-          />
+          <ChatConversations onSelectRoom={handleSelectRoomClick} />
         </ColBS1>
         <ColBS2 lg={8} xs={8} md={8}>
-          {+roomId === +currentWindow ? (
+          {roomId ? (
             <ChatWindow
               onSendMessage={handleSendMessage}
               onTyping={handleTyping}
               myAccountId={auth?.accountId}
               partner={partner}
               messages={messagesLatest}
-              currentWindow={currentWindow}
               typing={typing}
-              isOnline={isOnline}
               onSeenMessage={handleSeenMessage}
             />
           ) : (
@@ -165,6 +200,8 @@ function ChatOverView() {
         </ColBS2>
       </RowBS>
     </Wrapper>
+  ) : (
+    <div>Loading ...</div>
   );
 }
 

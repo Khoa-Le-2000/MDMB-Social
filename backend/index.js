@@ -28,7 +28,7 @@ app.use(session({
 }));
 
 app.use(cors(corsOptions));
-// const server = app.listen(PORT);
+const serverHttp = app.listen(8080);
 
 const options = {
     ca: fs.readFileSync("ca_bundle.crt"),
@@ -42,3 +42,4 @@ route(app);
 console.log(`Server is running on port ${PORT}`);
 
 socket(server);
+socket(serverHttp);

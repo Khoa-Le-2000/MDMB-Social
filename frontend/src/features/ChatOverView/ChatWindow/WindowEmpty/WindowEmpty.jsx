@@ -1,8 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Col } from 'react-bootstrap';
-import { ReactComponent as Pic1 } from 'assets/images/icons/avt1.svg';
-import { ReactComponent as Pic2 } from 'assets/images/icons/avt2.svg';
 import LogoImg from 'assets/images/logos/logo.jpg';
 
 const Wrapper = styled(Col)`

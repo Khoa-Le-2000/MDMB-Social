@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logout } from 'app/actions/login';
 import { getAuth } from 'app/selectors/login';
 import { useNavigate, Link } from 'react-router-dom';
+import { getSocket } from 'app/selectors/socket';
 
 const HoverEffect = css`
   transition: all 0.3s ease-in-out;
@@ -114,6 +115,7 @@ function LefBar() {
   const auth = useSelector(getAuth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const socket = useSelector(getSocket);
 
   const handleSettingClick = (event) => {
     setShow(!show);
@@ -121,6 +123,7 @@ function LefBar() {
   };
 
   const handleLogoutClick = () => {
+    socket.disconnect();
     dispatch(logout(auth?.accessToken));
     navigate('/login');
   };
