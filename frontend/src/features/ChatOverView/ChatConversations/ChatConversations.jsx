@@ -82,7 +82,17 @@ function ChatConversations({ onSelectRoom }) {
   const listConversationSorted = listConversation.sort(
     (a, b) => Date.parse(b.SentDate) - Date.parse(a.SentDate)
   );
-
+  const [allMessageSelected, setAllMessageSelected] = React.useState(true);
+  const [unreadMessageSelected, setUnreadMessageSelected] =
+    React.useState(false);
+  const handleAllMessageClick = () => {
+    setAllMessageSelected(true);
+    setUnreadMessageSelected(false);
+  };
+  const handleMessageUnreadClick = () => {
+    setAllMessageSelected(false);
+    setUnreadMessageSelected(true);
+  };
   return (
     <SideBar>
       <Logo> MDMB Social</Logo>
@@ -93,17 +103,36 @@ function ChatConversations({ onSelectRoom }) {
         </InputSearch>
       </InputGroup>
       <Tabs>
-        <Tab selected>All Message</Tab>
-        <Tab>Message unread</Tab>
+        <Tab onClick={handleAllMessageClick} selected={allMessageSelected}>
+          All Message
+        </Tab>
+        <Tab
+          onClick={handleMessageUnreadClick}
+          selected={unreadMessageSelected}
+        >
+          Message unread{' '}
+        </Tab>
       </Tabs>
       <Wrapper>
-        {listConversationSorted?.map((item, index) => (
-          <CardConversation
-            key={index}
-            onSelectRoom={onSelectRoom}
-            conversation={item}
-          />
-        ))}
+        {listConversationSorted?.map((item, index) =>
+          allMessageSelected ? (
+            <CardConversation
+              key={index}
+              onSelectRoom={onSelectRoom}
+              conversation={item}
+            />
+          ) : (
+            //message unread
+            !item.SeenDate &&
+            item.LastMessage && (
+              <CardConversation
+                key={index}
+                onSelectRoom={onSelectRoom}
+                conversation={item}
+              />
+            )
+          )
+        )}
       </Wrapper>
     </SideBar>
   );
