@@ -102,11 +102,15 @@ function getListFriend(AccountId, Callback) {
     var sql = `select * 
     from MDMB.Account
     where AccountId in (
-      select RelatedAccountId
-        from MDMB.AccountRelationship
-        where RelatingAccountId = ? and Type = 'friend'
+      SELECT RelatingAccountId
+      FROM MDMB.AccountRelationship
+      WHERE (RelatingAccountId < ?) AND (RelatedAccountId = ?) AND (Type = 'friend')
+      UNION
+      SELECT RelatedAccountId
+      FROM MDMB.AccountRelationship
+      WHERE (RelatedAccountId > ?) AND (RelatingAccountId = ?) AND (Type = 'friend')
     )`;
-    con.query(sql, [AccountId],
+    con.query(sql, [AccountId, AccountId, AccountId, AccountId],
       function (err, result) {
         connection.closeConnection(con);
         if (err) throw err;
@@ -128,15 +132,19 @@ function getListFriend(AccountId) {
   let sql = `select * 
   from MDMB.Account
   where AccountId in (
-    select RelatedAccountId
-      from MDMB.AccountRelationship
-      where RelatingAccountId = ? and Type = 'friend'
+    SELECT RelatingAccountId
+    FROM MDMB.AccountRelationship
+    WHERE (RelatingAccountId < ?) AND (RelatedAccountId = ?) AND (Type = 'friend')
+    UNION
+    SELECT RelatedAccountId
+    FROM MDMB.AccountRelationship
+    WHERE (RelatedAccountId > ?) AND (RelatingAccountId = ?) AND (Type = 'friend')
   )`;
   return new Promise((resolve, reject) => {
     var con = connection.createConnection();
     con.connect(function (err) {
       if (err) throw err;
-      con.query(sql, [AccountId],
+      con.query(sql, [AccountId, AccountId, AccountId, AccountId],
         function (err, result) {
           connection.closeConnection(con);
           if (err) return reject(err);
@@ -159,15 +167,19 @@ function getListFriendAsync(AccountId) {
   let sql = `select * 
   from MDMB.Account
   where AccountId in (
-    select RelatedAccountId
-      from MDMB.AccountRelationship
-      where RelatingAccountId = ? and Type = 'friend'
+    SELECT RelatingAccountId
+    FROM MDMB.AccountRelationship
+    WHERE (RelatingAccountId < ?) AND (RelatedAccountId = ?) AND (Type = 'friend')
+    UNION
+    SELECT RelatedAccountId
+    FROM MDMB.AccountRelationship
+    WHERE (RelatedAccountId > ?) AND (RelatingAccountId = ?) AND (Type = 'friend')
   )`;
   return new Promise((resolve, reject) => {
     var con = connection.createConnection();
     con.connect(function (err) {
       if (err) throw err;
-      con.query(sql, [AccountId],
+      con.query(sql, [AccountId, AccountId, AccountId, AccountId],
         function (err, result) {
           connection.closeConnection(con);
           if (err) return reject(err);
@@ -176,7 +188,7 @@ function getListFriendAsync(AccountId) {
           // console.log('accounr ' + accounts);
           for (let i = 0; i < result.length; i++) {
             let account = new Account.Account(result[i].AccountId, null,
-              result[i].Phone, result[i].Email, result[i].Name, result[i].Avatar, result[i].Birthday, 
+              result[i].Phone, result[i].Email, result[i].Name, result[i].Avatar, result[i].Birthday,
               result[i].Gender, result[i].CreatedDate, result[i].LastOnline);
             accounts.push(account);
           }
