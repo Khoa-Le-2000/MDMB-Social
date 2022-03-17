@@ -105,12 +105,10 @@ function CardMessage(props) {
 
   const { roomId } = useParams();
   React.useEffect(() => {
-    if (!seenDate && +roomId === fromAccount) {
-      onSeenMessage(messageId);
+    if (!seenDate && +roomId === fromAccount && !seenDate) {
+      onSeenMessage(messageId, roomId);
     }
-  }, [roomId, fromAccount, seenDate, messageId]);
-
-  const isLink = isValidURL(content);
+  }, [roomId, seenDate, messageId]);
 
   return (
     <Wrapper owner={owner ? 1 : 0}>
@@ -120,12 +118,11 @@ function CardMessage(props) {
       <Row>
         <Col lg={12}>
           {!owner && <Name>{name}</Name>}
-
           <WrapperContent owner={owner ? 1 : 0}>
             <WrapperMessage owner={owner ? 1 : 0}>
               <Message>
                 {type === 'text' ? (
-                  isLink ? (
+                  isValidURL(content) ? (
                     <CardLink url={content} />
                   ) : (
                     content

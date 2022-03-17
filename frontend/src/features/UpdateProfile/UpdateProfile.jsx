@@ -211,7 +211,7 @@ function UpdateProfile() {
       setMessage('');
       dispatch(updateUserProfile(userUpdate));
       alert("Update successfully, please reset page");
-      
+
     }
   };
 
@@ -382,7 +382,7 @@ function UpdateProfile() {
                                     value="0"
                                     id="option-1"
                                     defaultChecked={
-                                      userInfor.Gender === 0 
+                                      userInfor.Gender === 0
                                     }
                                     onChange={onGenderChange}
                                   />
@@ -470,7 +470,7 @@ function UpdateProfile() {
         </BootstrapContainer>
       </MainLayout>
     </BootstrapContainer>
-    
+
   );
 }
 export default UpdateProfile;

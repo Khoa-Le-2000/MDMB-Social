@@ -1,9 +1,13 @@
+import {
+  getListMessageLatest,
+  getPartner,
+  getMessageSeenLatest,
+} from 'app/selectors/chat';
+import { getAuth } from 'app/selectors/login';
 import CardMessage from 'features/ChatOverView/ChatWindow/WindowContent/Messages/CardMessage/CardMessage';
 import React from 'react';
-import { getAuth } from 'app/selectors/login';
 import { useSelector } from 'react-redux';
 import styled, { keyframes } from 'styled-components';
-import { getSeenLatest } from 'app/selectors/chat';
 
 const dotTyping = keyframes`
   0% {
@@ -65,10 +69,12 @@ const DotFalling = styled.div`
 
 const WrapperScroll = styled.div``;
 
-function Messages({ messages, partner, typing, onSeenMessage }) {
+function Messages({ typing, onSeenMessage }) {
+  const messagesLatest = useSelector(getListMessageLatest);
   const myAccountId = useSelector(getAuth)?.accountId;
-  const seenDateLatest = useSelector(getSeenLatest);
+  const messageSeenDateLatest = useSelector(getMessageSeenLatest);
   const messagesEndRef = React.useRef();
+  const partner = useSelector(getPartner);
 
   React.useEffect(() => {
     messagesEndRef.current?.scrollIntoView({
@@ -76,11 +82,11 @@ function Messages({ messages, partner, typing, onSeenMessage }) {
       block: 'end',
       inline: 'nearest',
     });
-  }, [messages]);
+  }, [messagesLatest]);
 
   return (
     <>
-      {messages.map((item) => (
+      {messagesLatest.map((item) => (
         <WrapperScroll key={item.MessageId}>
           <CardMessage
             messageId={item.MessageId}
@@ -94,9 +100,10 @@ function Messages({ messages, partner, typing, onSeenMessage }) {
             owner={item.FromAccount === myAccountId}
             onSeenMessage={onSeenMessage}
             seenLatest={
-              item.seenLatest || seenDateLatest?.MessageId === item.MessageId
+              item.seenLatest ||
+              messageSeenDateLatest?.MessageId === item.MessageId
             }
-            idLastMessage={messages[messages.length-1].MessageId}
+            idLastMessage={messagesLatest[messagesLatest.length - 1].MessageId}
           />
           <div ref={messagesEndRef} />
         </WrapperScroll>

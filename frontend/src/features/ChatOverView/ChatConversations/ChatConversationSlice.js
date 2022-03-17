@@ -35,6 +35,33 @@ const conversationsReducer = (state = initialState, action) => {
         message: action.payload.message,
       };
 
+    case ConversationActionTypes.UPDATE_MESSAGE_UNREAD_START:
+      return {
+        ...state,
+        isFetching: true,
+        error: false,
+        success: false,
+        message: null,
+      };
+    case ConversationActionTypes.UPDATE_MESSAGE_UNREAD_SUCCESS:
+      return {
+        ...state,
+        isFetching: true,
+        error: false,
+        success: false,
+        message: null,
+        listConversation: action.payload,
+      };
+    case ConversationActionTypes.UPDATE_LIST_CONVERSATION_WITH_NEW_MESSAGE_SUCCESS:
+      return {
+        ...state,
+        isFetching: false,
+        error: false,
+        success: true,
+        message: null,
+        listConversation: action.payload,
+      };
+
     default:
       return state;
   }
