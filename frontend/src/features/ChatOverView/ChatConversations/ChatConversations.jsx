@@ -77,6 +77,7 @@ const Tab = styled.div`
 `;
 
 function ChatConversations({ onSelectRoom }) {
+  const accountId = useSelector(getAuth)?.accountId;
   const listConversation = useSelector(getConversations);
 
   const listConversationSorted = listConversation.sort(
@@ -93,6 +94,7 @@ function ChatConversations({ onSelectRoom }) {
     setAllMessageSelected(false);
     setUnreadMessageSelected(true);
   };
+
   return (
     <SideBar>
       <Logo> MDMB Social</Logo>
@@ -110,7 +112,7 @@ function ChatConversations({ onSelectRoom }) {
           onClick={handleMessageUnreadClick}
           selected={unreadMessageSelected}
         >
-          Message unread{' '}
+          Message unread
         </Tab>
       </Tabs>
       <Wrapper>
@@ -124,7 +126,8 @@ function ChatConversations({ onSelectRoom }) {
           ) : (
             //message unread
             !item.SeenDate &&
-            item.LastMessage && (
+            item.LastMessage &&
+            item.FromAccount!==accountId && (
               <CardConversation
                 key={index}
                 onSelectRoom={onSelectRoom}
