@@ -32,8 +32,6 @@ const ColBS = styled(Col)``;
 function ChatWindow({
   onSendMessage,
   onTyping,
-  messages,
-  partner,
   typing,
   onSeenMessage,
 }) {
@@ -41,15 +39,12 @@ function ChatWindow({
   return (
     <Wrapper>
       <ChatHeader
-        partner={partner}
         WindowEmpty={roomId ? false : true}
       />
       <RowMessageInner>
         <WrapperMessageContent>
           <Col lg={12}>
             <WindowContent
-              messages={messages}
-              partner={partner}
               typing={typing}
               onSeenMessage={onSeenMessage}
             />

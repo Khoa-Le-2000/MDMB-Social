@@ -1,13 +1,12 @@
-import styled from 'styled-components';
-import dayjs from 'dayjs';
-import { Col, Row } from 'react-bootstrap';
-import relativeTime from 'dayjs/plugin/relativeTime';
-import { useParams } from '../../../../../node_modules/react-router-dom/index';
 import { CheckCircle } from '@styled-icons/heroicons-solid';
-import { getLengthNewMessage } from 'app/selectors/chat';
-import { useSelector } from 'react-redux';
 import { getUsersOnline } from 'app/selectors/socket';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import { Col, Row } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 import { Circle } from '@styled-icons/boxicons-solid';
+import { useParams } from 'react-router-dom';
+import styled from 'styled-components';
 
 dayjs.extend(relativeTime);
 
@@ -88,8 +87,8 @@ const SeenStatus = styled.img`
 `;
 
 const WrapperNewMessage = styled.div`
-  width: 1rem;
-  height: 1rem;
+  width: 1.5rem;
+  height: 1.5rem;
   border-radius: 50%;
   background-color: #f15959;
   display: flex;
@@ -98,7 +97,7 @@ const WrapperNewMessage = styled.div`
 `;
 const LengthNewMessage = styled.div`
   color: #fff;
-  font-size: 0.8rem;
+  font-size: 0.6rem;
   font-weight: bold;
 `;
 const Online = styled(Circle)`
@@ -126,10 +125,10 @@ function CardConversation({ onSelectRoom, conversation }) {
     SeenDate,
     FromAccount,
     AccountId,
+    UnseenMessage,
   } = conversation;
 
   const { roomId } = useParams();
-  const lengthNewMessages = useSelector(getLengthNewMessage(AccountId));
   const listAccountOnline = useSelector(getUsersOnline);
 
   const onRoomChange = () => {
@@ -158,9 +157,9 @@ function CardConversation({ onSelectRoom, conversation }) {
             <Status>
               <Time>{lastMessage ? dayjs(SentDate).fromNow() : ''}</Time>
               <StatusInner>
-                {lengthNewMessages > 0 ? (
+                {UnseenMessage > 0 ? (
                   <WrapperNewMessage>
-                    <LengthNewMessage>{lengthNewMessages}</LengthNewMessage>
+                    <LengthNewMessage>{UnseenMessage}</LengthNewMessage>
                   </WrapperNewMessage>
                 ) : lastMessage && SeenDate ? (
                   <SeenStatus Avatar={avatar} />

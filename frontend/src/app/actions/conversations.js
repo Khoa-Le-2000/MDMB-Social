@@ -36,3 +36,58 @@ export const refreshListConversation = () => {
     type: ConversationActionTypes.REFRESH_LIST_CONVERSATION,
   };
 };
+
+const updateMessageUnreadStart = () => {
+  return {
+    type: ConversationActionTypes.UPDATE_MESSAGE_UNREAD_START,
+  };
+};
+
+const updateMessageUnreadSuccess = (newListConversation) => {
+  return {
+    type: ConversationActionTypes.UPDATE_MESSAGE_UNREAD_SUCCESS,
+    payload: newListConversation,
+  };
+};
+
+export const updateCountUnreadConversation =
+  (partnerId) => async (dispatch, getState) => {
+    dispatch(updateMessageUnreadStart());
+    const {
+      conversations: { listConversation },
+    } = getState();
+
+    const newListConversation = listConversation.filter((e) => {
+      if (e.AccountId === +partnerId) {
+        e.UnseenMessage = 0;
+      }
+      return e;
+    });
+
+    dispatch(updateMessageUnreadSuccess(newListConversation));
+  };
+
+const updateListConversationWithNewMessageSuccess = (newListConversation) => {
+  return {
+    type: ConversationActionTypes.UPDATE_LIST_CONVERSATION_WITH_NEW_MESSAGE_SUCCESS,
+    payload: newListConversation,
+  };
+};
+
+export const updateListConversationWithNewMessage =
+  (data) => (dispatch, getState) => {
+    const {
+      conversations: { listConversation },
+    } = getState();
+
+    const newListConversation = listConversation.filter((e) => {
+      if (e.AccountId === data.FromAccount) {
+        e.UnseenMessage = e.UnseenMessage + 1;
+        e.LastMessage = data.Content;
+        e.SeenDate = data.SeenDate;
+        e.SentDate = data.SentDate;
+      }
+      return e;
+    });
+    dispatch(updateListConversationWithNewMessageSuccess(newListConversation));
+  };

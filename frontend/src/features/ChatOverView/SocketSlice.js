@@ -25,7 +25,7 @@ const socketReducer = (state = initialState, action) => {
     case SocketActionTypes.LIST_USERS_ONLINE:
       return {
         ...state,
-        listUserIdOnline: [...state.listUserIdOnline, action.payload],
+        listUserIdOnline: action.payload,
       };
     case SocketActionTypes.USER_ONLINE:
       return {

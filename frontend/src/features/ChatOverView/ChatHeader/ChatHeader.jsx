@@ -1,5 +1,6 @@
 import { Circle } from '@styled-icons/boxicons-solid';
 import { DotsVertical, VideoCamera } from '@styled-icons/heroicons-solid';
+import { getPartner } from 'app/selectors/chat';
 import { getUsersOnline } from 'app/selectors/socket';
 import ToggleTheme from 'components/ToggleTheme';
 import { useToggle } from 'hooks';
@@ -95,9 +96,12 @@ const Offline = styled(Circle)`
 const FutureSwitchWrapper = styled(Feature)``;
 
 const StatusText = styled.span``;
-function ChatHeader({ partner, WindowEmpty }) {
+function ChatHeader({ WindowEmpty }) {
+
   const [isDark, setIsDark] = useToggle(false);
   const listAccountOnline = useSelector(getUsersOnline);
+  const partner = useSelector(getPartner);
+
   const toggleTheme = () => {
     setIsDark(!isDark);
   };
@@ -114,7 +118,7 @@ function ChatHeader({ partner, WindowEmpty }) {
               <WrapperText>
                 <Name>{partner.Name}</Name>
                 <Status>
-                  {listAccountOnline.includes(partner.AccountId) ? (
+                  {listAccountOnline?.includes(partner?.AccountId) ? (
                     <>
                       <Online />
                       <StatusText>Online</StatusText>

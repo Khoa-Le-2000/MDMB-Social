@@ -3,7 +3,7 @@ export const getListMessageLatest = (state) => state?.chat?.listMessage;
 
 export const getPartner = (state) => state?.chat?.partner;
 
-export const getSeenLatest = (state) => {
+export const getMessageSeenLatest = (state) => {
   const listMessage = getListMessageLatest(state);
 
   if (listMessage.length > 0) {
@@ -13,12 +13,4 @@ export const getSeenLatest = (state) => {
     return listMessageSeen[listMessageSeen.length - 1];
   }
   return null;
-};
-
-export const getLengthNewMessage = (accountId) => (state) => {
-  const listMessage = getListMessageLatest(state);
-  const listMessageSeen = listMessage?.filter((item) =>
-    item.SeenDate ? true : false
-  );
-  return listMessage?.length - listMessageSeen?.length;
 };
