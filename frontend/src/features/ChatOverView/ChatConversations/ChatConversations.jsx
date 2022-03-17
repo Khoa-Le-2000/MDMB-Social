@@ -1,5 +1,6 @@
 import { Search } from '@styled-icons/heroicons-solid';
 import { getConversations } from 'app/selectors/conversations';
+import { getAuth } from 'app/selectors/login';
 import CardConversation from 'features/ChatOverView/ChatConversations/CardConversation/CardConversation';
 import React from 'react';
 import { Form, InputGroup as BsInputGroup } from 'react-bootstrap';
@@ -86,6 +87,7 @@ function ChatConversations({ onSelectRoom }) {
   const [allMessageSelected, setAllMessageSelected] = React.useState(true);
   const [unreadMessageSelected, setUnreadMessageSelected] =
     React.useState(false);
+
   const handleAllMessageClick = () => {
     setAllMessageSelected(true);
     setUnreadMessageSelected(false);
@@ -127,7 +129,7 @@ function ChatConversations({ onSelectRoom }) {
             //message unread
             !item.SeenDate &&
             item.LastMessage &&
-            item.FromAccount!==accountId && (
+            item.FromAccount !== accountId && (
               <CardConversation
                 key={index}
                 onSelectRoom={onSelectRoom}
