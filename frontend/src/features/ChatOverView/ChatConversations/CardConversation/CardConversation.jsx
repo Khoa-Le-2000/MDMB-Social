@@ -7,6 +7,7 @@ import { CheckCircle } from '@styled-icons/heroicons-solid';
 import { getLengthNewMessage } from 'app/selectors/chat';
 import { useSelector } from 'react-redux';
 import { getUsersOnline } from 'app/selectors/socket';
+import { Circle } from '@styled-icons/boxicons-solid';
 
 dayjs.extend(relativeTime);
 
@@ -100,6 +101,19 @@ const LengthNewMessage = styled.div`
   font-size: 0.8rem;
   font-weight: bold;
 `;
+const Online = styled(Circle)`
+  color:#16dc80;
+  width: 1rem;
+  height:1rem;
+`
+const Offline = styled(Circle)`
+position: relative;
+color:#aaa;
+width: 1rem;
+height:1rem;
+margin-left:-18px;
+margin-top:40px;
+`
 
 function CardConversation({ onSelectRoom, conversation }) {
   const {
@@ -127,6 +141,11 @@ function CardConversation({ onSelectRoom, conversation }) {
           <Card onClick={onRoomChange}>
             <Avatar>
               <img src={avatar} alt="" />
+              {listAccountOnline.includes(AccountId) ? (
+              <Online/>
+            ) : (
+              <Offline/>
+            )}
             </Avatar>
             <CardContent>
               <Name> {name}</Name>
@@ -154,11 +173,7 @@ function CardConversation({ onSelectRoom, conversation }) {
                 )}
               </StatusInner>
             </Status>
-            {listAccountOnline.includes(AccountId) ? (
-              <div>Online</div>
-            ) : (
-              <div>Offline</div>
-            )}
+            
           </Card>
         </Col>
       </Row>
