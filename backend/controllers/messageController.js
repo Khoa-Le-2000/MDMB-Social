@@ -1,3 +1,4 @@
+const { getLinkPreview } = require('link-preview-js');
 const messageToUserDAO = require('../models/data-access/messageToUserDAO');
 const cryptoMiddlware = require('../middlewares/crypto.middleware');
 
@@ -70,8 +71,27 @@ function getOlderMessage(req, res) {
 //     })
 // }
 
+function getContentLinkPreview(req, res) {
+    let url = req.query.url;
+    console.log(url);
+
+    getLinkPreview(url)
+        .then(data => {
+            res.status(200).json({
+                title: data.title,
+                description: data.description,
+                image: data.images[0]
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(200).json({ error: err });
+        });
+}
+
 module.exports = {
     getOldMessage,
     getOlderMessage,
+    getContentLinkPreview,
     // getChatList
 };
