@@ -159,7 +159,8 @@ function UpdateProfile() {
     const regBirthday =
       /^(?:19|20)\d\d([\/.-])(?:0[1-9]|1[012])\1(?:0[1-9]|[12]\d|3[01])$/;
     const regGender = /^\d$/;
-    const regName = /^([ \u00c0-\u01ffa-zA-Z'\-])+$/;
+    // const regName = /^([ \u00c0-\u01ffa-zA-Z'\-])+$/;
+    const regName =/^((?![0-9\\~\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)\\_\\+\\=\\-\\[\]\\{\\}\\;\\:\\"\\\\/\\<\\>\\?]).){2,45}/
 
     const regLink =
       /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
@@ -233,7 +234,7 @@ function UpdateProfile() {
 
   return (
     <BootstrapContainer fluid>
-      <MainLayout Name={name} Avatar={image}>
+      <MainLayout Name={userInfor.Name} Avatar={userInfor.Avatar}>
         <BootstrapContainer>
           <BootstrapRow>
             <Col
