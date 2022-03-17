@@ -102,18 +102,20 @@ const LengthNewMessage = styled.div`
   font-weight: bold;
 `;
 const Online = styled(Circle)`
-  color:#16dc80;
+  color: #16dc80;
   width: 1rem;
-  height:1rem;
-`
+  height: 1rem;
+  margin-left: -18px;
+  margin-top: 40px;
+`;
 const Offline = styled(Circle)`
-position: relative;
-color:#aaa;
-width: 1rem;
-height:1rem;
-margin-left:-18px;
-margin-top:40px;
-`
+  position: relative;
+  color: #aaa;
+  width: 1rem;
+  height: 1rem;
+  margin-left: -18px;
+  margin-top: 40px;
+`;
 
 function CardConversation({ onSelectRoom, conversation }) {
   const {
@@ -141,11 +143,7 @@ function CardConversation({ onSelectRoom, conversation }) {
           <Card onClick={onRoomChange}>
             <Avatar>
               <img src={avatar} alt="" />
-              {listAccountOnline.includes(AccountId) ? (
-              <Online/>
-            ) : (
-              <Offline/>
-            )}
+              {listAccountOnline.includes(AccountId) ? <Online /> : <Offline />}
             </Avatar>
             <CardContent>
               <Name> {name}</Name>
@@ -173,7 +171,6 @@ function CardConversation({ onSelectRoom, conversation }) {
                 )}
               </StatusInner>
             </Status>
-            
           </Card>
         </Col>
       </Row>
