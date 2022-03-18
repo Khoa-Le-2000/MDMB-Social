@@ -13,7 +13,7 @@ async function checkAuthen(io, socket) {
         socket.accountId = accountId;
         console.log("socketio authenticated");
         socket.emit('authenticated');
-        socketUser.addUser({ accountId, socketId: socket.id });
+        await socketUser.addUser({ accountId, socketId: socket.id });
         // console.log(socketUser.getUserBySocketId(socket.id));
 
 
@@ -29,19 +29,24 @@ async function checkAuthen(io, socket) {
         //     });
         // });
         // console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-        let listFriend = await acccountDao.getListFriendAsync(accountId);
-        // console.log('###########################3');
-        // console.log(listFriend);
-        if (listFriend) {
-            listFriend.forEach(async friend => {
-                let users = await socketUser.getUserByAccountId(friend.AccountId);
-                if (users) {
-                    users.socketId.forEach(socketId => {
-                        io.to(socketId).emit('user-online', Number(accountId));
-                        console.log(`emit user ${accountId} online to ${friend.AccountId}`);
-                    });
-                }
-            });
+        let user = await socketUser.getUserByAccountId(accountId);
+        if (user.socketId.length == 1) {
+            // console.log('USER ONLINE : ' + user.socketId.length);
+            // console.log(user.socketId);
+            let listFriend = await acccountDao.getListFriendAsync(accountId);
+            // console.log('###########################3');
+            // console.log(listFriend);
+            if (listFriend) {
+                listFriend.forEach(async friend => {
+                    let users = await socketUser.getUserByAccountId(friend.AccountId);
+                    if (users) {
+                        users.socketId.forEach(socketId => {
+                            io.to(socketId).emit('user-online', Number(accountId));
+                            console.log(`emit user ${accountId} online to ${friend.AccountId}`);
+                        });
+                    }
+                });
+            }
         }
 
         console.log(socketUser.getUsers());
