@@ -1,6 +1,12 @@
 import { Pencil } from '@styled-icons/heroicons-outline';
+import { updateUserProfile } from 'app/actions/updateProfile';
+import { getUserProfile } from 'app/actions/userProfile';
+import { getAuth } from 'app/selectors/login';
+import { getUserProfileSelector } from 'app/selectors/userProfile';
+import axios from 'axios';
 import MainLayout from 'layouts/MainLayout';
-import React, { useEffect } from 'react';
+import _ from 'lodash';
+import React from 'react';
 import {
   Button,
   Card,
@@ -10,17 +16,11 @@ import {
   Row as BootstrapRow,
 } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import _ from 'lodash';
+import Swal from 'sweetalert2';
 import './updateProfile.scss';
-import axios from 'axios';
-import { useSelector, useDispatch } from 'react-redux';
-import { getUserProfileSelector} from 'app/selectors/userProfile';
-import { getUserProfile } from 'app/actions/userProfile';
-import { updateUserProfile } from 'app/actions/updateProfile';
-import { updateProfileSelector } from 'app/selectors/updateProfile';
-import { getAuth } from 'app/selectors/login';
-import { useNavigate} from 'react-router-dom';
 
 const Col = styled.div`
   display: inline-flex;
@@ -109,13 +109,45 @@ const ButtonWrapper = styled.div`
   width: 100%;
 `;
 
+const checkRegex = (userUpdate) => {
+  const regBirthday =
+    /^(?:19|20)\d\d([\/.-])(?:0[1-9]|1[012])\1(?:0[1-9]|[12]\d|3[01])$/;
+  const regGender = /^\d$/;
+  const regName =
+    /^((?![0-9\\~\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)\\_\\+\\=\\-\\[\]\\{\\}\\;\\:\\"\\\\/\\<\\>\\?]).){2,45}/;
+
+  const regLink =
+    /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
+  if (
+    !regName.test(userUpdate.Name) ||
+    userUpdate.Name.length < 2 ||
+    userUpdate.Name.length > 45
+  )
+    return {
+      result: 'error',
+      message: `Name invalid! ${
+        userUpdate.Name.length < 2 || userUpdate.Name.length > 45
+          ? 'Length must be 2-45 char'
+          : 'Name not contains special character'
+      }`,
+    };
+  if (!regGender.test(userUpdate.Gender))
+    return { result: 'error', message: 'Gender invalid' };
+  if (!regBirthday.test(userUpdate.Birthday))
+    return { result: 'error', message: 'Birthday invalid' };
+  if (userUpdate.Avatar ? !regLink.test(userUpdate.Avatar) : false)
+    return { result: 'error', message: 'Avatar Url invalid' };
+
+  return { result: 'success' };
+};
+
 function UpdateProfile() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const accountId = useSelector(getAuth)?.accountId;
-  React.useEffect(()=>{
+  React.useEffect(() => {
     dispatch(getUserProfile(accountId));
-  },[]);
+  }, []);
 
   const userInfor = useSelector(getUserProfileSelector);
   const fileImageRef = React.useRef(null);
@@ -124,7 +156,7 @@ function UpdateProfile() {
     new Date(userInfor?.Birthday)
   );
 
-  const [gender, setGender] = React.useState(userInfor?.Gender||2);
+  const [gender, setGender] = React.useState(userInfor?.Gender || 2);
   const [image, setImage] = React.useState(userInfor?.Avatar);
   const [name, setName] = React.useState(userInfor?.Name);
   const [message, setMessage] = React.useState('');
@@ -155,70 +187,45 @@ function UpdateProfile() {
     setName(e.target.value);
   };
 
-  const checkRegex = (userUpdate) => {
-    const regBirthday =
-      /^(?:19|20)\d\d([\/.-])(?:0[1-9]|1[012])\1(?:0[1-9]|[12]\d|3[01])$/;
-    const regGender = /^\d$/;
-    // const regName = /^([ \u00c0-\u01ffa-zA-Z'\-])+$/;
-    const regName =/^((?![0-9\\~\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)\\_\\+\\=\\-\\[\]\\{\\}\\;\\:\\"\\\\/\\<\\>\\?]).){2,45}/
-
-    const regLink =
-      /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
-    if (
-      !regName.test(userUpdate.Name) ||
-      userUpdate.Name.length < 2 ||
-      userUpdate.Name.length > 45
-    )
-      return {
-        result: 'error',
-        message: `Name invalid! ${
-          userUpdate.Name.length < 2 || userUpdate.Name.length > 45
-            ? 'Length must be 2-45 char'
-            : 'Name not contains special character'
-        }`,
-      };
-    if (!regGender.test(userUpdate.Gender))
-      return { result: 'error', message: 'Gender invalid' };
-    if (!regBirthday.test(userUpdate.Birthday))
-      return { result: 'error', message: 'Birthday invalid' };
-    if (userUpdate.Avatar ? !regLink.test(userUpdate.Avatar) : false)
-      return { result: 'error', message: 'Avatar Url invalid' };
-
-    return { result: 'success' };
-  };
   const onUpdateProfileHandler = async (e) => {
     e.preventDefault();
-    let userUpdate = {};
+    const userUpdate = {};
     userUpdate.Email = userInfor?.Email;
     userUpdate.Name = name;
     userUpdate.Birthday = startDate.toISOString().split('T')[0];
     userUpdate.Gender = gender;
-    let formData = new FormData();
-    let blob = await fetch(image).then((r) => r.blob());
+    const formData = new FormData();
+    const blob = await fetch(image).then((r) => r.blob());
     formData.append('file', blob);
-    formData.append('upload_preset', `${'exh5f6wa'}`);
-    formData.append('api_key', `${'827926361528927'}`);
-    if (image !== userInfor?.Avatar)
-      await axios
-        .post(`https://api.cloudinary.com/v1_1/${'dqkdfl2lp'}/upload`, formData)
-        .then((Response) => {
-          let imageTemp = Response.data.secure_url;
-          userUpdate.Avatar = imageTemp;
-        });
-    let tempCheck = checkRegex(userUpdate);
+    formData.append(
+      'upload_preset',
+      process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET
+    );
+    formData.append('api_key', process.env.REACT_APP_CLOUDINARY_API_KEY);
+    if (image !== userInfor?.Avatar) {
+      const res = await axios.post(
+        `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_NAME}/upload`,
+        formData
+      );
+      userUpdate.Avatar = res.data.secure_url;
+    }
+
+    const tempCheck = checkRegex(userUpdate);
     if (tempCheck.result === 'error') setMessage(tempCheck.message);
     else {
       setMessage('');
       dispatch(updateUserProfile(userUpdate));
-      alert("Update successfully, please reset page");
-
+      Swal.fire({
+        icon: 'success',
+        allowOutsideClick: false,
+        title: 'Update profile successfully!',
+      }).then((result) => {
+        if (result.value) {
+          navigate('/');
+        }
+      });
     }
   };
-
-  setTimeout(() => {
-    setMessage('');
-  }, 8000);
-  // const result1 = useSelector(updateProfileSelector);
 
   const onUploadImage = (e) => {
     fileImageRef.current.click();
@@ -228,9 +235,10 @@ function UpdateProfile() {
     const file = e.target.files[0];
     setImage(URL.createObjectURL(file));
   };
-  const handleBtnSkipClick = (e)=>{
-    navigate('/')
-  }
+
+  const handleBtnSkipClick = (e) => {
+    navigate('/');
+  };
 
   return (
     <BootstrapContainer fluid>
@@ -381,9 +389,7 @@ function UpdateProfile() {
                                     name="select"
                                     value="0"
                                     id="option-1"
-                                    defaultChecked={
-                                      userInfor.Gender === 0
-                                    }
+                                    defaultChecked={userInfor.Gender === 0}
                                     onChange={onGenderChange}
                                   />
                                   <input
@@ -399,8 +405,10 @@ function UpdateProfile() {
                                     name="select"
                                     value="2"
                                     id="option-3"
-                                    defaultChecked={userInfor.Gender === 2||
-                                      userInfor.Gender === null}
+                                    defaultChecked={
+                                      userInfor.Gender === 2 ||
+                                      userInfor.Gender === null
+                                    }
                                     onChange={onGenderChange}
                                   />
                                   <label
@@ -445,7 +453,7 @@ function UpdateProfile() {
                                   type="submit"
                                   variant="default"
                                   size="sm"
-                                  onClick ={handleBtnSkipClick}
+                                  onClick={handleBtnSkipClick}
                                 >
                                   Skip
                                 </Button>
@@ -470,7 +478,6 @@ function UpdateProfile() {
         </BootstrapContainer>
       </MainLayout>
     </BootstrapContainer>
-
   );
 }
 export default UpdateProfile;
