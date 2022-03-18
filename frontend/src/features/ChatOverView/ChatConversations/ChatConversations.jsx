@@ -80,7 +80,6 @@ const Tab = styled.div`
 function ChatConversations({ onSelectRoom }) {
   const accountId = useSelector(getAuth)?.accountId;
   const listConversation = useSelector(getConversations);
-  console.log(listConversation)
   const listConversationSorted = listConversation.sort(
     (a, b) => Date.parse(b.SentDate) - Date.parse(a.SentDate)
   );
