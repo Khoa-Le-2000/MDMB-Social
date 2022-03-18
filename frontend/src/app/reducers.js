@@ -4,6 +4,7 @@ import chatReducer from 'features/ChatOverView/ChatSlice';
 import socketReducer from 'features/ChatOverView/SocketSlice';
 import loginReducer from 'features/Login/LoginSlice';
 import registerReducer from 'features/Register/RegisterSlice';
+import previewLinkReducer from 'features/ChatOverView/ChatWindow/WindowContent/Messages/CardMessage/CardLinkSlice.js';
 import { combineReducers } from 'redux';
 import userProfileReducer from 'features/UpdateProfile/GetUserProfileSlice'
 import updateProfileReducer from 'features/UpdateProfile/UpdateProfileSlice'
@@ -17,6 +18,7 @@ const appReducer = combineReducers({
   userProfile:userProfileReducer,
   updateProfile:updateProfileReducer,
   socket: socketReducer,
+  previewLink:previewLinkReducer,
 });
 
 const rootReducer = (state, action) => {
