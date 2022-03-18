@@ -166,8 +166,12 @@ function CardConversation({ onSelectRoom, conversation }) {
                   <WrapperNewMessage>
                     <LengthNewMessage>{UnseenMessage}</LengthNewMessage>
                   </WrapperNewMessage>
-                ) : lastMessage && SeenDate ? (
-                  <SeenStatus Avatar={avatar} />
+                ) : lastMessage ? (
+                  SeenDate ? (
+                    <SeenStatus Avatar={avatar} />
+                  ) : (
+                    <SentStatus />
+                  )
                 ) : FromAccount !== roomId ? (
                   <SeenStatus Avatar={avatar} />
                 ) : (
