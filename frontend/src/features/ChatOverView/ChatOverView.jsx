@@ -20,7 +20,7 @@ import {
   addUserOnline,
   getListUsersOnline,
   initSocket,
-  removeUserOffline,
+  addUserOffline,
 } from 'app/actions/socket';
 import {
   getListConversation,
@@ -66,8 +66,8 @@ function ChatOverView() {
   React.useEffect(() => {
     if (!socket) {
       dispatch(initSocket(auth?.accountId, auth?.accessToken));
-      dispatch(getListConversation(auth?.accountId));
     }
+    dispatch(getListConversation(auth?.accountId));
   }, [auth?.accessToken, socket, dispatch]);
 
   React.useEffect(() => {
@@ -76,6 +76,16 @@ function ChatOverView() {
       dispatch(getListUsersOnline(data));
     });
   }, [listConversation, socket, dispatch]);
+
+  React.useEffect(() => {
+    console.log('check user online', socket);
+    socket?.on('user-online', function (accountId) {
+      dispatch(addUserOnline(accountId));
+    });
+    socket?.on('user-offline', function (accountId) {
+      dispatch(addUserOffline(accountId));
+    });
+  }, [dispatch, socket]);
 
   React.useEffect(() => {
     socket?.on('typing', (userId) => {

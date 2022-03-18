@@ -41,7 +41,7 @@ export const addUserOnline = (userId) => {
   };
 };
 
-export const removeUserOffline = (userId) => {
+export const addUserOffline = (userId) => {
   return {
     type: SocketActionTypes.USER_OFFLINE,
     payload: userId,
