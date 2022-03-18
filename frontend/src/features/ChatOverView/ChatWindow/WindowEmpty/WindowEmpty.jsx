@@ -127,11 +127,11 @@ function WindowEmpty() {
     <Wrapper>
       <WrapperTop>
         <Avatar>
-          <img src={userInfo.Avatar} alt="avatar" />
+          <img src={userInfo.Avatar||"https://res.cloudinary.com/dqkdfl2lp/image/upload/v1647584539/vdulyix9dgutgdphrstu.jpg"} alt="avatar" />
         </Avatar>
         <Tittle>
           <Greeting>Welcome!</Greeting>
-          <Name>{userInfo.Name}</Name>
+          <Name>{userInfo.Name||"Loading"}</Name>
         </Tittle>
         <EditProfile onClick={handleEditProfileClick}>Edit Profile</EditProfile>
       </WrapperTop>
@@ -145,7 +145,7 @@ function WindowEmpty() {
           <Button>Make a call!</Button>
         </Card>
       </WrapperBottom>
-      <Footer> You are signin as {userInfo.Email} </Footer>
+      <Footer> You are signin as {userInfo.Email||"Loading"} </Footer>
       <Footer2>
         {' '}
         Try switching accounts if you not see your contact history,{' '}

@@ -49,9 +49,10 @@ const Logo = styled.img`
   margin-top: 20px;
   content: url(${LogoImg});
   width: 4rem;
+  height: 4rem;
   justify-content: center;
   align-self: center;
-  border-radius: 30px;
+  border-radius: 50%;
   transition: all 0.3s ease-in-out;
   :hover {
     transform: scale(1.1);
@@ -138,7 +139,9 @@ function LefBar() {
   const handleLogoClick = ()=>{
     navigate('/');
   }
-
+  setTimeout(() => {
+    setShow(false);
+  }, 10000);
   return (
     <Wrapper className="LeftBar">
       <Logo onClick={handleLogoClick}/>
