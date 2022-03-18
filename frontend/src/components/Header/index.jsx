@@ -7,7 +7,7 @@ import Logo from 'assets/images/logos/logo.jpg';
 const HeaderWrapper = styled.header`
   position: sticky;
   top: 0;
-  z-index: 1081;
+  z-index: 1;
   position: relative;
   display: flex;
   flex-wrap: wrap;
@@ -119,7 +119,7 @@ const ProfileName = styled.div`
   border-radius: 100px;
 `;
 
-function Header({Name,Avatar}) {
+function Header({ Name, Avatar }) {
   return (
     <HeaderWrapper>
       <Container>
@@ -136,10 +136,7 @@ function Header({Name,Avatar}) {
             <HeaderProfile>
               <ProfileAvatarLink to={'/'}>
                 <ProfileAvatar>
-                  <img
-                    src={Avatar}
-                    alt=""
-                  />
+                  <img src={Avatar} alt="" />
                 </ProfileAvatar>
               </ProfileAvatarLink>
               <ProfileName>
