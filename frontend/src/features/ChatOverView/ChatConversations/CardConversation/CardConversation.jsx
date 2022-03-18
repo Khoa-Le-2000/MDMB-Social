@@ -71,6 +71,7 @@ const Time = styled.p`
   font-size: 0.8rem;
   text-align: right;
   width:100%;
+  padding-right: 5%;
 `;
 const StatusInner = styled.div`
   display: flex;

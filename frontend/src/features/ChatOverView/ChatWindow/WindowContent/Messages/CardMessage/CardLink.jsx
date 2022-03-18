@@ -13,11 +13,12 @@ const WarpLink = styled.div`
 const WarpRawLink = styled.a`
   font-size: 1.125rem;
   margin-left: 5px;
-  color: #0a58ca;
+  /* color: #0a58ca; */
   :hover {
     text-decoration: underline;
     color: #00bcd4;
   }
+  color:${({owner})=>owner?"#0a58ca":"#fffff" }
 `;
 
 const WarpTitle = styled.a`
@@ -62,10 +63,9 @@ function getUrlDisplay(url, urlInfor) {
   });
   return temp;
 }
-function CardLink({ url }) {
+function CardLink({ url, content,owner }) {
   const dispatch = useDispatch();
   const urlInfor = useSelector(getPreviewLinkSelector);
-  const rawUrl = url
 
   if (!url.match('^https?://')) url = 'http://' + url;
 
@@ -80,7 +80,7 @@ function CardLink({ url }) {
   // console.log(urlDisplay)
   return (
     <WarpLink onClick={handleClick}>
-      <WarpRawLink>{rawUrl}</WarpRawLink>
+      <WarpRawLink owner={owner}>{content}</WarpRawLink>
       <br />
       {urlDisplay?.image && <Thumbnail src={urlDisplay.image} alt="" />}
       {<WarpTitle>{urlDisplay?.title}</WarpTitle>}
