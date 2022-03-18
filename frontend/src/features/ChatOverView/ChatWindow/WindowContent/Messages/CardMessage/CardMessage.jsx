@@ -1,13 +1,12 @@
 import { CheckCircle } from '@styled-icons/heroicons-solid';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import CardLink from 'features/ChatOverView/ChatWindow/WindowContent/Messages/CardMessage/CardLink';
 import React from 'react';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import CardLink from './CardLink';
-const HtmlToReactParser = require('html-to-react').Parser;
-const htmlToReactParser = new HtmlToReactParser();
+import isValidURL from 'utils/validUrl';
 dayjs.extend(relativeTime);
 
 const Wrapper = styled.div`
@@ -116,17 +115,10 @@ function CardMessage(props) {
 
   const { roomId } = useParams();
   React.useEffect(() => {
-    if (!seenDate && +roomId === fromAccount) {
-      onSeenMessage(messageId);
+    if (!seenDate && +roomId === fromAccount && !seenDate) {
+      onSeenMessage(messageId, roomId);
     }
-  }, [roomId, fromAccount, seenDate, messageId]);
-
-  // const msg = content.replaceAll(
-  //   /(((https?:\/\/)|(www\.))[^\s]+)/g,
-  //   '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a></br>'
-  // );
-
-  // const isLink = validURL(content);
+  }, [roomId, seenDate, messageId]);
 
   const regexContainLink = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/
 
@@ -142,14 +134,15 @@ function CardMessage(props) {
       <Row>
         <Col lg={12}>
           {!owner && <Name>{name}</Name>}
-
           <WrapperContent owner={owner ? 1 : 0}>
             <WrapperMessage owner={owner ? 1 : 0}>
               <Message>
                 {type === 'text' ? (
-                  isLink ?
-                    <CardLink messageId={messageId}content ={content} url={url} />
-                  : htmlToReactParser.parse(content)                  
+                  isValidURL(content) ? (
+                    <CardLink url={content} />
+                  ) : (
+                    content
+                  )
                 ) : (
                   <img src={content} alt="" />
                 )}

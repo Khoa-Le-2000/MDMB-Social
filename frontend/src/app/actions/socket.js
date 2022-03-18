@@ -9,7 +9,7 @@ export const initSocket = (accountId, accessToken) => (dispatch) => {
   });
   if (socket) {
     dispatch({
-      type: SocketActionTypes.INIT_SOCKET,
+      type: SocketActionTypes.SOCKET_INIT,
       payload: socket,
     });
   }
@@ -24,5 +24,40 @@ export const connectSocket = () => {
 export const disconnectSocket = () => {
   return {
     type: SocketActionTypes.SOCKET_DISCONNECT,
+  };
+};
+
+export const getListUsersOnline = (listUsersOnline) => {
+  return {
+    type: SocketActionTypes.LIST_USERS_ONLINE,
+    payload: listUsersOnline,
+  };
+};
+
+export const addUserOnline = (userId) => {
+  return {
+    type: SocketActionTypes.USER_ONLINE,
+    payload: userId,
+  };
+};
+
+export const removeUserOffline = (userId) => {
+  return {
+    type: SocketActionTypes.USER_OFFLINE,
+    payload: userId,
+  };
+};
+
+export const userTyping = (userId) => {
+  return {
+    type: SocketActionTypes.USER_TYPING,
+    payload: userId,
+  };
+};
+
+export const userStopTyping = (user) => {
+  return {
+    type: SocketActionTypes.USER_STOP_TYPING,
+    payload: user,
   };
 };

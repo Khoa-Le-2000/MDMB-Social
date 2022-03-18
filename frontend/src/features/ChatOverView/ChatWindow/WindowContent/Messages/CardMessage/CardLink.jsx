@@ -73,7 +73,7 @@ function CardLink({ content, url }) {
     if(!checkUrlInState(url,urlInfor)) dispatch(getPreviewLink(url))
   }, []);
   function handleClick() {
-    window.open(url, '_blank');
+    window.open(urlPreview, '_blank');
   }
   var urlDisplay;
   if(checkUrlInState(url,urlInfor))  urlDisplay=getUrlDisplay(url,urlInfor);

@@ -9,7 +9,7 @@ const initialState = {
 };
 const conversationsReducer = (state = initialState, action) => {
   switch (action.type) {
-    case ConversationActionTypes.LIST_CONVERSATION_START:
+    case ConversationActionTypes.GET_LIST_CONVERSATION_START:
       return {
         ...state,
         isFetching: true,
@@ -17,16 +17,16 @@ const conversationsReducer = (state = initialState, action) => {
         success: false,
         message: null,
       };
-    case ConversationActionTypes.LIST_CONVERSATION_SUCCESS:
+    case ConversationActionTypes.GET_LIST_CONVERSATION_SUCCESS:
       return {
         ...state,
         isFetching: false,
         error: false,
         success: true,
         message: null,
-        listConversation: action.payload.listConversation,
+        listConversation: action.payload,
       };
-    case ConversationActionTypes.LIST_CONVERSATION_FAILURE:
+    case ConversationActionTypes.GET_LIST_CONVERSATION_FAILURE:
       return {
         ...state,
         isFetching: false,
@@ -34,6 +34,34 @@ const conversationsReducer = (state = initialState, action) => {
         success: false,
         message: action.payload.message,
       };
+
+    case ConversationActionTypes.UPDATE_MESSAGE_UNREAD_START:
+      return {
+        ...state,
+        isFetching: true,
+        error: false,
+        success: false,
+        message: null,
+      };
+    case ConversationActionTypes.UPDATE_MESSAGE_UNREAD_SUCCESS:
+      return {
+        ...state,
+        isFetching: true,
+        error: false,
+        success: false,
+        message: null,
+        listConversation: action.payload,
+      };
+    case ConversationActionTypes.UPDATE_LIST_CONVERSATION_WITH_NEW_MESSAGE_SUCCESS:
+      return {
+        ...state,
+        isFetching: false,
+        error: false,
+        success: true,
+        message: null,
+        listConversation: action.payload,
+      };
+
     default:
       return state;
   }

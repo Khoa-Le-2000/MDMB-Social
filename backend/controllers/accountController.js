@@ -111,11 +111,9 @@ function register(req, res) {
   ) {
     return res.status(401).send({
       result: "incorrect format for: empty value",
-      description: `Not allow empty value for${!Name || Name.trim() == null ? " Name" : ""}${
-        !Email || Email.trim() == null ? " Email" : ""
-      }${!Password || Password.trim() == null ? " Password" : ""}${
-        !Phone || Phone.trim() == null ? " Phone" : ""
-      }`,
+      description: `Not allow empty value for${!Name || Name.trim() == null ? " Name" : ""}${!Email || Email.trim() == null ? " Email" : ""
+        }${!Password || Password.trim() == null ? " Password" : ""}${!Phone || Phone.trim() == null ? " Phone" : ""
+        }`,
     });
   }
 
@@ -138,21 +136,19 @@ function register(req, res) {
   if (!regPhone.test(Phone)) {
     return res.status(401).send({
       result: "incorrect format for: Phone",
-      description: `${
-        10 == Phone.length || 11 == Phone.length
-          ? "Valid Phone look like this: 098333**** or 848333****"
-          : "Phone length 10-11 char"
-      }`,
+      description: `${10 == Phone.length || 11 == Phone.length
+        ? "Valid Phone look like this: 098333**** or 848333****"
+        : "Phone length 10-11 char"
+        }`,
     });
   }
   if (!regPass.test(Password)) {
     res.status(401).send({
       result: "incorrect format for: Password",
-      description: `${
-        6 <= Password.length && Password.length <= 45
-          ? "Valid Password must contains a Uppercase, a lowercase, and a number"
-          : "Password length 6-45 char"
-      }`,
+      description: `${6 <= Password.length && Password.length <= 45
+        ? "Valid Password must contains a Uppercase, a lowercase, and a number"
+        : "Password length 6-45 char"
+        }`,
     });
     return;
   }
@@ -224,42 +220,38 @@ function update(req, res) {
     if (!regPhone.test(Phone)) {
       return res.status(401).send({
         result: "incorrect format for: Phone",
-        description: `${
-          10 == Phone.length ? "Valid Phone look like this: 098333****" : "Phone length 10 char"
-        }`,
+        description: `${10 == Phone.length ? "Valid Phone look like this: 098333****" : "Phone length 10 char"
+          }`,
       });
     }
   if (Password)
     if (!regPass.test(Password)) {
       return res.status(401).send({
         result: "incorrect format for: Password",
-        description: `${
-          6 <= Password.length && Password.length <= 45
-            ? "Valid Password must contains a Uppercase, a lowercase, and a number"
-            : "Password length 6-45 char"
-        }`,
+        description: `${6 <= Password.length && Password.length <= 45
+          ? "Valid Password must contains a Uppercase, a lowercase, and a number"
+          : "Password length 6-45 char"
+          }`,
       });
     }
   if (Avatar)
     if (!regLink.test(Avatar) || Avatar.length > 200) {
       return res.status(401).send({
         result: "incorrect format for: Avatar",
-        description: `${
-          Avatar.length <= 200
-            ? "invalid Url: incorrect format for url"
-            : "length of link is too long"
-        }`,
+        description: `${Avatar.length <= 200
+          ? "invalid Url: incorrect format for url"
+          : "length of link is too long"
+          }`,
       });
     }
   if (Birthday)
     if (!regBirthday.test(Birthday)) {
       return res.status(401).send({
         result: "incorrect format for: Birthday",
-        description: `${
-          10 == Birthday.length
-            ? "Birthday look like this: (yyyy/mm/dd)"
-            : "Birthday length 10 char (yyyy/mm/dd)"
-        }`,
+        description: `${10 == Birthday.length
+          ? "Birthday look like this: (yyyy/mm/dd)"
+          : "Birthday length 10 char (yyyy/mm/dd)"
+          }`,
       });
     }
   if (Birthday)
@@ -296,7 +288,7 @@ function update(req, res) {
             Name ? Name.trim() : null,
             Avatar ? Avatar.trim() : null,
             Birthday ? Birthday.trim() : null,
-            Gender ? Gender.trim() : null,
+            Gender ? Gender : null,
             (result) => {
               if (result)
                 res.status(200).send({ result: "update successful", description: "successful" });
@@ -316,7 +308,7 @@ function update(req, res) {
           Name ? Name.trim() : null,
           Avatar ? Avatar.trim() : null,
           Birthday ? Birthday.trim() : null,
-          Gender ? Gender.trim() : null,
+          Gender ? Gender : null,
           (result) => {
             if (result) res.status(200).send({ result: "update successful" });
             else
@@ -413,9 +405,8 @@ function registerByGoogle(req, res) {
   ) {
     return res.status(401).send({
       result: "incorrect format for: empty value",
-      description: `Not allow empty value for${!Name || Name.trim() == null ? " Name" : ""}${
-        !Email || Email.trim() == null ? " Email" : ""
-      }${!Phone || Phone.trim() == null ? " Phone" : ""}`,
+      description: `Not allow empty value for${!Name || Name.trim() == null ? " Name" : ""}${!Email || Email.trim() == null ? " Email" : ""
+        }${!Phone || Phone.trim() == null ? " Phone" : ""}`,
     });
   }
 
@@ -438,11 +429,10 @@ function registerByGoogle(req, res) {
   if (!regPhone.test(Phone)) {
     return res.status(401).send({
       result: "incorrect format for: Phone",
-      description: `${
-        10 == Phone.length || 11 == Phone.length
-          ? "Valid Phone look like this: 098333**** or 848333****"
-          : "Phone length 10-11 char"
-      }`,
+      description: `${10 == Phone.length || 11 == Phone.length
+        ? "Valid Phone look like this: 098333**** or 848333****"
+        : "Phone length 10-11 char"
+        }`,
     });
   }
   AccountDAO.getAccountId(Email, Phone, (result) => {
@@ -474,8 +464,25 @@ async function getListFriendWithLastMessage(req, res) {
   var accountId = req.query.accountId;
   let listFriend = await AccountDAO.getListFriendWithLastMessage(accountId);
   await listFriend[0].forEach(async (friend) => {
+    if (friend.LastMessage != null) {
+      try {
+        friend.LastMessage = await cryptoMiddlware.decrypt(friend.LastMessage);
+      } catch (error) {
+      }
+    }
+  });
+  if (listFriend) res.status(200).send({ result: listFriend[0] });
+  else res.status(401).send({ result: "get list friend failed" });
+}
+
+async function getListFriendWithLastMessageCountUnseen(req, res) {
+  var accountId = req.query.accountId;
+  let listFriend = await AccountDAO.getListFriendWithLastMessageCountUnseen(accountId);
+  await listFriend[0].forEach(async (friend) => {
     try {
-      friend.LastMessage = await cryptoMiddlware.decrypt(friend.LastMessage);
+      if (friend.LastMessage != null) {
+        friend.LastMessage = await cryptoMiddlware.decrypt(friend.LastMessage);
+      }
     } catch (error) {
     }
   });
@@ -483,10 +490,10 @@ async function getListFriendWithLastMessage(req, res) {
   else res.status(401).send({ result: "get list friend failed" });
 }
 
-async function getAccountInfor(req,res){
+async function getAccountInfor(req, res) {
   var accountId = req.query.accountId;
   let AccountInfor = await AccountDAO.getAccountInfor(accountId);
-  if(AccountInfor[0])  res.status(200).send({ result: AccountInfor[0] }); 
+  if (AccountInfor[0]) res.status(200).send({ result: AccountInfor[0] });
   else res.status(201).send({ result: "get Account infor failed" });
 }
 
@@ -499,6 +506,7 @@ module.exports = {
   verifyEmail,
   getListFriend,
   getListFriendWithLastMessage,
+  getListFriendWithLastMessageCountUnseen,
   registerByGoogle,
   getAccountInfor
 };

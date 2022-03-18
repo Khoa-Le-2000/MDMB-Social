@@ -32,27 +32,19 @@ const ColBS = styled(Col)``;
 function ChatWindow({
   onSendMessage,
   onTyping,
-  currentWindow,
-  messages,
-  partner,
   typing,
-  isOnline,
   onSeenMessage,
 }) {
   const { roomId } = useParams();
   return (
     <Wrapper>
       <ChatHeader
-        partner={partner}
-        isOnline={isOnline}
-        WindowEmpty={+roomId === +currentWindow ? false : true}
+        WindowEmpty={roomId ? false : true}
       />
       <RowMessageInner>
         <WrapperMessageContent>
           <Col lg={12}>
             <WindowContent
-              messages={messages}
-              partner={partner}
               typing={typing}
               onSeenMessage={onSeenMessage}
             />
@@ -64,7 +56,7 @@ function ChatWindow({
           <ChatInput
             onSendMessage={onSendMessage}
             onTyping={onTyping}
-            WindowEmpty={+roomId === +currentWindow ? false : true}
+            WindowEmpty={roomId ? false : true}
           />
         </ColBS>
       </RowBS>

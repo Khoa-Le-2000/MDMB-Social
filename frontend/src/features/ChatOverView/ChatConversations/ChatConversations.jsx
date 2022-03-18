@@ -1,12 +1,10 @@
 import { Search } from '@styled-icons/heroicons-solid';
-import { getListConversation } from 'app/actions/conversations';
-import { getListMessageLatest } from 'app/selectors/chat';
 import { getConversations } from 'app/selectors/conversations';
 import { getAuth } from 'app/selectors/login';
-import CardConvention from 'features/ChatOverView/ChatConversations/CardConversation/CardConversation';
+import CardConversation from 'features/ChatOverView/ChatConversations/CardConversation/CardConversation';
 import React from 'react';
 import { Form, InputGroup as BsInputGroup } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 const SideBar = styled.div`
@@ -79,28 +77,25 @@ const Tab = styled.div`
   }
 `;
 
-function ChatConversations({ onSelectRoom, socket }) {
+function ChatConversations({ onSelectRoom }) {
+  const accountId = useSelector(getAuth)?.accountId;
   const listConversation = useSelector(getConversations);
 
-  const [listAccountOnline, setListAccountOnline] = React.useState([]);
+  const listConversationSorted = listConversation.sort(
+    (a, b) => Date.parse(b.SentDate) - Date.parse(a.SentDate)
+  );
+  const [allMessageSelected, setAllMessageSelected] = React.useState(true);
+  const [unreadMessageSelected, setUnreadMessageSelected] =
+    React.useState(false);
 
-  if (listConversation.length > 0)
-    listConversation.sort(
-      (a, b) => Date.parse(b.SentDate) - Date.parse(a.SentDate)
-    );
-
-  React.useEffect(() => {
-    const listConversationId = listConversation?.map(
-      (message) => message.AccountId
-    );
-    if (listConversationId?.length > 0) {
-      if (socket?.current) {
-        socket?.current?.emit('get online', listConversationId, (data) => {
-          setListAccountOnline(data);
-        });
-      }
-    }
-  }, [listConversation, socket]);
+  const handleAllMessageClick = () => {
+    setAllMessageSelected(true);
+    setUnreadMessageSelected(false);
+  };
+  const handleMessageUnreadClick = () => {
+    setAllMessageSelected(false);
+    setUnreadMessageSelected(true);
+  };
 
   return (
     <SideBar>
@@ -112,18 +107,37 @@ function ChatConversations({ onSelectRoom, socket }) {
         </InputSearch>
       </InputGroup>
       <Tabs>
-        <Tab selected>All Message</Tab>
-        <Tab>Message unread</Tab>
+        <Tab onClick={handleAllMessageClick} selected={allMessageSelected}>
+          All Message
+        </Tab>
+        <Tab
+          onClick={handleMessageUnreadClick}
+          selected={unreadMessageSelected}
+        >
+          Message unread
+        </Tab>
       </Tabs>
       <Wrapper>
-        {listConversation &&
-          listConversation?.map((item, index) => (
-            <CardConvention
+        {listConversationSorted?.map((item, index) =>
+          allMessageSelected ? (
+            <CardConversation
               key={index}
               onSelectRoom={onSelectRoom}
               conversation={item}
             />
-          ))}
+          ) : (
+            //message unread
+            !item.SeenDate &&
+            item.LastMessage &&
+            item.FromAccount !== accountId && (
+              <CardConversation
+                key={index}
+                onSelectRoom={onSelectRoom}
+                conversation={item}
+              />
+            )
+          )
+        )}
       </Wrapper>
     </SideBar>
   );
