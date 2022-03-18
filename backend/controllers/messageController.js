@@ -73,7 +73,7 @@ function getOlderMessage(req, res) {
 
 function getContentLinkPreview(req, res) {
     let url = req.query.url;
-    console.log(url);
+    // console.log(url);
 
     getLinkPreview(url)
         .then(data => {

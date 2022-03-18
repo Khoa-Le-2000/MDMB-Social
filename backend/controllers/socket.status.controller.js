@@ -4,9 +4,9 @@ function status(io, socket) {
     socket.on('get online', async (listAccountId, response) => {
         console.log("get online: " + listAccountId);
         let listOnline = [];
-        console.log(socketUser.getUsers());
+        // console.log(socketUser.getUsers());
         await listAccountId.forEach(async accountId => {
-            console.log("accountId: " + accountId);
+            // console.log("accountId: " + accountId);
             let user = await socketUser.getUserByAccountId(accountId);
             console.log(user);
             if (user) {
