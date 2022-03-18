@@ -1,19 +1,20 @@
-import { getLinkPreview } from 'link-preview-js';
+import { getLinkPreview } from '../../../../../../../node_modules/link-preview-js/build/index';
 import React from 'react';
 import styled from 'styled-components';
+import { useDispatch, useSelector } from 'react-redux';
+import { getPreviewLinkSelector } from 'app/selectors/previewLink';
+import { getPreviewLink } from 'app/actions/previewlink';
+import { useEffect } from 'react';
 
 const WarpLink = styled.div`
-  width: 300px;
+  width: 250px;
   cursor: pointer;
-  img {
-    width: 100%;
-    margin-bottom: 10px;
-    margin-top: 10px;
-  }
 `;
 
-const WrapRawLink = styled.a`
-  color: #00bcd4;
+const WarpRawLink = styled.a`
+  font-size: 1.125rem;
+  margin-left: 5px;
+  color: #0a58ca;
   :hover {
     text-decoration: underline;
     color: #00bcd4;
@@ -42,37 +43,49 @@ const WarpDescription = styled.div`
   -webkit-box-orient: vertical;
 `;
 
+const Thumbnail = styled.img`
+  width: 100%;
+  height: 250px;
+  margin-bottom: 10px;
+  border-radius: 4%;
+`;
+function checkUrlInState(url, urlInfor) {
+  var temp = false;
+  urlInfor.forEach((element) => {
+    if (element.url.includes(url)) temp = true;
+  });
+  return temp;
+}
+function getUrlDisplay(url, urlInfor) {
+  var temp;
+  urlInfor.forEach((element) => {
+    if (element.url.includes(url)) temp = element;
+  });
+  return temp;
+}
 function CardLink({ url }) {
-  const [title, setTitle] = React.useState('');
-  const [image, setImage] = React.useState('');
-  const [description, setDescription] = React.useState('');
-  const [urlPreview, setUrlPreview] = React.useState(url);
-  if (!urlPreview.match('^https?:\\/\\/')) {
-    setUrlPreview('http://' + urlPreview);
-  }
+  const dispatch = useDispatch();
+  const urlInfor = useSelector(getPreviewLinkSelector);
+  const rawUrl = url
 
-  const fetchLinkPreview = React.useCallback(async () => {
-    const data = await getLinkPreview(urlPreview);
-    setTitle(data.title);
-    setImage(data.images[0]);
-    setDescription(data.description);
-  }, [urlPreview]);
+  if (!url.match('^https?://')) url = 'http://' + url;
 
-  React.useEffect(() => {
-    fetchLinkPreview();
-  }, [fetchLinkPreview]);
-
+  useEffect(() => {
+    if (!checkUrlInState(url, urlInfor)) dispatch(getPreviewLink(url))
+  }, []);
   function handleClick() {
-    window.open(urlPreview, '_blank');
+    window.open(rawUrl, '_blank');
   }
-
+  var urlDisplay;
+  if (checkUrlInState(url, urlInfor)) urlDisplay = getUrlDisplay(url, urlInfor);
+  // console.log(urlDisplay)
   return (
     <WarpLink onClick={handleClick}>
-      <WrapRawLink>{url}</WrapRawLink>
+      <WarpRawLink>{rawUrl}</WarpRawLink>
       <br />
-      {image && <img src={image} alt="" />}
-      {!image && !description && <WarpTitle>{title}</WarpTitle>}
-      {description && <WarpDescription>{description}</WarpDescription>}
+      {urlDisplay?.image && <Thumbnail src={urlDisplay.image} alt="" />}
+      {<WarpTitle>{urlDisplay?.title}</WarpTitle>}
+      {urlDisplay?.description && <WarpDescription>{urlDisplay.description}</WarpDescription>}
     </WarpLink>
   );
 }
