@@ -44,8 +44,8 @@ const WarpDescription = styled.div`
 `;
 
 const Thumbnail = styled.img`
-  width: 100%;
-  height: 250px;
+  max-width: 100%;
+  max-height: 250px;
   margin-bottom: 10px;
   border-radius: 4%;
 `;
@@ -74,7 +74,7 @@ function CardLink({ url }) {
     if (!checkUrlInState(url, urlInfor)) dispatch(getPreviewLink(url))
   }, []);
   function handleClick() {
-    window.open(rawUrl, '_blank');
+    window.open(url, '_blank');
   }
   var urlDisplay;
   if (checkUrlInState(url, urlInfor)) urlDisplay = getUrlDisplay(url, urlInfor);
