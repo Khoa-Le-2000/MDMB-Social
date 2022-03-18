@@ -1,9 +1,10 @@
-import { getLinkPreview } from "link-preview-js";
+import { getLinkPreview } from 'link-preview-js';
 import React from 'react';
 import styled from 'styled-components';
 
 const WarpLink = styled.div`
   width: 300px;
+  cursor: pointer;
   img {
     width: 100%;
     margin-bottom: 10px;
@@ -11,7 +12,7 @@ const WarpLink = styled.div`
   }
 `;
 
-const WarpRawLink = styled.a`
+const WrapRawLink = styled.a`
   color: #00bcd4;
   :hover {
     text-decoration: underline;
@@ -42,26 +43,32 @@ const WarpDescription = styled.div`
 `;
 
 function CardLink({ url }) {
-  const [title, setTitle] = React.useState(true);
-  const [image, setImage] = React.useState(true);
-  const [description, setDescription] = React.useState(true);
+  const [title, setTitle] = React.useState('');
+  const [image, setImage] = React.useState('');
+  const [description, setDescription] = React.useState('');
+  const [urlPreview, setUrlPreview] = React.useState(url);
+  if (!urlPreview.match('^https?:\\/\\/')) {
+    setUrlPreview('http://' + urlPreview);
+  }
 
-  const rawUrl = url;
-
-  if (!url.match('^https?:\\/\\/')) url = 'http://' + url;
-  getLinkPreview(url).then((data) => {
+  const fetchLinkPreview = React.useCallback(async () => {
+    const data = await getLinkPreview(urlPreview);
     setTitle(data.title);
     setImage(data.images[0]);
     setDescription(data.description);
-  });
+  }, [urlPreview]);
+
+  React.useEffect(() => {
+    fetchLinkPreview();
+  }, [fetchLinkPreview]);
 
   function handleClick() {
-    window.open(url, '_blank');
+    window.open(urlPreview, '_blank');
   }
 
   return (
     <WarpLink onClick={handleClick}>
-      <WarpRawLink>{rawUrl}</WarpRawLink>
+      <WrapRawLink>{url}</WrapRawLink>
       <br />
       {image && <img src={image} alt="" />}
       {!image && !description && <WarpTitle>{title}</WarpTitle>}

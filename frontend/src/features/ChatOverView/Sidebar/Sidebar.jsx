@@ -26,6 +26,7 @@ const HoverEffect = css`
   }
 `;
 const Wrapper = styled.div`
+  background:red;
   height: 97%;
   width: 90%;
   background-color: #4849a1;
@@ -40,6 +41,7 @@ const Wrapper = styled.div`
 `;
 
 const Logo = styled.img`
+  cursor:pointer;
   color: #ffffff;
   justify-content: center;
   display: flex;
@@ -133,10 +135,13 @@ function LefBar() {
     dispatch(getUserProfile(auth.accountId));
     navigate('/update-profile');
   }
+  const handleLogoClick = ()=>{
+    navigate('/');
+  }
 
   return (
-    <Wrapper>
-      <Logo />
+    <Wrapper className="LeftBar">
+      <Logo onClick={handleLogoClick}/>
       <HoverWrapper>
         <MessageIcon active={true ? 1 : 0} />
       </HoverWrapper>

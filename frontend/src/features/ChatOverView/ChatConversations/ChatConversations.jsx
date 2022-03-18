@@ -1,15 +1,11 @@
 import { Search } from '@styled-icons/heroicons-solid';
-import { getListConversation } from 'app/actions/conversations';
-import { getListUsersOnline, initSocket } from 'app/actions/socket';
 import { getConversations } from 'app/selectors/conversations';
 import { getAuth } from 'app/selectors/login';
-import { getSocket } from 'app/selectors/socket';
 import CardConversation from 'features/ChatOverView/ChatConversations/CardConversation/CardConversation';
 import React from 'react';
 import { Form, InputGroup as BsInputGroup } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { useState } from 'react';
 
 const SideBar = styled.div`
   width: 100%;
@@ -82,10 +78,24 @@ const Tab = styled.div`
 `;
 
 function ChatConversations({ onSelectRoom }) {
+  const accountId = useSelector(getAuth)?.accountId;
   const listConversation = useSelector(getConversations);
+
   const listConversationSorted = listConversation.sort(
     (a, b) => Date.parse(b.SentDate) - Date.parse(a.SentDate)
   );
+  const [allMessageSelected, setAllMessageSelected] = React.useState(true);
+  const [unreadMessageSelected, setUnreadMessageSelected] =
+    React.useState(false);
+
+  const handleAllMessageClick = () => {
+    setAllMessageSelected(true);
+    setUnreadMessageSelected(false);
+  };
+  const handleMessageUnreadClick = () => {
+    setAllMessageSelected(false);
+    setUnreadMessageSelected(true);
+  };
 
   return (
     <SideBar>
@@ -97,17 +107,37 @@ function ChatConversations({ onSelectRoom }) {
         </InputSearch>
       </InputGroup>
       <Tabs>
-        <Tab selected>All Message</Tab>
-        <Tab>Message unread</Tab>
+        <Tab onClick={handleAllMessageClick} selected={allMessageSelected}>
+          All Message
+        </Tab>
+        <Tab
+          onClick={handleMessageUnreadClick}
+          selected={unreadMessageSelected}
+        >
+          Message unread
+        </Tab>
       </Tabs>
       <Wrapper>
-        {listConversationSorted?.map((item, index) => (
-          <CardConversation
-            key={index}
-            onSelectRoom={onSelectRoom}
-            conversation={item}
-          />
-        ))}
+        {listConversationSorted?.map((item, index) =>
+          allMessageSelected ? (
+            <CardConversation
+              key={index}
+              onSelectRoom={onSelectRoom}
+              conversation={item}
+            />
+          ) : (
+            //message unread
+            !item.SeenDate &&
+            item.LastMessage &&
+            item.FromAccount !== accountId && (
+              <CardConversation
+                key={index}
+                onSelectRoom={onSelectRoom}
+                conversation={item}
+              />
+            )
+          )
+        )}
       </Wrapper>
     </SideBar>
   );

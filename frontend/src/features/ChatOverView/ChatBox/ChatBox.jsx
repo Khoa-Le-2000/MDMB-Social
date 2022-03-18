@@ -1,15 +1,17 @@
 import { Send } from '@styled-icons/boxicons-solid';
 import { EmojiHappy } from '@styled-icons/heroicons-outline';
 import { PaperClip, Photograph } from '@styled-icons/heroicons-solid';
+import { getPartner } from 'app/selectors/chat';
 import { ReactComponent as StickerTest } from 'assets/images/icons/sticker.svg';
-import React from 'react';
-import { Col, Row } from 'react-bootstrap';
-import styled from 'styled-components';
-import { HoverMixin } from 'styles/mixinStyles';
 import { NimblePicker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
 import data from 'emoji-mart/data/google.json';
+import React from 'react';
+import { Col, Row } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import styled from 'styled-components';
+import { HoverMixin } from 'styles/mixinStyles';
 
 const Wrapper = styled.div`
   height: 100%;
@@ -109,13 +111,16 @@ function ChatBox({ onSendMessage, onTyping, WindowEmpty }) {
   const typingTimeoutRef = React.useRef(null);
   const [showPicker, setShowPicker] = React.useState(false);
   const { roomId } = useParams();
+  const partner = useSelector(getPartner);
 
   const handleKeyPress = (e) => {
     clearTimeout(typingTimeoutRef.current);
-    onTyping({
-      isTyping: true,
-      partnerId: roomId,
-    });
+    if (+partner.AccountId === +roomId) {
+      onTyping({
+        isTyping: true,
+        partnerId: roomId,
+      });
+    }
   };
 
   const handleKeyUp = (e) => {
@@ -124,10 +129,12 @@ function ChatBox({ onSendMessage, onTyping, WindowEmpty }) {
     setMessage(value);
     if (!onTyping) return;
     typingTimeoutRef.current = setTimeout(() => {
-      onTyping({
-        isTyping: false,
-        partnerId: roomId,
-      });
+      if (+partner.AccountId === +roomId) {
+        onTyping({
+          isTyping: false,
+          partnerId: roomId,
+        });
+      }
     }, 1000);
   };
 
@@ -136,6 +143,7 @@ function ChatBox({ onSendMessage, onTyping, WindowEmpty }) {
     if (!message || message.trim().length === 0) return;
     onSendMessage(message);
     setMessage('');
+    setShowPicker(false);
   };
 
   const onPreviewEmoji = () => {
