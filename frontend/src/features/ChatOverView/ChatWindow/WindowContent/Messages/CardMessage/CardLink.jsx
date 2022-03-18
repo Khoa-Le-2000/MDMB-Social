@@ -49,38 +49,39 @@ const Thumbnail = styled.img`
   margin-bottom: 10px;
   border-radius: 4%;
 `;
-function checkUrlInState(url,urlInfor){
+function checkUrlInState(url, urlInfor) {
   var temp = false;
   urlInfor.forEach((element) => {
-    if(element.url.includes(url)) temp=true;
+    if (element.url.includes(url)) temp = true;
   });
   return temp;
 }
-function getUrlDisplay(url,urlInfor){
+function getUrlDisplay(url, urlInfor) {
   var temp;
   urlInfor.forEach((element) => {
-    if(element.url.includes(url)) temp=element;
+    if (element.url.includes(url)) temp = element;
   });
   return temp;
 }
-function CardLink({ content, url }) {
+function CardLink({ url }) {
   const dispatch = useDispatch();
   const urlInfor = useSelector(getPreviewLinkSelector);
+  const rawUrl = url
 
   if (!url.match('^https?://')) url = 'http://' + url;
 
   useEffect(() => {
-    if(!checkUrlInState(url,urlInfor)) dispatch(getPreviewLink(url))
+    if (!checkUrlInState(url, urlInfor)) dispatch(getPreviewLink(url))
   }, []);
   function handleClick() {
-    window.open(urlPreview, '_blank');
+    window.open(rawUrl, '_blank');
   }
   var urlDisplay;
-  if(checkUrlInState(url,urlInfor))  urlDisplay=getUrlDisplay(url,urlInfor);
-  console.log(urlDisplay)
+  if (checkUrlInState(url, urlInfor)) urlDisplay = getUrlDisplay(url, urlInfor);
+  // console.log(urlDisplay)
   return (
     <WarpLink onClick={handleClick}>
-      <WarpRawLink>{content}</WarpRawLink>
+      <WarpRawLink>{rawUrl}</WarpRawLink>
       <br />
       {urlDisplay?.image && <Thumbnail src={urlDisplay.image} alt="" />}
       {<WarpTitle>{urlDisplay?.title}</WarpTitle>}
