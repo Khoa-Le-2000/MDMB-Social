@@ -33,6 +33,8 @@ const Avatar = styled.div`
     height: 100px;
     border-radius: 50%;
     border: 1px solid #c90d7b;
+    object-fit: cover;
+
   }
 `;
 const Name = styled.div`

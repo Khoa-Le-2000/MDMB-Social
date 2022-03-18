@@ -333,6 +333,7 @@ function UpdateProfile() {
                                       <button
                                         onClick={decreaseMonth}
                                         disabled={prevMonthButtonDisabled}
+                                        type='button'
                                       >
                                         {'<'}
                                       </button>
@@ -367,6 +368,7 @@ function UpdateProfile() {
                                       <button
                                         onClick={increaseMonth}
                                         disabled={nextMonthButtonDisabled}
+                                        type='button'
                                       >
                                         {'>'}
                                       </button>
@@ -450,7 +452,7 @@ function UpdateProfile() {
                             <Col>
                               <ButtonWrapper>
                                 <Button
-                                  type="submit"
+                                  // type="submit"
                                   variant="default"
                                   size="sm"
                                   onClick={handleBtnSkipClick}
