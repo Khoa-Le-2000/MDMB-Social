@@ -30,20 +30,21 @@ const Wrapper = styled.div`
 const Card = styled.div`
   display: flex;
   cursor: pointer;
-  justify-content: space-around;
 `;
 const CardContent = styled.div`
   display: flex;
   flex-direction: column;
-  width: 170px;
+  width: 48%;
 `;
 
 const Avatar = styled.div`
+  width: 20%;
   img {
     width: 52px;
     height: 52px;
     border-radius: 50%;
     object-fit: cover;
+    margin-left: 15%;
   }
 `;
 
@@ -63,15 +64,19 @@ const Message = styled.p`
   text-overflow: ellipsis;
   font-size: 14px;
 `;
-const Status = styled.div``;
+const Status = styled.div`
+  width:32%;
+`;
 const Time = styled.p`
   font-size: 0.8rem;
   text-align: right;
+  width:100%;
 `;
 const StatusInner = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  margin-right: 10%;
 `;
 const SentStatus = styled(CheckCircle)`
   width: 1rem;
