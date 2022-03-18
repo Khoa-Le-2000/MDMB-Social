@@ -4,8 +4,12 @@ import { getAuth } from 'app/selectors/login';
 import CardConversation from 'features/ChatOverView/ChatConversations/CardConversation/CardConversation';
 import React from 'react';
 import { Form, InputGroup as BsInputGroup, Dropdown } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
+import SearchChatConversation from 'features/ChatOverView/ChatConversations/Search/Search';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUserProfileSelector } from 'app/selectors/userProfile';
 
 const SideBar = styled.div`
   width: 100%;
@@ -83,21 +87,34 @@ const SearchingPopOut = styled.div`
   top: 100%;
   left: 0px;
   border-radius: 0 0 10px 10px;
-background-color: #efeff3;
-
+  background-color: #ffffff;
 `;
 const SearchForm = styled.div`
   position: relative;
   display: flex;
   align-items: stretch;
   width: 100%;
-  `;
+`;
 const SearchItemWrapper = styled.div`
-background-color: #efeff3;
+  cursor: pointer;
+`;
+const UserNotFound = styled.div`
+  height: 30px;
+  margin: 10px 0 0 10px;
+`;
 
-`
+function listFriendSearch(listFriend, searchValue) {
+  let tempListFriend = [];
+  listFriend.forEach((element) => {
+    if (element.Name.toLowerCase().includes(searchValue.toLowerCase()))
+      tempListFriend.push(element);
+  });
+  return tempListFriend;
+}
 
 function ChatConversations({ onSelectRoom }) {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const accountId = useSelector(getAuth)?.accountId;
   const listConversation = useSelector(getConversations);
   const listConversationSorted = listConversation.sort(
@@ -116,30 +133,65 @@ function ChatConversations({ onSelectRoom }) {
     setUnreadMessageSelected(true);
   };
   //Searching friend list
-  const [searchingFriendList, SetSearchingFriendList] =React.useState(listConversation);
-  const [showSearchForm, SetShowSearchForm] =React.useState(false);
+  const [searchingFriendList, setSearchingFriendList] =
+    React.useState(listConversation);
+  const [showListSearch, SetShowListSearch] = React.useState(false);
+  const [searchValue, setSearchValue] = React.useState('');
 
-  const handleSearchFromClick = ()=>{
-    SetShowSearchForm(true);
-  }
-  const handleUnShowSearchForm = ()=>{
-    SetShowSearchForm(false);
 
-  }
+
+  const handleSearchClick = (e) => {
+    SetShowListSearch(true);
+
+  };
+  const userInfor = useSelector(getUserProfileSelector);
+
+  const handleItemSelected = (AccountId) => {
+      navigate(`userinfor/${AccountId}`);
+  };
+  const handleSearchBlur = () => {
+    setTimeout(()=>{
+      SetShowListSearch(false);
+    },100)
+  };
+  const handleSearchChange = (e) => {
+    setSearchValue(e.target.value);
+  };
+  useEffect(() => {
+    setSearchingFriendList(listFriendSearch(listConversation, searchValue));
+  }, [searchValue]);
+
   return (
     <SideBar>
       <Logo> MDMB Social</Logo>
       <SearchForm>
-        <Form.Control placeholder="Searching" onFocus={handleSearchFromClick} onBlur={handleUnShowSearchForm}/>
+        <Form.Control
+          placeholder="Searching"
+          onClick={handleSearchClick}
+          onBlur={handleSearchBlur}
+          onChange={handleSearchChange}
+        />
         <InputSearch>
           <IconSearch />
         </InputSearch>
-        {showSearchForm&&<SearchingPopOut>
-          {searchingFriendList?.map((item,index)=>
-          (
-            <SearchItemWrapper key={index}>item</SearchItemWrapper>
-          ))}
-        </SearchingPopOut>}
+        {showListSearch && searchValue !== '' && (
+          <SearchingPopOut>
+            {searchingFriendList.length > 0 ? (
+              searchingFriendList?.map((item, index) => (
+                <SearchItemWrapper
+                  key={index}
+                  onClick={() => {
+                    handleItemSelected(item.AccountId);
+                  }}
+                >
+                  <SearchChatConversation item={item} />
+                </SearchItemWrapper>
+              ))
+            ) : (
+              <UserNotFound> Không có người dùng này!</UserNotFound>
+            )}
+          </SearchingPopOut>
+        )}
       </SearchForm>
       <Tabs>
         <Tab onClick={handleAllMessageClick} selected={allMessageSelected}>

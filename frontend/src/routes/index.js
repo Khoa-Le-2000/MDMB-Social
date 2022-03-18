@@ -9,6 +9,7 @@ import Landing from 'features/Landing/Landing';
 import Login from 'features/Login/Login';
 import Register from 'features/Register/Register';
 import UpdateProfile from 'features/UpdateProfile/UpdateProfile';
+import UserInfor from 'features/UserInfor/UserInfor';
 
 export const routesConfig = [
   {
@@ -40,6 +41,14 @@ export const routesConfig = [
     element: (
       <RequireAuth>
         <UpdateProfile />
+      </RequireAuth>
+    ),
+  },
+  {
+    path: PATH_NAME.USER_INFOR,
+    element: (
+      <RequireAuth>
+        <UserInfor />
       </RequireAuth>
     ),
   },

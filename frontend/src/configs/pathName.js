@@ -8,4 +8,5 @@ export const PATH_NAME = {
   CHAT_OVERVIEW: 'chat',
   CHAT_WINDOW: ':roomId',
   LANDING: 'landing',
+  USER_INFOR:'userinfor/:id',
 };

@@ -31,6 +31,8 @@ const HeaderInner = styled.div`
   align-items: center;
   height: 100%;
   padding: 0 10rem;
+  /* max-height: 10vh ; */
+
 `;
 
 const HeaderLogoLink = styled(Link)`
@@ -108,11 +110,13 @@ const ProfileLink = styled(Link)`
   align-items: center;
   justify-content: center;
   text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
 `;
 
 const ProfileName = styled.div`
   padding: 0.5rem 1rem;
-  position: relative;
   display: block;
   transform: scale(var(--ggs, 1));
   border: 2px solid transparent;

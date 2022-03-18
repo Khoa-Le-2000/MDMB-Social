@@ -8,6 +8,8 @@ import React from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Wrapper = styled.div`
   display: flex;
@@ -37,6 +39,10 @@ const Avatar = styled.div`
     border: 1px solid rgba(255, 255, 255, 0.75);
     border-radius: 50%;
     object-fit: cover;
+  }
+  &:hover{
+    cursor:pointer;
+    filter: brightness(120%);
   }
 `;
 const Name = styled.h3`
@@ -106,13 +112,20 @@ function ChatHeader({ WindowEmpty }) {
     setIsDark(!isDark);
   };
 
+  const navigate = useNavigate();
+  const {roomId} = useParams()
+  console.log(roomId)
+  const handleAvatarClick = ()=>{
+      navigate(`userinfor/${roomId}`);
+
+  }
   return (
     <Wrapper WindowEmpty={WindowEmpty}>
       <Row className="w-100">
         <Col lg={10}>
           <WrapperInfoPadding>
             <WrapperInfo>
-              <Avatar>
+              <Avatar onClick={handleAvatarClick}>
                 <img src={partner.Avatar} alt="avatar" />
               </Avatar>
               <WrapperText>
