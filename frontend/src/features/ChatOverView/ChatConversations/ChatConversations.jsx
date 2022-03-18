@@ -3,7 +3,7 @@ import { getConversations } from 'app/selectors/conversations';
 import { getAuth } from 'app/selectors/login';
 import CardConversation from 'features/ChatOverView/ChatConversations/CardConversation/CardConversation';
 import React from 'react';
-import { Form, InputGroup as BsInputGroup } from 'react-bootstrap';
+import { Form, InputGroup as BsInputGroup, Dropdown } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
@@ -76,6 +76,26 @@ const Tab = styled.div`
     }
   }
 `;
+const SearchingPopOut = styled.div`
+  position: absolute;
+  z-index: 2;
+  width: 100%;
+  top: 100%;
+  left: 0px;
+  border-radius: 0 0 10px 10px;
+background-color: #efeff3;
+
+`;
+const SearchForm = styled.div`
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  `;
+const SearchItemWrapper = styled.div`
+background-color: #efeff3;
+
+`
 
 function ChatConversations({ onSelectRoom }) {
   const accountId = useSelector(getAuth)?.accountId;
@@ -95,16 +115,32 @@ function ChatConversations({ onSelectRoom }) {
     setAllMessageSelected(false);
     setUnreadMessageSelected(true);
   };
+  //Searching friend list
+  const [searchingFriendList, SetSearchingFriendList] =React.useState(listConversation);
+  const [showSearchForm, SetShowSearchForm] =React.useState(false);
 
+  const handleSearchFromClick = ()=>{
+    SetShowSearchForm(true);
+  }
+  const handleUnShowSearchForm = ()=>{
+    SetShowSearchForm(false);
+
+  }
   return (
     <SideBar>
       <Logo> MDMB Social</Logo>
-      <InputGroup>
-        <Form.Control placeholder="Searching" />
+      <SearchForm>
+        <Form.Control placeholder="Searching" onFocus={handleSearchFromClick} onBlur={handleUnShowSearchForm}/>
         <InputSearch>
           <IconSearch />
         </InputSearch>
-      </InputGroup>
+        {showSearchForm&&<SearchingPopOut>
+          {searchingFriendList?.map((item,index)=>
+          (
+            <SearchItemWrapper key={index}>item</SearchItemWrapper>
+          ))}
+        </SearchingPopOut>}
+      </SearchForm>
       <Tabs>
         <Tab onClick={handleAllMessageClick} selected={allMessageSelected}>
           All Message
