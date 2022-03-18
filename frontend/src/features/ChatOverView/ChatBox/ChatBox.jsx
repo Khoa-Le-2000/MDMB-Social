@@ -70,7 +70,8 @@ const EmojiIcon = styled(EmojiHappy)`
   right: 100%;
   ${HoverMixin.default};
   border-radius: 50%;
-  margin: 12px 10px;
+  margin: 12px 8px;
+  background-color: #fff;
 `;
 
 const Input = styled.input`
@@ -176,6 +177,7 @@ function ChatBox({ onSendMessage, onTyping, WindowEmpty }) {
               value={message}
               onKeyDown={(e) => e.key === 'Enter' && onSendClick(e)}
               onFocus={() => setShowPicker(false)}
+              maxLength="1000"
             />
             <FeaturesRight>
               <WrapperDialog>

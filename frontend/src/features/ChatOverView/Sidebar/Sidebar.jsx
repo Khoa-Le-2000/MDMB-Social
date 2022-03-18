@@ -139,7 +139,9 @@ function LefBar() {
   const handleLogoClick = ()=>{
     navigate('/');
   }
-
+  setTimeout(() => {
+    setShow(false);
+  }, 10000);
   return (
     <Wrapper className="LeftBar">
       <Logo onClick={handleLogoClick}/>
