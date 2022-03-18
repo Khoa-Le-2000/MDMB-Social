@@ -143,6 +143,7 @@ function ChatBox({ onSendMessage, onTyping, WindowEmpty }) {
     if (!message || message.trim().length === 0) return;
     onSendMessage(message);
     setMessage('');
+    setShowPicker(false);
   };
 
   const onPreviewEmoji = () => {
