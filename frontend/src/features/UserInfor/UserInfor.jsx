@@ -77,8 +77,7 @@ const IntroduceHeader = styled.div`
 const Introduce = styled.div`
   text-align: center;
   width: 80%;
-  margin:auto;
-  
+  margin: auto;
 `;
 const IntroduceWrapper = styled.div`
   width: 100%;
@@ -104,39 +103,52 @@ const InformationHeader = styled.div`
   text-align: left;
   width: 50%;
   font-size: 1.25rem;
-`
+`;
 const Information = styled.div`
   text-align: left;
   width: 100%;
   font-size: 1.25rem;
-`
+`;
+function isEmpty(obj) {
+  for (var key in obj) {
+    if (obj.hasOwnProperty(key)) return false;
+  }
+  return true;
+}
+
 function UserInfor() {
   const dispatch = useDispatch();
-  const { id } = useParams();
-  React.useEffect(() => {
-    dispatch(getUserProfile(id));
-  }, []);
-  const userInfor = useSelector(getUserProfileSelector);
+
+//   const [yourInfor, setYourInfor] = React.useState({});
+//   let infor = useSelector(getUserProfileSelector);
+//   if (isEmpty(yourInfor)) {
+//     setYourInfor(infor);
+// }
+
+const { id } = useParams();
+dispatch(getUserProfile('204')).then(value=>console.log)
+// dispatch(getUserProfile(id));
+// React.useEffect(() => {
+// }, []);
+// const userInfor = useSelector(getUserProfileSelector);
+const userInfor ='';
+const yourInfor=''
   // get your userInfor
-  const search = useLocation().search;
-  const Name = new URLSearchParams(search).get('yourname');
-  const Avatar = new URLSearchParams(search).get('youravatar');
 
   return (
     <BootstrapContainer fluid>
-      <MainLayout Name={Name} Avatar={Avatar}>
+      <MainLayout Name={yourInfor?.Name} Avatar={yourInfor?.Avatar}>
         <Wrapper>
           <CardProfile>
             <AvatarWrapper>
-              <img src={userInfor.Avatar}></img>
+              <img src={userInfor?.Avatar}></img>
             </AvatarWrapper>
             <LineWrapper>
-              <NameCard>{userInfor.Name}</NameCard>
+              <NameCard>{userInfor?.Name}</NameCard>
             </LineWrapper>
             <LineWrapper>
               <ButtonDefault className="btn">
-                <AddFriendIcon /> 
-                 {' '}Add Friend
+                <AddFriendIcon /> Add Friend
               </ButtonDefault>
               <Button>
                 <ChatIcon /> Direct Message
@@ -152,14 +164,19 @@ function UserInfor() {
               </IntroduceWrapper>
             </LineWrapper>
             <LineWrapper>
-                <InformationHeader>Birthday:</InformationHeader>
-                <Information>{userInfor.Birthday.split('T')[0]}</Information>
+              <InformationHeader>Birthday:</InformationHeader>
+              <Information>{userInfor?.Birthday?.split('T')[0]}</Information>
             </LineWrapper>
             <LineWrapper>
-                <InformationHeader>Gender:</InformationHeader>
-                <Information>{userInfor.Gender==0?"Male":(userInfor.Gender==1?"Female":"Unset")}</Information>
+              <InformationHeader>Gender:</InformationHeader>
+              <Information>
+                {userInfor.Gender == 0
+                  ? 'Male'
+                  : userInfor.Gender == 1
+                  ? 'Female'
+                  : 'Unset'}
+              </Information>
             </LineWrapper>
-
           </CardProfile>
         </Wrapper>
       </MainLayout>
