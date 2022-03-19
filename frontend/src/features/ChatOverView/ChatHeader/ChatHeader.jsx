@@ -24,7 +24,6 @@ const WrapperInfoPadding = styled.div``;
 
 const WrapperInfo = styled.div`
   display: flex;
-  width: 100%;
 `;
 const WrapperText = styled.div`
   display: flex;
@@ -40,8 +39,8 @@ const Avatar = styled.div`
     border-radius: 50%;
     object-fit: cover;
   }
-  &:hover{
-    cursor:pointer;
+  &:hover {
+    cursor: pointer;
     filter: brightness(120%);
   }
 `;
@@ -49,6 +48,7 @@ const Name = styled.h3`
   font-size: 1.2rem;
   font-weight: bold;
   margin-bottom: 5px;
+  text-overflow: ellipsis;
 `;
 const Status = styled.span`
   font-size: 0.8rem;
@@ -56,7 +56,8 @@ const Status = styled.span`
   padding: 2px 5px;
   border-radius: 5px;
 `;
-const WrapperFeaturesPadding = styled.div``;
+const WrapperFeaturesPadding = styled.div`
+`;
 const Features = styled.div`
   display: flex;
   align-items: center;
@@ -98,12 +99,24 @@ const Offline = styled(Circle)`
   margin-bottom: 0.2rem;
   color: #aaa;
 `;
-
-const FutureSwitchWrapper = styled(Feature)``;
+const StyledColLeft = styled(Col)`
+  width: 80%;
+  @media (max-width:1000px){
+  width: calc(100% - 200px);
+  }
+`;
+const StyledColRight = styled(Col)`
+  width: 20%;
+  margin-left:auto;
+  @media (max-width:1000px){
+  width: 200px;
+  }
+`
+const FutureSwitchWrapper = styled(Feature)`
+`;
 
 const StatusText = styled.span``;
 function ChatHeader({ WindowEmpty }) {
-
   const [isDark, setIsDark] = useToggle(false);
   const listAccountOnline = useSelector(getUsersOnline);
   const partner = useSelector(getPartner);
@@ -113,15 +126,14 @@ function ChatHeader({ WindowEmpty }) {
   };
 
   const navigate = useNavigate();
-  const {roomId} = useParams()
-  const handleAvatarClick = ()=>{
-      navigate(`userinfor/${roomId}`);
-
-  }
+  const { roomId } = useParams();
+  const handleAvatarClick = () => {
+    navigate(`userinfor/${roomId}`);
+  };
   return (
     <Wrapper WindowEmpty={WindowEmpty}>
       <Row className="w-100">
-        <Col lg={10}>
+        <StyledColLeft lg={10}>
           <WrapperInfoPadding>
             <WrapperInfo>
               <Avatar onClick={handleAvatarClick}>
@@ -145,8 +157,8 @@ function ChatHeader({ WindowEmpty }) {
               </WrapperText>
             </WrapperInfo>
           </WrapperInfoPadding>
-        </Col>
-        <Col lg={2}>
+        </StyledColLeft>
+        <StyledColRight lg={2}>
           <WrapperFeaturesPadding className="h-100">
             <Features className="h-100">
               <FutureSwitchWrapper onClick={toggleTheme}>
@@ -160,7 +172,7 @@ function ChatHeader({ WindowEmpty }) {
               </FeatureOtherWrapper>
             </Features>
           </WrapperFeaturesPadding>
-        </Col>
+        </StyledColRight>
       </Row>
     </Wrapper>
   );

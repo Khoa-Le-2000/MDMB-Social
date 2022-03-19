@@ -32,7 +32,7 @@ import LeftSide from 'features/Contact/LeftSide/LeftSide';
 const Wrapper = styled(Container)`
   height: 100vh;
   overflow: hidden;
-  padding-right: 0;
+  padding: 0;
   flex-direction: row;
   display: flex;
 `;
@@ -54,10 +54,12 @@ const LeftBar = styled(Col)`
   min-width: 80px;
   width: 80px;
   background-color: #efeff3;
+  margin:0px;
 `;
 const LeftSideWrapper = styled.div`
-  width: 400px;
-  /* background-color: red; */
+  min-width:380px;
+  background-color: #efeff3;
+  padding:5px;
 `;
 const RightSideWrapper = styled.div`
   /* background-color: blue; */
@@ -67,14 +69,14 @@ const RightSideWrapper = styled.div`
 export default function Contact() {
   return (
     <Wrapper fluid>
-      <LeftBar lg={1}>
+      <LeftBar >
         <Sidebar ContactActive={true} />
       </LeftBar>
 
       <LeftSideWrapper>
         <LeftSide />
       </LeftSideWrapper>
-      <RightSideWrapper>a</RightSideWrapper>
+      <RightSideWrapper></RightSideWrapper>
     </Wrapper>
   );
 }

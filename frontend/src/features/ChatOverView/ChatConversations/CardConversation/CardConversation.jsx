@@ -18,6 +18,7 @@ const Wrapper = styled.div`
   transition-duration: 0.2s;
   overflow-y: hidden;
   overflow-x: hidden;
+  border-bottom: 1px solid #ced4da;
   border-left: ${(props) => (props.checked ? '3px solid #cd556b' : 'none')};
   background: ${(props) =>
     props.checked

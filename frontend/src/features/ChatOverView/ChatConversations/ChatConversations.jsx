@@ -10,6 +10,7 @@ import SearchChatConversation from 'features/ChatOverView/ChatConversations/Sear
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserProfileSelector } from 'app/selectors/userProfile';
+import { getListConversation } from 'app/actions/conversations';
 
 const SideBar = styled.div`
   width: 100%;
@@ -26,6 +27,9 @@ const Logo = styled.div`
   height: 7%;
   align-self: center;
   padding-top: 3%;
+  @media (max-width:1250px){
+    padding-bottom:3%;
+  }
 `;
 const InputGroup = styled(BsInputGroup)`
   margin-bottom: 10px;
@@ -127,10 +131,14 @@ function ChatConversations({ onSelectRoom }) {
   const handleAllMessageClick = () => {
     setAllMessageSelected(true);
     setUnreadMessageSelected(false);
+    dispatch(getListConversation(accountId));
+
   };
   const handleMessageUnreadClick = () => {
     setAllMessageSelected(false);
     setUnreadMessageSelected(true);
+    dispatch(getListConversation(accountId));
+
   };
   //Searching friend list
   const [searchingFriendList, setSearchingFriendList] =
@@ -138,29 +146,27 @@ function ChatConversations({ onSelectRoom }) {
   const [showListSearch, SetShowListSearch] = React.useState(false);
   const [searchValue, setSearchValue] = React.useState('');
 
-
-
   const handleSearchClick = (e) => {
     SetShowListSearch(true);
-
   };
   const userInfor = useSelector(getUserProfileSelector);
 
   const handleItemSelected = (AccountId) => {
-      navigate(`userinfor/${AccountId}`);
+    navigate(`/userinfor/${AccountId}`);
   };
   const handleSearchBlur = () => {
-    setTimeout(()=>{
+    setTimeout(() => {
       SetShowListSearch(false);
-    },100)
+    }, 100);
   };
   const handleSearchChange = (e) => {
     setSearchValue(e.target.value);
   };
   useEffect(() => {
-    setSearchingFriendList(listFriendSearch(listConversationSorted, searchValue));
+    setSearchingFriendList(
+      listFriendSearch(listConversationSorted, searchValue)
+    );
   }, [searchValue]);
-
   return (
     <SideBar>
       <Logo> MDMB Social</Logo>

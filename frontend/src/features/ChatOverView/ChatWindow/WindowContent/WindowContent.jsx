@@ -7,6 +7,7 @@ import styled from 'styled-components';
 
 const Wrapper = styled.div`
   padding: 0px 5px;
+  width: 100%;
 `;
 
 function WindowContent({ typing, onSeenMessage }) {
