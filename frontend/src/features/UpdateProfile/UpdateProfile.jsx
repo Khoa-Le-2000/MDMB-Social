@@ -192,7 +192,7 @@ function UpdateProfile() {
     const userUpdate = {};
     userUpdate.Email = userInfor?.Email;
     userUpdate.Name = name;
-    userUpdate.Birthday = startDate.toISOString().split('T')[0];
+    userUpdate.Birthday = startDate?.toISOString().split('T')[0];
     userUpdate.Gender = gender;
     const formData = new FormData();
     const blob = await fetch(image).then((r) => r.blob());

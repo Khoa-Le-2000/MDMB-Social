@@ -15,6 +15,10 @@ const userApi = {
     const url = `/account/account-information?accountId=${accountId}`;
     return axiosClient.get(url);
   },
+  getPartnerAccountInfor: (accountId) => {
+    const url = `/account/account-information?accountId=${accountId}`;
+    return axiosClient.get(url);
+  },
 
 };
 
