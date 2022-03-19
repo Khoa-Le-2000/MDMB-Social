@@ -9,7 +9,7 @@ import { combineReducers } from 'redux';
 import userProfileReducer from 'features/UpdateProfile/GetUserProfileSlice'
 import updateProfileReducer from 'features/UpdateProfile/UpdateProfileSlice'
 import storage from 'redux-persist/lib/storage';
-
+import partnerProfileReducer from 'features/UserInfor/PartnerInforSlice'
 const appReducer = combineReducers({
   login: loginReducer,
   register: registerReducer,
@@ -19,6 +19,7 @@ const appReducer = combineReducers({
   updateProfile:updateProfileReducer,
   socket: socketReducer,
   previewLink:previewLinkReducer,
+  partnerProfile:partnerProfileReducer,
 });
 
 const rootReducer = (state, action) => {

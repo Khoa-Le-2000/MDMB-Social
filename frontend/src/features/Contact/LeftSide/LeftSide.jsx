@@ -111,48 +111,30 @@ function listFriendSearch(listFriend, searchValue) {
   });
   return tempListFriend;
 }
-
-function ChatConversations({ onSelectRoom }) {
+export default function LeftSide() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const accountId = useSelector(getAuth)?.accountId;
   const listConversation = useSelector(getConversations);
   const listConversationSorted = listConversation.sort(
     (a, b) => Date.parse(b.SentDate) - Date.parse(a.SentDate)
   );
-  const [allMessageSelected, setAllMessageSelected] = React.useState(true);
-  const [unreadMessageSelected, setUnreadMessageSelected] =
-    React.useState(false);
-
-  const handleAllMessageClick = () => {
-    setAllMessageSelected(true);
-    setUnreadMessageSelected(false);
-  };
-  const handleMessageUnreadClick = () => {
-    setAllMessageSelected(false);
-    setUnreadMessageSelected(true);
-  };
+ 
   //Searching friend list
   const [searchingFriendList, setSearchingFriendList] =
     React.useState(listConversation);
   const [showListSearch, SetShowListSearch] = React.useState(false);
   const [searchValue, setSearchValue] = React.useState('');
 
-
-
   const handleSearchClick = (e) => {
     SetShowListSearch(true);
-
   };
-  const userInfor = useSelector(getUserProfileSelector);
 
   const handleItemSelected = (AccountId) => {
-      navigate(`userinfor/${AccountId}`);
+    navigate(`userinfor/${AccountId}`);
   };
   const handleSearchBlur = () => {
-    setTimeout(()=>{
+    setTimeout(() => {
       SetShowListSearch(false);
-    },100)
+    }, 100);
   };
   const handleSearchChange = (e) => {
     setSearchValue(e.target.value);
@@ -162,7 +144,7 @@ function ChatConversations({ onSelectRoom }) {
   }, [searchValue]);
 
   return (
-    <SideBar>
+    <LeftSide>
       <Logo> MDMB Social</Logo>
       <SearchForm>
         <Form.Control
@@ -193,40 +175,6 @@ function ChatConversations({ onSelectRoom }) {
           </SearchingPopOut>
         )}
       </SearchForm>
-      <Tabs>
-        <Tab onClick={handleAllMessageClick} selected={allMessageSelected}>
-          All Message
-        </Tab>
-        <Tab
-          onClick={handleMessageUnreadClick}
-          selected={unreadMessageSelected}
-        >
-          Message unread
-        </Tab>
-      </Tabs>
-      <Wrapper>
-        {listConversationSorted?.map((item, index) =>
-          allMessageSelected ? (
-            <CardConversation
-              key={index}
-              onSelectRoom={onSelectRoom}
-              conversation={item}
-            />
-          ) : (
-            //message unread
-            !item.SeenDate &&
-            item.LastMessage &&
-            item.FromAccount !== accountId && (
-              <CardConversation
-                key={index}
-                onSelectRoom={onSelectRoom}
-                conversation={item}
-              />
-            )
-          )
-        )}
-      </Wrapper>
-    </SideBar>
+    </LeftSide>
   );
 }
-export default ChatConversations;

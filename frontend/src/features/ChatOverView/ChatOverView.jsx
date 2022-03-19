@@ -49,7 +49,7 @@ const ColBS2 = styled(Col)`
 const LeftBar = styled(Col)`
   padding-left: 0;
   padding-right: 0;
-  width: 6%;
+  width: 80px;
   background-color: #efeff3;
 `;
 
@@ -161,8 +161,8 @@ function ChatOverView() {
   return socket ? (
     <Wrapper fluid>
       <RowBS>
-        <LeftBar lg={1} xs={1} md={1}>
-          <Sidebar />
+        <LeftBar lg={1} xs={1} md={1} >
+          <Sidebar MessageActive={true}/>
         </LeftBar>
         <ColBS1 lg={3} xs={3} md={3}>
           <ChatConversations onSelectRoom={handleSelectRoomClick} />

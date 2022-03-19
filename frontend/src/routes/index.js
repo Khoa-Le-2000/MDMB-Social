@@ -4,12 +4,14 @@ import NotFound from 'features/404/NotFound';
 import ChatOverView from 'features/ChatOverView/ChatOverView';
 import WindowContent from 'features/ChatOverView/ChatWindow/WindowContent/WindowContent';
 import WindowEmpty from 'features/ChatOverView/ChatWindow/WindowEmpty/WindowEmpty';
+import Contact from 'features/Contact/Contact';
 import Dashboard from 'features/Dashboard/Dashboard';
 import Landing from 'features/Landing/Landing';
 import Login from 'features/Login/Login';
 import Register from 'features/Register/Register';
 import UpdateProfile from 'features/UpdateProfile/UpdateProfile';
 import UserInfor from 'features/UserInfor/UserInfor';
+
 
 export const routesConfig = [
   {
@@ -49,6 +51,14 @@ export const routesConfig = [
     element: (
       <RequireAuth>
         <UserInfor />
+      </RequireAuth>
+    ),
+  },
+  {
+    path: PATH_NAME.CONTACT,
+    element: (
+      <RequireAuth>
+        <Contact />
       </RequireAuth>
     ),
   },

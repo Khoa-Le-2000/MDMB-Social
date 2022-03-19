@@ -114,7 +114,6 @@ function ChatHeader({ WindowEmpty }) {
 
   const navigate = useNavigate();
   const {roomId} = useParams()
-  console.log(roomId)
   const handleAvatarClick = ()=>{
       navigate(`userinfor/${roomId}`);
 
