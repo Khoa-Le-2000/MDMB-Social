@@ -55,6 +55,8 @@ const Status = styled.span`
   color: #aaa;
   padding: 2px 5px;
   border-radius: 5px;
+  background-color: red;
+  width: 100%;
 `;
 const WrapperFeaturesPadding = styled.div`
 `;
@@ -102,14 +104,14 @@ const Offline = styled(Circle)`
 const StyledColLeft = styled(Col)`
   width: 80%;
   @media (max-width:1000px){
-  width: calc(100% - 200px);
+  width: calc(100% - 180px);
   }
 `;
 const StyledColRight = styled(Col)`
   width: 20%;
   margin-left:auto;
   @media (max-width:1000px){
-  width: 200px;
+  width: 180px;
   }
 `
 const FutureSwitchWrapper = styled(Feature)`

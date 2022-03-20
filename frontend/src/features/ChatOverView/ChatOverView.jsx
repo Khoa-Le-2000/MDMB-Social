@@ -44,7 +44,7 @@ const ColBS1 = styled(Col)`
   background-color: #efeff3;
   width:25%;
   @media (max-width: 1250px) {
-    width: calc(100% - 80px);
+    width: calc(100% - 90px);
     display: ${props=>props.roomIdSelected?'none':"unset"}
   }
 `;
@@ -53,7 +53,7 @@ const ColBS2 = styled(Col)`
   padding-right: 0;
   width: calc(75% - 80px);
   @media (max-width: 1250px) {
-    width: calc(100% - 80px);
+    width: calc(100% - 90px);
     display: ${props=>props.roomIdSelected?'unset':"none"}
   }
 `;
