@@ -137,7 +137,7 @@ function WindowEmpty() {
       </WrapperTop>
       <WrapperBottom>
         <Card>
-          <Intro> Easly to connect with people</Intro>
+          <Intro> Easily to connect with people</Intro>
           <Button>Add Friend!</Button>
         </Card>
         <Card>
