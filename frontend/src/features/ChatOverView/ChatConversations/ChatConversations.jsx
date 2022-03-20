@@ -131,13 +131,13 @@ function ChatConversations({ onSelectRoom }) {
   const handleAllMessageClick = () => {
     setAllMessageSelected(true);
     setUnreadMessageSelected(false);
-    dispatch(getListConversation(accountId));
+    // dispatch(getListConversation(accountId));
 
   };
   const handleMessageUnreadClick = () => {
     setAllMessageSelected(false);
     setUnreadMessageSelected(true);
-    dispatch(getListConversation(accountId));
+    // dispatch(getListConversation(accountId));
 
   };
   //Searching friend list
