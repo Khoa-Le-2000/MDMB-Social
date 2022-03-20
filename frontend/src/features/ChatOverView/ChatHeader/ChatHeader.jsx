@@ -55,7 +55,6 @@ const Status = styled.span`
   color: #aaa;
   padding: 2px 5px;
   border-radius: 5px;
-  background-color: red;
   width: 100%;
 `;
 const WrapperFeaturesPadding = styled.div`
