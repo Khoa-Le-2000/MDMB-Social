@@ -11,6 +11,7 @@ import { UserPlus } from '@styled-icons/boxicons-solid';
 
 const RightSideWrapper = styled.div`
   width: 100%;
+  border-left: 1px solid black;
 `;
 const CardRecommendFriend = styled.div`
   width: 15.1rem;
@@ -20,7 +21,7 @@ const CardRecommendFriend = styled.div`
   display: flex;
   flex-direction: column;
   padding: 0.9rem;
-  border: 1px solid #000000;
+  border: 1px solid #d6dbe0;
   margin: 10px;
   @media (max-width: 1250px) {
     width: 12.5rem;
@@ -43,6 +44,16 @@ const FriendRecommend = styled.div`
     justify-content: space-around;
   }
 `;
+const Header = styled.div`
+  padding:10px;
+  width: 100%;
+  background-color: #efeff3;
+  border-bottom: 1px solid #d6dbe0;
+`;
+const Recommend = styled.div`
+  margin:4px 0 5px 10px;
+  color:#3a4bcb;
+`
 const Avatar = styled.div`
   text-align: center;
   img {
@@ -108,6 +119,8 @@ const AddFriendIcon = styled(UserPlus)`
 export default function RightSide() {
   return (
     <RightSideWrapper>
+      <Header>Friend you may know...</Header>
+      <Recommend>Recommend (33 <AddFriendIcon/>)</Recommend>
       <FriendRecommend>
         {[1, 2, 3, 4, 5, 6, 6, 1, 2, 3, 4, 5, 6, 6, 1, 2, 3, 4, 5, 6, 6].map(
           (item, index) => (
@@ -120,7 +133,7 @@ export default function RightSide() {
                 />
               </Avatar>
               <Name>Dino</Name>
-              <Description>From friend recommened</Description>
+              <Description>From friend recommended</Description>
               <AddfriendButton>
                 <AddFriendIcon /> Add Friend
               </AddfriendButton>
