@@ -24,7 +24,7 @@ const Name = styled.div`
 width:70%;
 `
 const CloseIcon = styled(X)`
-width:10%;
+width:2rem;
 justify-content: center;
 padding:0.4rem;
 `

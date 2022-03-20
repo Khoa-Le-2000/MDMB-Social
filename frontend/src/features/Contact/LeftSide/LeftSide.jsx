@@ -87,6 +87,7 @@ const SearchingPopOut = styled.div`
   width: 100%;
   top: 100%;
   left: 0px;
+  width: 86%;
   border-radius: 0 0 10px 10px;
   background-color: #ffffff;
 `;

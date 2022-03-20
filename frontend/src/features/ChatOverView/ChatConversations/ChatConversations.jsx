@@ -87,7 +87,7 @@ const Tab = styled.div`
 const SearchingPopOut = styled.div`
   position: absolute;
   z-index: 2;
-  width: 100%;
+  width: 86%;
   top: 100%;
   left: 0px;
   border-radius: 0 0 10px 10px;
