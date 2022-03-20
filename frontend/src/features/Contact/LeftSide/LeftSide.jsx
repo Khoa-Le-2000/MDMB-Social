@@ -11,22 +11,23 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserProfileSelector } from 'app/selectors/userProfile';
 
-const SideBar = styled.div`
-  width: 100%;
-  height: 100vh;
+const LeftSideWrapper = styled.div`
   display: flex;
+  align-items: center;
   flex-direction: column;
-  flex-shrink: 0;
-  transition-duration: 0.2s;
-
-  padding: 0 5px;
-  border-right: 1px solid rgba(24, 23, 23, 0.75);
+  width: 100%;
+  height: 100%;
 `;
 const Logo = styled.div`
   height: 7%;
   align-self: center;
   padding-top: 2%;
   padding-bottom: 3%;
+  justify-content: center;
+  @media (max-width: 700px) {
+    margin-left: auto;
+    padding-top: 8%;
+  }
 `;
 const InputGroup = styled(BsInputGroup)`
   margin-bottom: 10px;
@@ -38,58 +39,15 @@ const InputSearch = styled(InputGroup.Text)`
 const IconSearch = styled(Search)`
   width: 1.2rem;
 `;
-const Wrapper = styled.div`
-  margin-top: 10px;
-  display: flex;
-  flex-direction: column;
-  overflow-y: scroll;
-  overflow-x: hidden;
-
-  ::-webkit-scrollbar {
-    display: none;
-  }
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; //Firefox
-`;
-const Tabs = styled.div`
-  display: flex;
-`;
-const Tab = styled.div`
-  font-size: 0.8rem;
-  font-weight: bold;
-  padding: 5px;
-  border-radius: 5px;
-  cursor: pointer;
-  position: relative;
-
-  ${(props) => (props.selected ? 'color:#7a7abb' : '')};
-  ::after {
-    content: '';
-    display: block;
-    width: 2rem;
-    height: 2px;
-    background: #7a7abb;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    opacity: ${(props) => (props.selected ? '1' : '0')};
-  }
-  &:hover {
-    background: #f5f5f5;
-    ::after {
-      opacity: 1;
-    }
-  }
-`;
 const SearchingPopOut = styled.div`
   position: absolute;
   z-index: 2;
-  width: 100%;
   top: 100%;
   left: 0px;
-  width: 86%;
+  width: calc(100% - 44px);
   border-radius: 0 0 10px 10px;
   background-color: #ffffff;
+  min-width: 300px;
 `;
 const SearchForm = styled.div`
   position: relative;
@@ -104,22 +62,22 @@ const UserNotFound = styled.div`
   height: 30px;
   margin: 10px 0 0 10px;
 `;
-const LeftSideWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  width: 100%;
-`;
 
+const FriendList = styled.div`
+  margin-right: auto;
+  width: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+`;
 const FriendCount = styled.div`
   margin: 10px 10px 0px 10px;
   font-size: 1rem;
   color: #848181;
 `;
-const FriendList = styled.div`
-  margin-right: auto;
-  width: 100%;
-`;
+
 const FriendCard = styled.div`
   display: flex;
   flex-direction: row;
@@ -131,19 +89,32 @@ const FriendCard = styled.div`
   }
 `;
 const Avatar = styled.div`
-  width: 30%;
+  width: 20%;
   img {
     width: 52px;
     height: 52px;
     border-radius: 50%;
     object-fit: cover;
+    @media (max-width: 1250px) {
+      width: 40px;
+      height: 40px;
+    }
   }
 `;
 const Name = styled.div`
-  width: 100%;
+  height: 50%;
+  width: calc(80% - 10px);
   color: #000000;
   justify-content: center;
   align-self: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  @media (max-width: 1250px) {
+    margin-left: 10px;
+  }
+  @media (max-width: 800px) {
+    margin-left: 20px;
+  }
 `;
 function listFriendSearch(listFriend, searchValue) {
   let tempListFriend = [];
@@ -186,9 +157,9 @@ export default function LeftSide() {
       listFriendSearch(listConversationSorted, searchValue)
     );
   }, [searchValue]);
-
+  console.log(searchingFriendList);
   const handleFriendCardClick = (AccountId) => {
-    navigate(`/chat/${AccountId}`)
+    navigate(`/chat/${AccountId}`);
   };
 
   return (
@@ -225,8 +196,26 @@ export default function LeftSide() {
       </SearchForm>
       <FriendList>
         <FriendCount>Friend({listConversation?.length})</FriendCount>
-        {listConversation?.map((item,index) => (
-          <FriendCard key={index}onClick={()=>{handleFriendCardClick(item.AccountId)}}>
+        {listConversation?.map((item, index) => (
+          <FriendCard
+            key={index}
+            onClick={() => {
+              handleFriendCardClick(item.AccountId);
+            }}
+          >
+            <Avatar>
+              <img src={item.Avatar}></img>
+            </Avatar>
+            <Name>{item.Name}</Name>
+          </FriendCard>
+        ))}
+        {listConversation?.map((item, index) => (
+          <FriendCard
+            key={index}
+            onClick={() => {
+              handleFriendCardClick(item.AccountId);
+            }}
+          >
             <Avatar>
               <img src={item.Avatar}></img>
             </Avatar>

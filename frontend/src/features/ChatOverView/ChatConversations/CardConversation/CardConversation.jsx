@@ -27,6 +27,7 @@ const Wrapper = styled.div`
   &:hover {
     background-color: #d8d3d3;
   }
+  
 `;
 const Card = styled.div`
   display: flex;
@@ -46,6 +47,9 @@ const Avatar = styled.div`
     border-radius: 50%;
     object-fit: cover;
     margin-left: 15%;
+    @media(max-width:385px){
+      margin-left: 5%; 
+  }
   }
 `;
 

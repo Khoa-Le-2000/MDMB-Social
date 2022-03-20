@@ -58,6 +58,18 @@ const Logo = styled.img`
   :hover {
     transform: scale(1.1);
   }
+  ${({ ContactActive }) =>
+    ContactActive
+      ? `@media(max-width:800px){
+    position: fixed;
+    display: block;
+    left: 10px;
+    top:-13px;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 2px solid #1a79ff;
+  }`
+      : ''}
 `;
 const HoverWrapper = styled.div`
   color: #ffffff;
@@ -159,7 +171,7 @@ function LefBar({ MessageActive, ContactActive }) {
   });
   return (
     <Wrapper className="LeftBar">
-      <Logo onClick={handleLogoClick} />
+      <Logo onClick={handleLogoClick} ContactActive={ContactActive} />
       <HoverWrapper>
         <MessageIcon active={MessageActive ? 1 : 0} onClick={handleChatClick} />
       </HoverWrapper>
