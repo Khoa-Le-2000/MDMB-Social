@@ -89,7 +89,7 @@ const SettingIcon = styled(Setting)`
   ${HoverEffect}
   height: 3rem;
   width: 3rem;
-  margin-left: 15px;
+  margin-left: 12px;
   background-color: ${(props) => (props.active ? '#6364af' : '')};
 `;
 const ListGroupBS = styled(ListGroup)`

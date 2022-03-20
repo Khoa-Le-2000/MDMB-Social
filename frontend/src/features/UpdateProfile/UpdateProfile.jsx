@@ -127,7 +127,7 @@ const checkRegex = (userUpdate) => {
       result: 'error',
       message: `Name invalid! ${
         userUpdate.Name.length < 2 || userUpdate.Name.length > 45
-          ? 'Length must be 2-45 characters'
+          ? 'Length must be 2-45 char'
           : 'Name not contains special character'
       }`,
     };
