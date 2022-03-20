@@ -143,6 +143,9 @@ function ChatBox({ onSendMessage, onTyping, WindowEmpty }) {
   const onSendClick = (e) => {
     e.preventDefault();
     if (!message || message.trim().length === 0) return;
+    if(message.length>1000) 
+    onSendMessage(message.slice(0, 1000));
+    else
     onSendMessage(message);
     setMessage('');
     setShowPicker(false);
@@ -178,7 +181,6 @@ function ChatBox({ onSendMessage, onTyping, WindowEmpty }) {
               value={message}
               onKeyDown={(e) => e.key === 'Enter' && onSendClick(e)}
               onFocus={() => setShowPicker(false)}
-              maxLength="1000"
             />
             <FeaturesRight>
               <WrapperDialog>
