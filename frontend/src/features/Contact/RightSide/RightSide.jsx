@@ -1,13 +1,6 @@
-import styled from 'styled-components';
-import {
-  Button,
-  Card,
-  Col as BootstrapCol,
-  Container as BootstrapContainer,
-  Form,
-  Row as BootstrapRow,
-} from 'react-bootstrap';
 import { UserPlus } from '@styled-icons/boxicons-solid';
+import { Button } from 'react-bootstrap';
+import styled from 'styled-components';
 
 const RightSideWrapper = styled.div`
   width: 100%;
@@ -32,7 +25,6 @@ const CardRecommendFriend = styled.div`
     height: 6.5rem;
     margin: 2px;
     margin-top: 5px;
-
   }
 `;
 const FriendRecommend = styled.div`
@@ -45,15 +37,15 @@ const FriendRecommend = styled.div`
   }
 `;
 const Header = styled.div`
-  padding:10px;
+  padding: 10px;
   width: 100%;
   background-color: #efeff3;
   border-bottom: 1px solid #d6dbe0;
 `;
 const Recommend = styled.div`
-  margin:4px 0 5px 10px;
-  color:#3a4bcb;
-`
+  margin: 4px 0 5px 10px;
+  color: #3a4bcb;
+`;
 const Avatar = styled.div`
   text-align: center;
   img {
@@ -97,7 +89,7 @@ const Description = styled.div`
     display: none;
   }
 `;
-const AddfriendButton = styled(Button)`
+const AddFriendButton = styled(Button)`
   width: max-content;
   margin: auto;
   background-color: inherit;
@@ -120,26 +112,29 @@ export default function RightSide() {
   return (
     <RightSideWrapper>
       <Header>Friend you may know...</Header>
-      <Recommend>Recommend (33 <AddFriendIcon/>)</Recommend>
+      <Recommend>
+        Recommend (33 <AddFriendIcon />)
+      </Recommend>
       <FriendRecommend>
-        {Array(50).fill(1).map(
-          (item, index) => (
+        {Array(50)
+          .fill(1)
+          .map((item, index) => (
             <CardRecommendFriend key={index}>
               <Avatar>
                 <img
                   src={
                     'https://www.toponseek.com/blogs/wp-content/uploads/2019/06/toi-uu-hinh-anh-optimize-image-4-1200x700.jpg'
                   }
+                  alt="avatar"
                 />
               </Avatar>
               <Name>Dino</Name>
               <Description>From friend recommended</Description>
-              <AddfriendButton>
+              <AddFriendButton>
                 <AddFriendIcon /> Add Friend
-              </AddfriendButton>
+              </AddFriendButton>
             </CardRecommendFriend>
-          )
-        )}
+          ))}
       </FriendRecommend>
     </RightSideWrapper>
   );

@@ -1,16 +1,11 @@
 import { Search } from '@styled-icons/heroicons-solid';
 import { getConversations } from 'app/selectors/conversations';
-import { getAuth } from 'app/selectors/login';
-import CardConversation from 'features/ChatOverView/ChatConversations/CardConversation/CardConversation';
-import React from 'react';
-import { Form, InputGroup as BsInputGroup, Dropdown } from 'react-bootstrap';
-import styled from 'styled-components';
+import React, { useEffect } from 'react';
+import { Form, InputGroup as BsInputGroup } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import SearchChatConversation from 'features/ChatOverView/ChatConversations/Search/Search';
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getUserProfileSelector } from 'app/selectors/userProfile';
-import { getMessagesLatest, selectRoom } from 'app/actions/chat';
+import styled from 'styled-components';
+
 const LeftSideWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -125,7 +120,6 @@ function listFriendSearch(listFriend, searchValue) {
   return tempListFriend;
 }
 export default function LeftSide() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const listConversation = useSelector(getConversations);
   const listConversationSorted = listConversation.sort(
@@ -159,7 +153,6 @@ export default function LeftSide() {
     navigate(`/chat/${AccountId}`);
   };
 
-
   return (
     <LeftSideWrapper>
       <Logo> MDMB Social</Logo>
@@ -187,7 +180,7 @@ export default function LeftSide() {
             }}
           >
             <Avatar>
-              <img src={item.Avatar}></img>
+              <img src={item.Avatar} alt="avatar" />
             </Avatar>
             <Name>{item.Name}</Name>
           </FriendCard>
