@@ -7,7 +7,6 @@ const initialState = {
   message: null,
   listMessage: [
     {
-      seenLatest: null,
       Content: null,
       FromAccount: null,
       MessageId: null,
@@ -96,7 +95,6 @@ const chatReducer = (state = initialState, action) => {
         listMessage: [
           ...state.listMessage,
           {
-            seenLatest: false,
             Content: action.payload.Content,
             FromAccount: action.payload.FromAccount,
             MessageId: action.payload.MessageId,
@@ -136,7 +134,6 @@ const chatReducer = (state = initialState, action) => {
         listMessage: [
           ...state.listMessage,
           {
-            seenLatest: false,
             Content: action.payload.Content,
             FromAccount: action.payload.FromAccount,
             MessageId: action.payload.MessageId,
@@ -167,9 +164,6 @@ const chatReducer = (state = initialState, action) => {
         listMessage: state.listMessage.map((item) => {
           if (item.MessageId === action.payload) {
             item.SeenDate = new Date();
-            item.seenLatest = true;
-          } else {
-            item.seenLatest = false;
           }
           return item;
         }),

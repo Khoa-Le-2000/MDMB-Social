@@ -99,10 +99,7 @@ function Messages({ typing, onSeenMessage }) {
             type={item.Type === 0 ? 'text' : 'image'}
             owner={item.FromAccount === myAccountId}
             onSeenMessage={onSeenMessage}
-            seenLatest={
-              item.seenLatest ||
-              messageSeenDateLatest?.MessageId === item.MessageId
-            }
+            seenLatest={messageSeenDateLatest?.MessageId === item.MessageId}
             idLastMessage={messagesLatest[messagesLatest.length - 1].MessageId}
           />
           <div ref={messagesEndRef} />
