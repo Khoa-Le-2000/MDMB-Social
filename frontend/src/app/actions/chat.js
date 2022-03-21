@@ -29,7 +29,7 @@ const getListMessageLatestStart = () => {
 const getListMessageLatestSuccess = (listMessage) => {
   return {
     type: ChatActionTypes.LIST_MESSAGE_LATEST_SUCCESS,
-    payload: listMessage,
+    payload: listMessage
   };
 };
 
