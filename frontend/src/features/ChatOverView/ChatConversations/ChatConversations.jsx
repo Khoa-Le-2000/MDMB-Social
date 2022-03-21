@@ -2,9 +2,11 @@ import { Search } from '@styled-icons/heroicons-solid';
 import {
   changeFilterConversation,
   getListConversation,
+  getListConversationByName,
 } from 'app/actions/conversations';
 import {
   getConversationsByFilter,
+  getConversationsBySearch,
   getFilterName,
 } from 'app/selectors/conversations';
 import { getAuth } from 'app/selectors/login';
@@ -13,6 +15,7 @@ import React from 'react';
 import { Form, InputGroup as BsInputGroup } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { useDebounce } from 'hooks';
 
 const SideBar = styled.div`
   width: 100%;
@@ -95,15 +98,29 @@ const SearchForm = styled.div`
 `;
 
 function ChatConversations({ onSelectRoom }) {
+  const dispatch = useDispatch();
   const accountId = useSelector(getAuth)?.accountId;
   const filter = useSelector(getFilterName);
-  const listConversation = useSelector(getConversationsByFilter);
-
-  const dispatch = useDispatch();
-  const listConversationSorted = listConversation.sort(
+  const listConversationFilter = useSelector(getConversationsByFilter);
+  const listConversationByName = useSelector(getConversationsBySearch);
+  const listConversationSorted = listConversationFilter?.sort(
     (a, b) => Date.parse(b.SentDate) - Date.parse(a.SentDate)
   );
-  const [searchValue, setSearchValue] = React.useState('');
+  const listFriend =
+    listConversationByName?.length > 0
+      ? listConversationByName
+      : listConversationSorted;
+  
+  const [searchTerm, setSearchTerm] = React.useState('');
+  const searchValue = useDebounce(searchTerm, 500);
+
+  React.useLayoutEffect(() => {
+    if (searchValue) {
+      dispatch(getListConversationByName(searchValue));
+    } else {
+      dispatch(getListConversation(accountId));
+    }
+  }, [searchValue]);
 
   const handleAllMessageClick = () => {
     dispatch(changeFilterConversation('all'));
@@ -115,7 +132,7 @@ function ChatConversations({ onSelectRoom }) {
   };
 
   const handleSearchChange = (e) => {
-    setSearchValue(e.target.value);
+    setSearchTerm(e.target.value);
   };
 
   return (
@@ -125,7 +142,7 @@ function ChatConversations({ onSelectRoom }) {
         <Form.Control
           placeholder="Searching"
           onChange={handleSearchChange}
-          value={searchValue}
+          value={searchTerm}
         />
         <InputSearch>
           <IconSearch />
@@ -146,7 +163,7 @@ function ChatConversations({ onSelectRoom }) {
         </Tab>
       </Tabs>
       <Wrapper>
-        {listConversationSorted?.map((item, index) => (
+        {listFriend?.map((item, index) => (
           <CardConversation
             key={index}
             onSelectRoom={onSelectRoom}
