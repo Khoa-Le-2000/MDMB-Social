@@ -191,6 +191,7 @@ function ChatBox({ onSendMessage, onTyping, WindowEmpty }) {
               value={message}
               onKeyDown={(e) => (e.key === 'Enter' && !e.shiftKey) && onSendClick(e)}
               onFocus={() => setShowPicker(false)}
+              rows={1}
             />
             <FeaturesRight>
               <WrapperDialog>
