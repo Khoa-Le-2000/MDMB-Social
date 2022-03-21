@@ -166,7 +166,6 @@ function ChatOverView() {
   const handleSeenMessage = (messageId, partnerId) => {
     socket?.emit('seen message', messageId);
     dispatch(updateCountUnreadConversation(partnerId));
-    dispatch(getListConversation(auth?.accountId));
   };
 
   return socket ? (
