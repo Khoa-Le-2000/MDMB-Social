@@ -1,10 +1,11 @@
 import { Search } from '@styled-icons/heroicons-solid';
 import {
   changeFilterConversation,
-  getListConversation
+  getListConversation,
 } from 'app/actions/conversations';
 import {
-  getConversationsByFilter, getFilterName
+  getConversationsByFilter,
+  getFilterName,
 } from 'app/selectors/conversations';
 import { getAuth } from 'app/selectors/login';
 import CardConversation from 'features/ChatOverView/ChatConversations/CardConversation/CardConversation';
@@ -85,15 +86,7 @@ const Tab = styled.div`
     }
   }
 `;
-// const SearchingPopOut = styled.div`
-//   position: absolute;
-//   z-index: 2;
-//   width: calc(100% - 44px);
-//   top: 100%;
-//   left: 0px;
-//   border-radius: 0 0 10px 10px;
-//   background-color: #ffffff;
-// `;
+
 const SearchForm = styled.div`
   position: relative;
   display: flex;
@@ -111,7 +104,6 @@ function ChatConversations({ onSelectRoom }) {
     (a, b) => Date.parse(b.SentDate) - Date.parse(a.SentDate)
   );
   const [searchValue, setSearchValue] = React.useState('');
-
 
   const handleAllMessageClick = () => {
     dispatch(changeFilterConversation('all'));
