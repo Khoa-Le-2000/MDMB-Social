@@ -18,6 +18,7 @@ const Wrapper = styled.div`
   transition-duration: 0.2s;
   overflow-y: hidden;
   overflow-x: hidden;
+  border-bottom: 1px solid #ced4da;
   border-left: ${(props) => (props.checked ? '3px solid #cd556b' : 'none')};
   background: ${(props) =>
     props.checked
@@ -71,6 +72,7 @@ const Time = styled.p`
   font-size: 0.8rem;
   text-align: right;
   width:100%;
+  padding-right: 5%;
 `;
 const StatusInner = styled.div`
   display: flex;

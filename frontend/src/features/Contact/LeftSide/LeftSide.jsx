@@ -10,7 +10,6 @@ import SearchChatConversation from 'features/ChatOverView/ChatConversations/Sear
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserProfileSelector } from 'app/selectors/userProfile';
-import { getListConversation } from 'app/actions/conversations';
 
 const SideBar = styled.div`
   width: 100%;
@@ -26,10 +25,8 @@ const SideBar = styled.div`
 const Logo = styled.div`
   height: 7%;
   align-self: center;
-  padding-top: 3%;
-  @media (max-width:1250px){
-    padding-bottom:3%;
-  }
+  padding-top: 2%;
+  padding-bottom: 3%;
 `;
 const InputGroup = styled(BsInputGroup)`
   margin-bottom: 10px;
@@ -87,9 +84,10 @@ const Tab = styled.div`
 const SearchingPopOut = styled.div`
   position: absolute;
   z-index: 2;
-  width: 86%;
+  width: 100%;
   top: 100%;
   left: 0px;
+  width: 86%;
   border-radius: 0 0 10px 10px;
   background-color: #ffffff;
 `;
@@ -106,7 +104,47 @@ const UserNotFound = styled.div`
   height: 30px;
   margin: 10px 0 0 10px;
 `;
+const LeftSideWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+`;
 
+const FriendCount = styled.div`
+  margin: 10px 10px 0px 10px;
+  font-size: 1rem;
+  color: #848181;
+`;
+const FriendList = styled.div`
+  margin-right: auto;
+  width: 100%;
+`;
+const FriendCard = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  padding: 10px;
+  background-color: #efeff3;
+  &:hover {
+    filter: brightness(85%);
+  }
+`;
+const Avatar = styled.div`
+  width: 30%;
+  img {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+`;
+const Name = styled.div`
+  width: 100%;
+  color: #000000;
+  justify-content: center;
+  align-self: center;
+`;
 function listFriendSearch(listFriend, searchValue) {
   let tempListFriend = [];
   listFriend.forEach((element) => {
@@ -115,31 +153,13 @@ function listFriendSearch(listFriend, searchValue) {
   });
   return tempListFriend;
 }
-
-function ChatConversations({ onSelectRoom }) {
+export default function LeftSide() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const accountId = useSelector(getAuth)?.accountId;
   const listConversation = useSelector(getConversations);
   const listConversationSorted = listConversation.sort(
     (a, b) => Date.parse(b.SentDate) - Date.parse(a.SentDate)
   );
-  const [allMessageSelected, setAllMessageSelected] = React.useState(true);
-  const [unreadMessageSelected, setUnreadMessageSelected] =
-    React.useState(false);
 
-  const handleAllMessageClick = () => {
-    setAllMessageSelected(true);
-    setUnreadMessageSelected(false);
-    // dispatch(getListConversation(accountId));
-
-  };
-  const handleMessageUnreadClick = () => {
-    setAllMessageSelected(false);
-    setUnreadMessageSelected(true);
-    // dispatch(getListConversation(accountId));
-
-  };
   //Searching friend list
   const [searchingFriendList, setSearchingFriendList] =
     React.useState(listConversation);
@@ -149,7 +169,6 @@ function ChatConversations({ onSelectRoom }) {
   const handleSearchClick = (e) => {
     SetShowListSearch(true);
   };
-  const userInfor = useSelector(getUserProfileSelector);
 
   const handleItemSelected = (AccountId) => {
     navigate(`/userinfor/${AccountId}`);
@@ -167,8 +186,13 @@ function ChatConversations({ onSelectRoom }) {
       listFriendSearch(listConversationSorted, searchValue)
     );
   }, [searchValue]);
+
+  const handleFriendCardClick = (AccountId) => {
+    navigate(`/chat/${AccountId}`)
+  };
+
   return (
-    <SideBar>
+    <LeftSideWrapper>
       <Logo> MDMB Social</Logo>
       <SearchForm>
         <Form.Control
@@ -199,40 +223,17 @@ function ChatConversations({ onSelectRoom }) {
           </SearchingPopOut>
         )}
       </SearchForm>
-      <Tabs>
-        <Tab onClick={handleAllMessageClick} selected={allMessageSelected}>
-          All Message
-        </Tab>
-        <Tab
-          onClick={handleMessageUnreadClick}
-          selected={unreadMessageSelected}
-        >
-          Message unread
-        </Tab>
-      </Tabs>
-      <Wrapper>
-        {listConversationSorted?.map((item, index) =>
-          allMessageSelected ? (
-            <CardConversation
-              key={index}
-              onSelectRoom={onSelectRoom}
-              conversation={item}
-            />
-          ) : (
-            //message unread
-            !item.SeenDate &&
-            item.LastMessage &&
-            item.FromAccount !== accountId && (
-              <CardConversation
-                key={index}
-                onSelectRoom={onSelectRoom}
-                conversation={item}
-              />
-            )
-          )
-        )}
-      </Wrapper>
-    </SideBar>
+      <FriendList>
+        <FriendCount>Friend({listConversation?.length})</FriendCount>
+        {listConversation?.map((item,index) => (
+          <FriendCard key={index}onClick={()=>{handleFriendCardClick(item.AccountId)}}>
+            <Avatar>
+              <img src={item.Avatar}></img>
+            </Avatar>
+            <Name>{item.Name}</Name>
+          </FriendCard>
+        ))}
+      </FriendList>
+    </LeftSideWrapper>
   );
 }
-export default ChatConversations;

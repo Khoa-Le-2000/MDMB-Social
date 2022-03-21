@@ -25,8 +25,7 @@ const WrapperInput = styled.div`
 `;
 const FeaturesTop = styled.div`
   display: flex;
-  justify-content: space-between;
-  width: 15%;
+  width: 100%;
   height: 100%;
   padding: 5px;
 `;
@@ -37,6 +36,7 @@ const IConUploadImage = styled(Photograph)`
   padding: 5px;
   ${HoverMixin.default};
   border-radius: 50%;
+  margin-left: 15px;
 `;
 const IconUploadFile = styled(PaperClip)`
   width: 2rem;
@@ -44,6 +44,7 @@ const IconUploadFile = styled(PaperClip)`
   padding: 5px;
   ${HoverMixin.default};
   border-radius: 50%;
+  margin-left: 15px;
 `;
 
 const FeaturesRight = styled.div`
@@ -70,7 +71,8 @@ const EmojiIcon = styled(EmojiHappy)`
   right: 100%;
   ${HoverMixin.default};
   border-radius: 50%;
-  margin: 12px 10px;
+  margin: 12px 8px;
+  background-color: #fff;
 `;
 
 const Input = styled.input`
@@ -141,6 +143,9 @@ function ChatBox({ onSendMessage, onTyping, WindowEmpty }) {
   const onSendClick = (e) => {
     e.preventDefault();
     if (!message || message.trim().length === 0) return;
+    if(message.length>1000) 
+    onSendMessage(message.slice(0, 1000));
+    else
     onSendMessage(message);
     setMessage('');
     setShowPicker(false);

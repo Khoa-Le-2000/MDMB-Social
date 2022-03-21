@@ -26,9 +26,10 @@ const HoverEffect = css`
   }
 `;
 const Wrapper = styled.div`
-  background:red;
+  background: red;
   height: 97%;
   width: 90%;
+  min-width: 90%;
   background-color: #4849a1;
   margin: 10%;
   display: flex;
@@ -41,17 +42,18 @@ const Wrapper = styled.div`
 `;
 
 const Logo = styled.img`
-  cursor:pointer;
+  cursor: pointer;
   color: #ffffff;
   justify-content: center;
   display: flex;
   vertical-align: middle;
   margin-top: 20px;
   content: url(${LogoImg});
-  width: 4rem;
+  width: 3.5rem;
+  height: 3.5rem;
   justify-content: center;
   align-self: center;
-  border-radius: 30px;
+  border-radius: 50%;
   transition: all 0.3s ease-in-out;
   :hover {
     transform: scale(1.1);
@@ -87,7 +89,7 @@ const SettingIcon = styled(Setting)`
   ${HoverEffect}
   height: 3rem;
   width: 3rem;
-  margin-left: 15px;
+  margin-left: 12px;
   background-color: ${(props) => (props.active ? '#6364af' : '')};
 `;
 const ListGroupBS = styled(ListGroup)`
@@ -111,8 +113,7 @@ const PopoverBS = styled(Popover)`
   border-radius: 10px;
 `;
 
-function LefBar() {
-  
+function LefBar({ MessageActive, ContactActive }) {
   const [show, setShow] = useState(false);
   const [target, setTarget] = useState(null);
   const ref = useRef(null);
@@ -120,10 +121,12 @@ function LefBar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const socket = useSelector(getSocket);
+  const [settingActive, setSettingActive] = useState(false);
 
   const handleSettingClick = (event) => {
     setShow(!show);
     setTarget(event.target);
+    setSettingActive(!settingActive);
   };
 
   const handleLogoutClick = () => {
@@ -131,26 +134,47 @@ function LefBar() {
     dispatch(logout(auth?.accessToken));
     navigate('/login');
   };
-  const handleUserProfileClick = ()=>{
+  const handleUserProfileClick = () => {
     dispatch(getUserProfile(auth.accountId));
-    navigate('/update-profile');
-  }
-  const handleLogoClick = ()=>{
-    navigate('/');
-  }
 
+    navigate('/update-profile');
+  };
+  const handleLogoClick = () => {
+    navigate('/');
+  };
+  const handleContactClick = () => {
+    navigate('/contact');
+  };
+  const handleChatClick = () => {
+    navigate('/');
+  };
+  React.useEffect(() => {
+    const disaprearSetting = setTimeout(() => {
+      setShow(false);
+      setSettingActive(false);
+    }, 8000);
+    return () => {
+      clearTimeout(disaprearSetting);
+    };
+  });
   return (
     <Wrapper className="LeftBar">
-      <Logo onClick={handleLogoClick}/>
+      <Logo onClick={handleLogoClick} />
       <HoverWrapper>
-        <MessageIcon active={true ? 1 : 0} />
+        <MessageIcon active={MessageActive ? 1 : 0} onClick={handleChatClick} />
       </HoverWrapper>
       <HoverWrapper>
-        <PhoneBookIcon />
+        <PhoneBookIcon
+          active={ContactActive ? 1 : 0}
+          onClick={handleContactClick}
+        />
       </HoverWrapper>
       <HoverWrapper position="bottom">
         <div ref={ref}>
-          <SettingIcon onClick={handleSettingClick} />
+          <SettingIcon
+            onClick={handleSettingClick}
+            active={settingActive ? 1 : 0}
+          />
           <Overlay show={show} target={target} placement="top" container={ref}>
             <PopoverBS>
               <Popover.Body>

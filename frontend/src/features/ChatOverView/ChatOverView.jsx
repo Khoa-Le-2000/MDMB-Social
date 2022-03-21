@@ -41,15 +41,25 @@ const ColBS1 = styled(Col)`
   padding-left: 0;
   padding-right: 0;
   background-color: #efeff3;
+  width: 25%;
+  @media (max-width: 1250px) {
+    width: calc(100% - 90px);
+    display: ${(props) => (props.roomIdSelected ? 'none' : 'unset')};
+  }
 `;
 const ColBS2 = styled(Col)`
   padding-left: 0;
   padding-right: 0;
+  width: calc(75% - 80px);
+  @media (max-width: 1250px) {
+    width: calc(100% - 90px);
+    display: ${(props) => (props.roomIdSelected ? 'unset' : 'none')};
+  }
 `;
 const LeftBar = styled(Col)`
   padding-left: 0;
   padding-right: 0;
-  width: 6%;
+  width: 80px;
   background-color: #efeff3;
 `;
 
@@ -108,6 +118,7 @@ function ChatOverView() {
   React.useEffect(() => {
     socket?.on('seen message', (messageId) => {
       dispatch(seenMessage(messageId));
+      dispatch(getListConversation(auth?.accountId));
     });
   }, [dispatch, socket]);
 
@@ -152,22 +163,22 @@ function ChatOverView() {
       dispatch(getMessagesLatest(auth?.accountId, conversation.AccountId));
     }
   };
-
   const handleSeenMessage = (messageId, partnerId) => {
     socket?.emit('seen message', messageId);
     dispatch(updateCountUnreadConversation(partnerId));
+    dispatch(getListConversation(auth?.accountId));
   };
 
   return socket ? (
     <Wrapper fluid>
       <RowBS>
         <LeftBar lg={1} xs={1} md={1}>
-          <Sidebar />
+          <Sidebar MessageActive={true} />
         </LeftBar>
-        <ColBS1 lg={3} xs={3} md={3}>
+        <ColBS1 lg={3} xs={3} md={3} roomIdSelected={roomId ? true : false}>
           <ChatConversations onSelectRoom={handleSelectRoomClick} />
         </ColBS1>
-        <ColBS2 lg={8} xs={8} md={8}>
+        <ColBS2 lg={8} xs={8} md={8} roomIdSelected={roomId ? true : false}>
           {roomId ? (
             <ChatWindow
               onSendMessage={handleSendMessage}

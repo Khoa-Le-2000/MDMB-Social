@@ -22,6 +22,7 @@ const WrapperMessageContent = styled.div`
   display: flex;
   flex-direction: column-reverse;
   align-items: flex-start;
+  width: 100%;
 `;
 const RowBS = styled(Row)`
   height: inherit;
@@ -43,12 +44,10 @@ function ChatWindow({
       />
       <RowMessageInner>
         <WrapperMessageContent>
-          <Col lg={12}>
             <WindowContent
               typing={typing}
               onSeenMessage={onSeenMessage}
             />
-          </Col>
         </WrapperMessageContent>
       </RowMessageInner>
       <RowBS>
