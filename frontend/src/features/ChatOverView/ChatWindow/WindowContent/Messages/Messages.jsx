@@ -83,7 +83,6 @@ function Messages({ typing, onSeenMessage }) {
       inline: 'nearest',
     });
   }, [messagesLatest]);
-
   return (
     <>
       {messagesLatest.map((item) => (

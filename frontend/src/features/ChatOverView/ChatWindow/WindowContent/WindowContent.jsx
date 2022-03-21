@@ -7,24 +7,28 @@ import styled from 'styled-components';
 import { getAuth } from 'app/selectors/login';
 import { getMessagesLatest } from 'app/actions/chat';
 import { useParams } from 'react-router-dom';
+import MessageLoading from './MessageLoading/MessageLoading';
 
 const Wrapper = styled.div`
   padding: 0px 5px;
   width: 100%;
+  height: 100%;
 `;
 
 function WindowContent({ typing, onSeenMessage }) {
   const messagesLatest = useSelector(getListMessageLatest);
   const isFetching = useSelector(getFetchingMessage);
-
+  
   return (
     <Wrapper>
-      {messagesLatest.length > 0 ? (
-        <Messages typing={typing} onSeenMessage={onSeenMessage} />
-      ) : isFetching ? (
-        <div>Loading</div>
+      {isFetching ? (
+        <MessageLoading />
       ) : (
-        <MessageEmpty />
+        (messagesLatest && messagesLatest.length > 0) ? (
+          <Messages typing={typing} onSeenMessage={onSeenMessage} />
+        ) : (
+          <MessageEmpty />
+        )
       )}
     </Wrapper>
   );
