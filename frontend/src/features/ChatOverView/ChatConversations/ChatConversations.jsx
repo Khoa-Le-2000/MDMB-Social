@@ -182,7 +182,7 @@ function ChatConversations({ onSelectRoom }) {
                 <SearchItemWrapper
                   key={index}
                 >
-                  <SearchChatConversation item={item} />
+                  <SearchChatConversation item={item} onSelectRoom={onSelectRoom}/>
                 </SearchItemWrapper>
               ))
             ) : (

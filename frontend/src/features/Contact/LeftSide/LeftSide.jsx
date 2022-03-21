@@ -10,7 +10,7 @@ import SearchChatConversation from 'features/ChatOverView/ChatConversations/Sear
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserProfileSelector } from 'app/selectors/userProfile';
-
+import { getMessagesLatest, selectRoom } from 'app/actions/chat';
 const LeftSideWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -125,6 +125,7 @@ function listFriendSearch(listFriend, searchValue) {
   return tempListFriend;
 }
 export default function LeftSide() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const listConversation = useSelector(getConversations);
   const listConversationSorted = listConversation.sort(
@@ -158,9 +159,6 @@ export default function LeftSide() {
     navigate(`/chat/${AccountId}`);
   };
 
-  const callbackFunction = (childData) => {
-    console.log(childData)
-  }
 
   return (
     <LeftSideWrapper>
@@ -175,36 +173,13 @@ export default function LeftSide() {
         <InputSearch>
           <IconSearch />
         </InputSearch>
-        {showListSearch && searchValue !== '' && (
-          <SearchingPopOut>
-            {searchingFriendList.length > 0 ? (
-              searchingFriendList?.map((item, index) => (
-                <SearchItemWrapper key={index}>
-                  <SearchChatConversation item={item} parentCallback={callbackFunction} />
-                </SearchItemWrapper>
-              ))
-            ) : (
-              <UserNotFound> Không có người dùng này!</UserNotFound>
-            )}
-          </SearchingPopOut>
-        )}
       </SearchForm>
       <FriendList>
         <FriendCount>Friend({listConversation?.length})</FriendCount>
-        {listConversation?.map((item, index) => (
-          <FriendCard
-            key={index}
-            onClick={() => {
-              handleFriendCardClick(item.AccountId);
-            }}
-          >
-            <Avatar>
-              <img src={item.Avatar}></img>
-            </Avatar>
-            <Name>{item.Name}</Name>
-          </FriendCard>
-        ))}
-        {listConversation?.map((item, index) => (
+        {searchingFriendList.length === 0 && (
+          <UserNotFound> Không có người dùng này!</UserNotFound>
+        )}
+        {searchingFriendList?.map((item, index) => (
           <FriendCard
             key={index}
             onClick={() => {
