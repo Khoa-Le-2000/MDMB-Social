@@ -149,11 +149,6 @@ function ChatConversations({ onSelectRoom }) {
   const handleSearchClick = (e) => {
     SetShowListSearch(true);
   };
-  const userInfor = useSelector(getUserProfileSelector);
-
-  const handleItemSelected = (AccountId) => {
-    navigate(`/userinfor/${AccountId}`);
-  };
   const handleSearchBlur = () => {
     setTimeout(() => {
       SetShowListSearch(false);
@@ -181,14 +176,11 @@ function ChatConversations({ onSelectRoom }) {
           <IconSearch />
         </InputSearch>
         {showListSearch && searchValue !== '' && (
-          <SearchingPopOut>
+          <SearchingPopOut >
             {searchingFriendList.length > 0 ? (
               searchingFriendList?.map((item, index) => (
                 <SearchItemWrapper
                   key={index}
-                  onClick={() => {
-                    handleItemSelected(item.AccountId);
-                  }}
                 >
                   <SearchChatConversation item={item} />
                 </SearchItemWrapper>

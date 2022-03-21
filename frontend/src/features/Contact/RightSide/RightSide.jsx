@@ -122,7 +122,7 @@ export default function RightSide() {
       <Header>Friend you may know...</Header>
       <Recommend>Recommend (33 <AddFriendIcon/>)</Recommend>
       <FriendRecommend>
-        {[1, 2, 3, 4, 5, 6, 6, 1, 2, 3, 4, 5, 6, 6, 1, 2, 3, 4, 5, 6, 6].map(
+        {Array(50).fill(1).map(
           (item, index) => (
             <CardRecommendFriend key={index}>
               <Avatar>

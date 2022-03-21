@@ -141,9 +141,6 @@ export default function LeftSide() {
     SetShowListSearch(true);
   };
 
-  const handleItemSelected = (AccountId) => {
-    navigate(`/userinfor/${AccountId}`);
-  };
   const handleSearchBlur = () => {
     setTimeout(() => {
       SetShowListSearch(false);
@@ -157,10 +154,13 @@ export default function LeftSide() {
       listFriendSearch(listConversationSorted, searchValue)
     );
   }, [searchValue]);
-  console.log(searchingFriendList);
   const handleFriendCardClick = (AccountId) => {
     navigate(`/chat/${AccountId}`);
   };
+
+  const callbackFunction = (childData) => {
+    console.log(childData)
+  }
 
   return (
     <LeftSideWrapper>
@@ -179,13 +179,8 @@ export default function LeftSide() {
           <SearchingPopOut>
             {searchingFriendList.length > 0 ? (
               searchingFriendList?.map((item, index) => (
-                <SearchItemWrapper
-                  key={index}
-                  onClick={() => {
-                    handleItemSelected(item.AccountId);
-                  }}
-                >
-                  <SearchChatConversation item={item} />
+                <SearchItemWrapper key={index}>
+                  <SearchChatConversation item={item} parentCallback={callbackFunction} />
                 </SearchItemWrapper>
               ))
             ) : (
