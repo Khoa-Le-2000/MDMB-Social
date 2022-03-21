@@ -27,7 +27,6 @@ const Wrapper = styled.div`
   &:hover {
     background-color: #d8d3d3;
   }
-  
 `;
 const Card = styled.div`
   display: flex;
@@ -47,9 +46,9 @@ const Avatar = styled.div`
     border-radius: 50%;
     object-fit: cover;
     margin-left: 15%;
-    @media(max-width:385px){
-      margin-left: 5%; 
-  }
+    @media (max-width: 385px) {
+      margin-left: 5%;
+    }
   }
 `;
 
@@ -70,12 +69,12 @@ const Message = styled.p`
   font-size: 14px;
 `;
 const Status = styled.div`
-  width:32%;
+  width: 32%;
 `;
 const Time = styled.p`
   font-size: 0.8rem;
   text-align: right;
-  width:100%;
+  width: 100%;
   padding-right: 5%;
 `;
 const StatusInner = styled.div`

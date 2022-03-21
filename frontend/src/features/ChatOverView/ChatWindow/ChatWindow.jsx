@@ -30,24 +30,14 @@ const RowBS = styled(Row)`
 `;
 const ColBS = styled(Col)``;
 
-function ChatWindow({
-  onSendMessage,
-  onTyping,
-  typing,
-  onSeenMessage,
-}) {
+function ChatWindow({ onSendMessage, onTyping, typing, onSeenMessage }) {
   const { roomId } = useParams();
   return (
     <Wrapper>
-      <ChatHeader
-        WindowEmpty={roomId ? false : true}
-      />
+      <ChatHeader WindowEmpty={roomId ? false : true} />
       <RowMessageInner>
         <WrapperMessageContent>
-            <WindowContent
-              typing={typing}
-              onSeenMessage={onSeenMessage}
-            />
+          <WindowContent typing={typing} onSeenMessage={onSeenMessage} />
         </WrapperMessageContent>
       </RowMessageInner>
       <RowBS>

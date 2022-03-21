@@ -60,6 +60,7 @@ export const updateCountUnreadConversation =
     const newListConversation = listConversation.filter((e) => {
       if (e.AccountId === +partnerId) {
         e.UnseenMessage = 0;
+        e.SeenDate = new Date();
       }
       return e;
     });
