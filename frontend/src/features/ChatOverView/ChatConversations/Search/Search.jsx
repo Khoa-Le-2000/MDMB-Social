@@ -32,11 +32,13 @@ const UserNotFound = styled.div`
   height: 30px;
   margin: 10px 0 0 10px;
 `;
-function SearchChatConversation({ item , parentCallback, Icon}) {
+function SearchChatConversation({ item , parentCallback, Icon, onSelectRoom}) {
   const navigate = useNavigate();
 
   const handleFriendCardClick = (AccountId) => {
-    navigate(`/chat/${AccountId}`);
+    // const tempConversation={AccountId}
+    // navigate(`/chat/${AccountId}`);
+    onSelectRoom(item)
   };
   const sendData = () => {
     parentCallback(item.AccountId);
