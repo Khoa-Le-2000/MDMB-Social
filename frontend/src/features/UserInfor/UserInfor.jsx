@@ -7,19 +7,14 @@ import { getUserProfileSelector } from 'app/selectors/userProfile';
 import { getPartnerProfileSelector } from 'app/selectors/partnerProfile';
 import styled from 'styled-components';
 import MainLayout from 'layouts/MainLayout';
-import {
-  Button,
-  Card,
-  Col as BootstrapCol,
-  Container as BootstrapContainer,
-  Form,
-  Row as BootstrapRow,
-} from 'react-bootstrap';
+import { Button, Container as BootstrapContainer } from 'react-bootstrap';
 import { Chat, Rss, Cake } from '@styled-icons/heroicons-solid';
+import { UserPlus, UserCheck, User } from '@styled-icons/boxicons-solid';
 import {
-  UserPlus,
-  UserCheck,
-} from '@styled-icons/boxicons-solid';
+  Male as MaleFemale,
+  MaleSign,
+  FemaleSign,
+} from '@styled-icons/boxicons-regular';
 import { getAuth } from 'app/selectors/login';
 import { useEffect } from 'react';
 import { getConversations } from 'app/selectors/conversations';
@@ -127,26 +122,31 @@ const Information = styled.div`
   width: 100%;
   font-size: 1.1rem;
 `;
-// const GenderIcon = styled(MaleFemale)`
-//   width: 1.25rem;
-//   height: 1.25rem;
-//   margin-bottom: 2px;
-// `;
+const GenderIcon = styled(MaleFemale)`
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-bottom: 2px;
+`;
 const CakeIcon = styled(Cake)`
   width: 1.25rem;
   height: 1.25rem;
   margin-bottom: 2px;
 `;
-// const MaleIcon = styled(MaleSign)`
-// width: 1.25rem;
-// height: 1.25rem;
-// margin-bottom: 2px;
-// `;
-// const FemaleIcon = styled(FemaleSign)`
-// width: 1.25rem;
-// height: 1.25rem;
-// margin-bottom: 2px;
-// `;
+const UserIcon = styled(User)`
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-bottom: 2px;
+`;
+const MaleIcon = styled(MaleSign)`
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-bottom: 2px;
+`;
+const FemaleIcon = styled(FemaleSign)`
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-bottom: 2px;
+`;
 function UserInfor() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -220,9 +220,14 @@ function UserInfor() {
             </LineWrapper>
             <LineWrapper>
               <InformationHeader>
-                {' '}
-                {/* <GenderIcon /> */}
-                Gender{' '}
+                {partnerInfor?.Gender == 0 ? (
+                  <FemaleIcon />
+                ) : partnerInfor?.Gender == 1 ? (
+                  <MaleIcon />
+                ) : (
+                  <GenderIcon />
+                )}
+                Gender
               </InformationHeader>
               <Information>
                 {partnerInfor?.Gender == 0
@@ -233,7 +238,9 @@ function UserInfor() {
               </Information>
             </LineWrapper>
             <LineWrapper>
-              <InformationHeader>Join</InformationHeader>
+              <InformationHeader>
+                <UserIcon /> Join
+              </InformationHeader>
               <Information>
                 {dayjs(partnerInfor?.CreatedDate).fromNow() || 'Unknow'}
               </Information>

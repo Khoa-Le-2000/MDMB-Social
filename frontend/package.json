@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@hookform/resolvers": "^2.8.8",
+    "@styled-icons/boxicons-regular": "^10.38.0",
     "@styled-icons/boxicons-solid": "^10.38.0",
     "@styled-icons/heroicons-outline": "^10.36.0",
     "@styled-icons/heroicons-solid": "^10.36.0",
