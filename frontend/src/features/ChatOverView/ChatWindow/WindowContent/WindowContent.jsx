@@ -13,9 +13,9 @@ const Wrapper = styled.div`
   /* height: 100%; */
 `;
 const MessageLoadingWrapper = styled.div`
-position: relative;
-margin-bottom: 180px;
- padding:30px;
+  position: relative;
+  margin-bottom: 180px;
+  padding: 30px;
 `;
 function WindowContent({ typing, onSeenMessage }) {
   const messagesLatest = useSelector(getListMessageLatest);
