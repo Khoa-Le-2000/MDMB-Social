@@ -18,15 +18,17 @@ const Wrapper = styled.div`
 function WindowContent({ typing, onSeenMessage }) {
   const messagesLatest = useSelector(getListMessageLatest);
   const isFetching = useSelector(getFetchingMessage);
-
+  
   return (
     <Wrapper>
-      {messagesLatest.length > 0 ? (
-        <Messages typing={typing} onSeenMessage={onSeenMessage} />
-      ) : isFetching ? (
-        <div>Loading</div>
-      ) : (
+      {isFetching ? (
         <MessageLoading />
+      ) : (
+        (messagesLatest && messagesLatest.length > 0) ? (
+          <Messages typing={typing} onSeenMessage={onSeenMessage} />
+        ) : (
+          <MessageEmpty />
+        )
       )}
     </Wrapper>
   );

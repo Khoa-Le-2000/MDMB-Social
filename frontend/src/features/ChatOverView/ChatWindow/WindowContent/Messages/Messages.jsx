@@ -70,7 +70,7 @@ const DotFalling = styled.div`
 const WrapperScroll = styled.div``;
 
 function Messages({ typing, onSeenMessage }) {
-  const messagesLatest = useSelector(getListMessageLatest).listMessage;
+  const messagesLatest = useSelector(getListMessageLatest);
   const myAccountId = useSelector(getAuth)?.accountId;
   const messageSeenDateLatest = useSelector(getMessageSeenLatest);
   const messagesEndRef = React.useRef();
@@ -83,7 +83,6 @@ function Messages({ typing, onSeenMessage }) {
       inline: 'nearest',
     });
   }, [messagesLatest]);
-  console.log('messagesLatest', messagesLatest);
   return (
     <>
       {messagesLatest.map((item) => (
