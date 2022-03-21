@@ -88,7 +88,6 @@ function ChatOverView() {
   }, [listConversation, socket, dispatch]);
 
   React.useEffect(() => {
-    console.log('check user online', socket);
     socket?.on('user-online', function (accountId) {
       dispatch(addUserOnline(accountId));
     });

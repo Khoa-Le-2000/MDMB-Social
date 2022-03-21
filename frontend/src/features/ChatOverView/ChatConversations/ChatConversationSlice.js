@@ -6,6 +6,7 @@ const initialState = {
   success: false,
   message: null,
   listConversation: [],
+  listFilterConversation: [],
   filterBy: 'all',
 };
 const conversationsReducer = (state = initialState, action) => {
@@ -25,6 +26,7 @@ const conversationsReducer = (state = initialState, action) => {
         error: false,
         success: true,
         message: null,
+        listFilterConversation: [],
         listConversation: action.payload,
       };
     case ConversationActionTypes.GET_LIST_CONVERSATION_FAILURE:
@@ -66,7 +68,24 @@ const conversationsReducer = (state = initialState, action) => {
       return {
         ...state,
         filterBy: action.payload,
-      }
+      };
+    case ConversationActionTypes.GET_LIST_CONVERSATION_BY_NAME_START:
+      return {
+        ...state,
+        isFetching: true,
+        error: false,
+        success: false,
+        message: null,
+      };
+    case ConversationActionTypes.GET_LIST_CONVERSATION_BY_NAME_SUCCESS:
+      return {
+        ...state,
+        isFetching: false,
+        error: false,
+        success: true,
+        message: null,
+        listFilterConversation: action.payload,
+      };
     default:
       return state;
   }
