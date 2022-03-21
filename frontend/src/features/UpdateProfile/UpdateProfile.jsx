@@ -95,6 +95,7 @@ const UploadImageWrapper = styled.div`
 
 const UploadImageInput = styled.input.attrs({
   type: 'file',
+  accept:"image/png, image/jpeg"
 })`
   width: 100%;
 `;
@@ -229,8 +230,9 @@ function UpdateProfile() {
 
   const onUploadImage = (e) => {
     fileImageRef.current.click();
-  };
-
+    // fileImageRef.current.accept="image/png, image/gif, image/jpeg"
+};
+  console.log(fileImageRef)
   const onImageChange = (e) => {
     const file = e.target.files[0];
     setImage(URL.createObjectURL(file));

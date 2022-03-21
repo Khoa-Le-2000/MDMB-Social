@@ -1,52 +1,16 @@
-import {
-  getMessagesLatest,
-  receiveMessage,
-  seenMessage,
-  selectRoom,
-  sendMessage,
-} from 'app/actions/chat';
-import { getAuth } from 'app/selectors/login';
-import ChatConversations from 'features/ChatOverView/ChatConversations/ChatConversations';
-import ChatWindow from 'features/ChatOverView/ChatWindow/ChatWindow';
-import WindowEmpty from 'features/ChatOverView/ChatWindow/WindowEmpty/WindowEmpty';
 import React from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Col, Container } from 'react-bootstrap';
 import styled from 'styled-components';
 import Sidebar from 'features/ChatOverView/Sidebar/Sidebar';
-import { getConversations } from 'app/selectors/conversations';
-import {
-  addUserOnline,
-  getListUsersOnline,
-  initSocket,
-  addUserOffline,
-} from 'app/actions/socket';
-import {
-  getListConversation,
-  updateCountUnreadConversation,
-  updateListConversationWithNewMessage,
-} from 'app/actions/conversations';
 import LeftSide from 'features/Contact/LeftSide/LeftSide';
+import RightSide from 'features/Contact/RightSide/RightSide';
 
 const Wrapper = styled(Container)`
   height: 100vh;
-  overflow: hidden;
   padding: 0;
   flex-direction: row;
   display: flex;
-`;
-const RowBS = styled(Row)`
-  height: inherit;
-`;
-const ColBS1 = styled(Col)`
-  padding-left: 0;
-  padding-right: 0;
-  background-color: #efeff3;
-`;
-const ColBS2 = styled(Col)`
-  padding-left: 0;
-  padding-right: 0;
+  overflow: hidden;
 `;
 const LeftBar = styled(Col)`
   padding-left: 0;
@@ -54,29 +18,43 @@ const LeftBar = styled(Col)`
   min-width: 80px;
   width: 80px;
   background-color: #efeff3;
-  margin:0px;
+  margin: 0px;
+  @media (max-width: 800px) {
+    width: 0px;
+    min-width: 0px;
+  }
 `;
 const LeftSideWrapper = styled.div`
-  min-width:380px;
+  width: 36%;
   background-color: #efeff3;
-  padding:5px;
+  padding: 5px;
+  @media (max-width: 1250px) {
+    width: 320px;
+    max-width: 300px;
+  }
+  @media (max-width: 680px) {
+    width: 260px;
+    max-width: 300px;
+  }
 `;
 const RightSideWrapper = styled.div`
-  /* background-color: blue; */
   width: 100%;
+  overflow-y: scroll;
 `;
 
 export default function Contact() {
   return (
     <Wrapper fluid>
-      <LeftBar >
+      <LeftBar>
         <Sidebar ContactActive={true} />
       </LeftBar>
 
       <LeftSideWrapper>
         <LeftSide />
       </LeftSideWrapper>
-      <RightSideWrapper></RightSideWrapper>
+      <RightSideWrapper>
+        <RightSide />
+      </RightSideWrapper>
     </Wrapper>
   );
 }

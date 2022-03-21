@@ -61,6 +61,7 @@ const LeftBar = styled(Col)`
   padding-right: 0;
   width: 80px;
   background-color: #efeff3;
+  
 `;
 
 function ChatOverView() {

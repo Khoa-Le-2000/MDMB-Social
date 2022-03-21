@@ -7,16 +7,14 @@ import { getUserProfileSelector } from 'app/selectors/userProfile';
 import { getPartnerProfileSelector } from 'app/selectors/partnerProfile';
 import styled from 'styled-components';
 import MainLayout from 'layouts/MainLayout';
+import { Button, Container as BootstrapContainer } from 'react-bootstrap';
+import { Chat, Rss, Cake } from '@styled-icons/heroicons-solid';
+import { UserPlus, UserCheck, User } from '@styled-icons/boxicons-solid';
 import {
-  Button,
-  Card,
-  Col as BootstrapCol,
-  Container as BootstrapContainer,
-  Form,
-  Row as BootstrapRow,
-} from 'react-bootstrap';
-import { Chat, Rss } from '@styled-icons/heroicons-solid';
-import { UserPlus, UserCheck } from '@styled-icons/boxicons-solid';
+  Male as MaleFemale,
+  MaleSign,
+  FemaleSign,
+} from '@styled-icons/boxicons-regular';
 import { getAuth } from 'app/selectors/login';
 import { useEffect } from 'react';
 import { getConversations } from 'app/selectors/conversations';
@@ -55,7 +53,7 @@ const AvatarWrapper = styled.div`
   }
 `;
 const LineWrapper = styled.div`
-  padding: 10px 30px 10px 30px;
+  padding: 0px 30px 10px 30px;
   justify-content: space-between;
   width: 100%;
   display: flex;
@@ -83,6 +81,8 @@ const IntroduceHeader = styled.div`
   font-size: 1.25rem;
 `;
 const Introduce = styled.div`
+  padding-top: 5px;
+  padding-bottom: 5px;
   text-align: center;
   width: 80%;
   margin: auto;
@@ -91,6 +91,7 @@ const IntroduceWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
+  margin-top: 20px;
 `;
 
 const IntroduceIcon = styled(Rss)`
@@ -121,7 +122,31 @@ const Information = styled.div`
   width: 100%;
   font-size: 1.1rem;
 `;
-
+const GenderIcon = styled(MaleFemale)`
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-bottom: 2px;
+`;
+const CakeIcon = styled(Cake)`
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-bottom: 2px;
+`;
+const UserIcon = styled(User)`
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-bottom: 2px;
+`;
+const MaleIcon = styled(MaleSign)`
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-bottom: 2px;
+`;
+const FemaleIcon = styled(FemaleSign)`
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-bottom: 2px;
+`;
 function UserInfor() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -186,13 +211,24 @@ function UserInfor() {
               </IntroduceWrapper>
             </LineWrapper>
             <LineWrapper>
-              <InformationHeader>Birthday:</InformationHeader>
+              <InformationHeader>
+                <CakeIcon /> Birthday
+              </InformationHeader>
               <Information>
                 {partnerInfor?.Birthday?.split('T')[0] || 'Unknow'}
               </Information>
             </LineWrapper>
             <LineWrapper>
-              <InformationHeader>Gender:</InformationHeader>
+              <InformationHeader>
+                {partnerInfor?.Gender == 0 ? (
+                  <FemaleIcon />
+                ) : partnerInfor?.Gender == 1 ? (
+                  <MaleIcon />
+                ) : (
+                  <GenderIcon />
+                )}
+                Gender
+              </InformationHeader>
               <Information>
                 {partnerInfor?.Gender == 0
                   ? 'Male'
@@ -202,9 +238,11 @@ function UserInfor() {
               </Information>
             </LineWrapper>
             <LineWrapper>
-              <InformationHeader>Join:</InformationHeader>
+              <InformationHeader>
+                <UserIcon /> Join
+              </InformationHeader>
               <Information>
-                {dayjs(partnerInfor?.CreatedDate).fromNow()|| 'Unknow'}
+                {dayjs(partnerInfor?.CreatedDate).fromNow() || 'Unknow'}
               </Information>
             </LineWrapper>
           </CardProfile>
