@@ -172,7 +172,10 @@ function ChatConversations({ onSelectRoom }) {
         </Tab>
       </Tabs>
       <Wrapper>
-        {(searchingFriendList.length==0?listConversationSorted:searchingFriendList)?.map((item, index) =>
+        {(searchingFriendList.length == 0
+          ? listConversationSorted
+          : searchingFriendList
+        )?.map((item, index) =>
           allMessageSelected ? (
             <CardConversation
               key={index}

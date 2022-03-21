@@ -29,7 +29,6 @@ import {
 } from 'app/actions/conversations';
 import { getSocket } from 'app/selectors/socket';
 
-
 const Wrapper = styled(Container)`
   height: 100vh;
   overflow: hidden;
@@ -42,10 +41,10 @@ const ColBS1 = styled(Col)`
   padding-left: 0;
   padding-right: 0;
   background-color: #efeff3;
-  width:25%;
+  width: 25%;
   @media (max-width: 1250px) {
     width: calc(100% - 90px);
-    display: ${props=>props.roomIdSelected?'none':"unset"}
+    display: ${(props) => (props.roomIdSelected ? 'none' : 'unset')};
   }
 `;
 const ColBS2 = styled(Col)`
@@ -54,7 +53,7 @@ const ColBS2 = styled(Col)`
   width: calc(75% - 80px);
   @media (max-width: 1250px) {
     width: calc(100% - 90px);
-    display: ${props=>props.roomIdSelected?'unset':"none"}
+    display: ${(props) => (props.roomIdSelected ? 'unset' : 'none')};
   }
 `;
 const LeftBar = styled(Col)`
@@ -120,6 +119,7 @@ function ChatOverView() {
   React.useEffect(() => {
     socket?.on('seen message', (messageId) => {
       dispatch(seenMessage(messageId));
+      dispatch(getListConversation(auth?.accountId));
     });
   }, [dispatch, socket]);
 
@@ -164,7 +164,6 @@ function ChatOverView() {
       dispatch(getMessagesLatest(auth?.accountId, conversation.AccountId));
     }
   };
-  console.log(roomId?1:0)
   const handleSeenMessage = (messageId, partnerId) => {
     socket?.emit('seen message', messageId);
     dispatch(updateCountUnreadConversation(partnerId));
@@ -173,13 +172,13 @@ function ChatOverView() {
   return socket ? (
     <Wrapper fluid>
       <RowBS>
-        <LeftBar lg={1} xs={1} md={1} >
-          <Sidebar MessageActive={true}/>
+        <LeftBar lg={1} xs={1} md={1}>
+          <Sidebar MessageActive={true} />
         </LeftBar>
-        <ColBS1 lg={3} xs={3} md={3} roomIdSelected={roomId?true:false}>
+        <ColBS1 lg={3} xs={3} md={3} roomIdSelected={roomId ? true : false}>
           <ChatConversations onSelectRoom={handleSelectRoomClick} />
         </ColBS1>
-        <ColBS2 lg={8} xs={8} md={8} roomIdSelected={roomId?true:false}>
+        <ColBS2 lg={8} xs={8} md={8} roomIdSelected={roomId ? true : false}>
           {roomId ? (
             <ChatWindow
               onSendMessage={handleSendMessage}
