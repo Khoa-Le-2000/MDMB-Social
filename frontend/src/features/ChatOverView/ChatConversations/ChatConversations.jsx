@@ -84,28 +84,28 @@ const Tab = styled.div`
     }
   }
 `;
-const SearchingPopOut = styled.div`
-  position: absolute;
-  z-index: 2;
-  width: calc(100% - 44px);
-  top: 100%;
-  left: 0px;
-  border-radius: 0 0 10px 10px;
-  background-color: #ffffff;
-`;
+// const SearchingPopOut = styled.div`
+//   position: absolute;
+//   z-index: 2;
+//   width: calc(100% - 44px);
+//   top: 100%;
+//   left: 0px;
+//   border-radius: 0 0 10px 10px;
+//   background-color: #ffffff;
+// `;
 const SearchForm = styled.div`
   position: relative;
   display: flex;
   align-items: stretch;
   width: 100%;
 `;
-const SearchItemWrapper = styled.div`
-  cursor: pointer;
-`;
-const UserNotFound = styled.div`
-  height: 30px;
-  margin: 10px 0 0 10px;
-`;
+// const SearchItemWrapper = styled.div`
+//   cursor: pointer;
+// `;
+// const UserNotFound = styled.div`
+//   height: 30px;
+//   margin: 10px 0 0 10px;
+// `;
 
 function listFriendSearch(listFriend, searchValue) {
   let tempListFriend = [];
@@ -117,8 +117,6 @@ function listFriendSearch(listFriend, searchValue) {
 }
 
 function ChatConversations({ onSelectRoom }) {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
   const accountId = useSelector(getAuth)?.accountId;
   const listConversation = useSelector(getConversations);
   const listConversationSorted = listConversation.sort(
@@ -143,17 +141,7 @@ function ChatConversations({ onSelectRoom }) {
   //Searching friend list
   const [searchingFriendList, setSearchingFriendList] =
     React.useState(listConversation);
-  const [showListSearch, SetShowListSearch] = React.useState(false);
   const [searchValue, setSearchValue] = React.useState('');
-
-  const handleSearchClick = (e) => {
-    SetShowListSearch(true);
-  };
-  const handleSearchBlur = () => {
-    setTimeout(() => {
-      SetShowListSearch(false);
-    }, 100);
-  };
   const handleSearchChange = (e) => {
     setSearchValue(e.target.value);
   };
@@ -168,28 +156,11 @@ function ChatConversations({ onSelectRoom }) {
       <SearchForm>
         <Form.Control
           placeholder="Searching"
-          onClick={handleSearchClick}
-          onBlur={handleSearchBlur}
           onChange={handleSearchChange}
         />
         <InputSearch>
           <IconSearch />
         </InputSearch>
-        {showListSearch && searchValue !== '' && (
-          <SearchingPopOut >
-            {searchingFriendList.length > 0 ? (
-              searchingFriendList?.map((item, index) => (
-                <SearchItemWrapper
-                  key={index}
-                >
-                  <SearchChatConversation item={item} onSelectRoom={onSelectRoom}/>
-                </SearchItemWrapper>
-              ))
-            ) : (
-              <UserNotFound> Không có người dùng này!</UserNotFound>
-            )}
-          </SearchingPopOut>
-        )}
       </SearchForm>
       <Tabs>
         <Tab onClick={handleAllMessageClick} selected={allMessageSelected}>
@@ -203,7 +174,7 @@ function ChatConversations({ onSelectRoom }) {
         </Tab>
       </Tabs>
       <Wrapper>
-        {listConversationSorted?.map((item, index) =>
+        {searchingFriendList?.map((item, index) =>
           allMessageSelected ? (
             <CardConversation
               key={index}
