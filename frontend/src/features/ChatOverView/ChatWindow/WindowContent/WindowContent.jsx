@@ -4,6 +4,7 @@ import React from 'react';
 import { getListMessageLatest } from 'app/selectors/chat';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
+import MessageLoading from './MessageLoading/MessageLoading';
 
 const Wrapper = styled.div`
   padding: 0px 5px;
@@ -12,13 +13,17 @@ const Wrapper = styled.div`
 
 function WindowContent({ typing, onSeenMessage }) {
   const messagesLatest = useSelector(getListMessageLatest);
-
+  console.log('messagesLatest', messagesLatest);
   return (
     <Wrapper>
-      {messagesLatest.length > 0 ? (
-        <Messages typing={typing} onSeenMessage={onSeenMessage} />
+      {messagesLatest.listMessage ? (
+        !messagesLatest.noMessage && messagesLatest.listMessage ? (
+          <Messages typing={typing} onSeenMessage={onSeenMessage} />
+        ) : (
+          <MessageEmpty />
+        )
       ) : (
-        <MessageEmpty />
+        <MessageLoading />
       )}
     </Wrapper>
   );

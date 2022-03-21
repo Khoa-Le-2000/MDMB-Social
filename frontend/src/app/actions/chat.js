@@ -25,10 +25,10 @@ const getListMessageLatestStart = () => {
   };
 };
 
-const getListMessageLatestSuccess = (listMessage) => {
+const getListMessageLatestSuccess = (listMessage, noMessage) => {
   return {
     type: ChatActionTypes.LIST_MESSAGE_LATEST_SUCCESS,
-    payload: listMessage,
+    payload: {listMessage, noMessage},
   };
 };
 
@@ -37,9 +37,9 @@ export const getMessagesLatest =
     dispatch(getListMessageLatestStart());
     const data = await chatApi.getListMessage(myAccountId, yourAccountId);
     if (data?.message === 'No message found') {
-      dispatch(getListMessageLatestSuccess([]));
+      dispatch(getListMessageLatestSuccess([], true));
     } else {
-      dispatch(getListMessageLatestSuccess(data.reverse()));
+      dispatch(getListMessageLatestSuccess(data.reverse(), false));
     }
   };
 
