@@ -1,16 +1,11 @@
 import { Search } from '@styled-icons/heroicons-solid';
 import { getConversations } from 'app/selectors/conversations';
-import { getAuth } from 'app/selectors/login';
-import CardConversation from 'features/ChatOverView/ChatConversations/CardConversation/CardConversation';
-import React from 'react';
-import { Form, InputGroup as BsInputGroup, Dropdown } from 'react-bootstrap';
-import styled from 'styled-components';
+import React, { useEffect } from 'react';
+import { Form, InputGroup as BsInputGroup } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import SearchChatConversation from 'features/ChatOverView/ChatConversations/Search/Search';
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getUserProfileSelector } from 'app/selectors/userProfile';
-import { getMessagesLatest, selectRoom } from 'app/actions/chat';
+import styled from 'styled-components';
+
 const LeftSideWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -116,59 +111,32 @@ const Name = styled.div`
     margin-left: 20px;
   }
 `;
-function listFriendSearch(listFriend, searchValue) {
-  let tempListFriend = [];
-  listFriend.forEach((element) => {
-    if (element.Name.toLowerCase().includes(searchValue.toLowerCase()))
-      tempListFriend.push(element);
-  });
-  return tempListFriend;
-}
+
 export default function LeftSide() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const listConversation = useSelector(getConversations);
-  const listConversationSorted = listConversation.sort(
-    (a, b) => Date.parse(b.SentDate) - Date.parse(a.SentDate)
-  );
-
-  //Searching friend list
-  const [searchingFriendList, setSearchingFriendList] =
-    React.useState(listConversation);
-  const [showListSearch, SetShowListSearch] = React.useState(false);
+  const [listUserMatch, setListUserMatch] = React.useState(listConversation);
   const [searchValue, setSearchValue] = React.useState('');
-
-  const handleSearchClick = (e) => {
-    SetShowListSearch(true);
-  };
-
-  const handleSearchBlur = () => {
-    setTimeout(() => {
-      SetShowListSearch(false);
-    }, 100);
-  };
   const handleSearchChange = (e) => {
     setSearchValue(e.target.value);
-  };
-  useEffect(() => {
-    setSearchingFriendList(
-      listFriendSearch(listConversationSorted, searchValue)
+    const listUserMatch = listConversation.filter((user) =>
+      user.Name.toLowerCase().includes(e.target.value.toLowerCase())
     );
-  }, [searchValue]);
+    setListUserMatch(listUserMatch);
+  };
+
   const handleFriendCardClick = (AccountId) => {
     navigate(`/chat/${AccountId}`);
   };
 
-
   return (
     <LeftSideWrapper>
-      <Logo> MDMB Social</Logo>
+      <Logo>MDMB Social</Logo>
       <SearchForm>
         <Form.Control
           placeholder="Searching"
-          onClick={handleSearchClick}
-          onBlur={handleSearchBlur}
           onChange={handleSearchChange}
+          value={searchValue}
         />
         <InputSearch>
           <IconSearch />
@@ -176,10 +144,10 @@ export default function LeftSide() {
       </SearchForm>
       <FriendList>
         <FriendCount>Friend({listConversation?.length})</FriendCount>
-        {searchingFriendList.length === 0 && (
-          <UserNotFound> Không có người dùng này!</UserNotFound>
+        {listUserMatch.length === 0 && (
+          <UserNotFound> This user doesn't have!</UserNotFound>
         )}
-        {searchingFriendList?.map((item, index) => (
+        {listUserMatch?.map((item, index) => (
           <FriendCard
             key={index}
             onClick={() => {
@@ -187,7 +155,7 @@ export default function LeftSide() {
             }}
           >
             <Avatar>
-              <img src={item.Avatar}></img>
+              <img src={item.Avatar} alt="avatar" />
             </Avatar>
             <Name>{item.Name}</Name>
           </FriendCard>

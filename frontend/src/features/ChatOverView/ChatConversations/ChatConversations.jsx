@@ -2,15 +2,12 @@ import { Search } from '@styled-icons/heroicons-solid';
 import { getConversations } from 'app/selectors/conversations';
 import { getAuth } from 'app/selectors/login';
 import CardConversation from 'features/ChatOverView/ChatConversations/CardConversation/CardConversation';
-import React from 'react';
-import { Form, InputGroup as BsInputGroup, Dropdown } from 'react-bootstrap';
+import React, { useEffect } from 'react';
+import { Form, InputGroup as BsInputGroup } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
-import SearchChatConversation from 'features/ChatOverView/ChatConversations/Search/Search';
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getUserProfileSelector } from 'app/selectors/userProfile';
 import { getListConversation } from 'app/actions/conversations';
+import { useDispatch } from 'react-redux';
 
 const SideBar = styled.div`
   width: 100%;
@@ -27,8 +24,8 @@ const Logo = styled.div`
   height: 7%;
   align-self: center;
   padding-top: 3%;
-  @media (max-width:1250px){
-    padding-bottom:3%;
+  @media (max-width: 1250px) {
+    padding-bottom: 3%;
   }
 `;
 const InputGroup = styled(BsInputGroup)`
@@ -118,7 +115,10 @@ function listFriendSearch(listFriend, searchValue) {
 
 function ChatConversations({ onSelectRoom }) {
   const accountId = useSelector(getAuth)?.accountId;
+  const dispatch = useDispatch();
+
   const listConversation = useSelector(getConversations);
+  console.log();
   const listConversationSorted = listConversation.sort(
     (a, b) => Date.parse(b.SentDate) - Date.parse(a.SentDate)
   );
@@ -130,34 +130,32 @@ function ChatConversations({ onSelectRoom }) {
     setAllMessageSelected(true);
     setUnreadMessageSelected(false);
     // dispatch(getListConversation(accountId));
-
   };
   const handleMessageUnreadClick = () => {
     setAllMessageSelected(false);
     setUnreadMessageSelected(true);
-    // dispatch(getListConversation(accountId));
-
   };
   //Searching friend list
-  const [searchingFriendList, setSearchingFriendList] =
-    React.useState(listConversation);
+
+  const [searchingFriendList, setSearchingFriendList] = React.useState(
+    listConversationSorted
+  );
   const [searchValue, setSearchValue] = React.useState('');
   const handleSearchChange = (e) => {
     setSearchValue(e.target.value);
   };
+
   useEffect(() => {
     setSearchingFriendList(
       listFriendSearch(listConversationSorted, searchValue)
     );
   }, [searchValue]);
+
   return (
     <SideBar>
       <Logo> MDMB Social</Logo>
       <SearchForm>
-        <Form.Control
-          placeholder="Searching"
-          onChange={handleSearchChange}
-        />
+        <Form.Control placeholder="Searching" onChange={handleSearchChange} />
         <InputSearch>
           <IconSearch />
         </InputSearch>
@@ -174,7 +172,7 @@ function ChatConversations({ onSelectRoom }) {
         </Tab>
       </Tabs>
       <Wrapper>
-        {searchingFriendList?.map((item, index) =>
+        {(searchingFriendList.length==0?listConversationSorted:searchingFriendList)?.map((item, index) =>
           allMessageSelected ? (
             <CardConversation
               key={index}
