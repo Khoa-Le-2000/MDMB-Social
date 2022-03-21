@@ -120,7 +120,7 @@ function ChatConversations({ onSelectRoom }) {
 
   return (
     <SideBar>
-      <Logo> MDMB Social</Logo>
+      <Logo>MDMB Social</Logo>
       <SearchForm>
         <Form.Control
           placeholder="Searching"
