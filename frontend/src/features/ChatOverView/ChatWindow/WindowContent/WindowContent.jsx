@@ -12,23 +12,28 @@ import MessageLoading from './MessageLoading/MessageLoading';
 const Wrapper = styled.div`
   padding: 0px 5px;
   width: 100%;
-  height: 100%;
+  overflow-x: hidden;
+  /* height: 100%; */
 `;
-
+const MessageLoadingWrapper = styled.div`
+position: relative;
+margin-bottom: 180px;
+ padding:30px;
+`;
 function WindowContent({ typing, onSeenMessage }) {
   const messagesLatest = useSelector(getListMessageLatest);
   const isFetching = useSelector(getFetchingMessage);
-  
+
   return (
     <Wrapper>
       {isFetching ? (
-        <MessageLoading />
+        <MessageLoadingWrapper>
+          <MessageLoading />
+        </MessageLoadingWrapper>
+      ) : messagesLatest && messagesLatest.length > 0 ? (
+        <Messages typing={typing} onSeenMessage={onSeenMessage} />
       ) : (
-        (messagesLatest && messagesLatest.length > 0) ? (
-          <Messages typing={typing} onSeenMessage={onSeenMessage} />
-        ) : (
-          <MessageEmpty />
-        )
+        <MessageEmpty />
       )}
     </Wrapper>
   );
