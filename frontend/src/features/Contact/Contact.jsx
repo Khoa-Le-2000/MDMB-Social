@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
+import { Col, Container } from 'react-bootstrap';
 import styled from 'styled-components';
 import Sidebar from 'features/ChatOverView/Sidebar/Sidebar';
 import LeftSide from 'features/Contact/LeftSide/LeftSide';
@@ -19,11 +19,10 @@ const LeftBar = styled(Col)`
   width: 80px;
   background-color: #efeff3;
   margin: 0px;
-  @media (max-width:800px){
+  @media (max-width: 800px) {
     width: 0px;
-  min-width: 0px;
-
-}
+    min-width: 0px;
+  }
 `;
 const LeftSideWrapper = styled.div`
   width: 36%;
