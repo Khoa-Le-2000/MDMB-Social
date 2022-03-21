@@ -6,6 +6,7 @@ const initialState = {
   success: false,
   message: null,
   listConversation: [],
+  filterBy: 'all',
 };
 const conversationsReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -61,7 +62,11 @@ const conversationsReducer = (state = initialState, action) => {
         message: null,
         listConversation: action.payload,
       };
-
+    case ConversationActionTypes.CHANGE_FILTER_CONVERSATION:
+      return {
+        ...state,
+        filterBy: action.payload,
+      }
     default:
       return state;
   }

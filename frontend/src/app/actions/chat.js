@@ -13,10 +13,11 @@ const SelectRoomSuccess = (partner) => {
   };
 };
 
-export const selectRoom = (conversation) => async (dispatch) => {
+export const selectRoom = (conversation, navigate) => async (dispatch) => {
   dispatch(SelectRoomStart());
   const { Avatar, Name, AccountId } = conversation;
   dispatch(SelectRoomSuccess({ Avatar, Name, AccountId }));
+  navigate(`/chat/${conversation.AccountId}`);
 };
 
 const getListMessageLatestStart = () => {

@@ -91,3 +91,10 @@ export const updateListConversationWithNewMessage =
     });
     dispatch(updateListConversationWithNewMessageSuccess(newListConversation));
   };
+
+export const changeFilterConversation = (filterName) => {
+  return {
+    type: ConversationActionTypes.CHANGE_FILTER_CONVERSATION,
+    payload: filterName,
+  };
+};

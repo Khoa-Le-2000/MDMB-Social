@@ -10,4 +10,6 @@ export const ConversationActionTypes = {
     'update/listConversation/with/new/message',
   UPDATE_LIST_CONVERSATION_WITH_NEW_MESSAGE_SUCCESS:
     'update/listConversation/with/new/message/success',
+
+  CHANGE_FILTER_CONVERSATION: 'change/filter/conversation',
 };

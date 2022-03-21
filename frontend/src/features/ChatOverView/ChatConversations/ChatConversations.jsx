@@ -1,13 +1,17 @@
 import { Search } from '@styled-icons/heroicons-solid';
-import { getConversations } from 'app/selectors/conversations';
+import {
+  changeFilterConversation,
+  getListConversation
+} from 'app/actions/conversations';
+import {
+  getConversationsByFilter, getFilterName
+} from 'app/selectors/conversations';
 import { getAuth } from 'app/selectors/login';
 import CardConversation from 'features/ChatOverView/ChatConversations/CardConversation/CardConversation';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Form, InputGroup as BsInputGroup } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { getListConversation } from 'app/actions/conversations';
-import { useDispatch } from 'react-redux';
 
 const SideBar = styled.div`
   width: 100%;
@@ -96,105 +100,67 @@ const SearchForm = styled.div`
   align-items: stretch;
   width: 100%;
 `;
-// const SearchItemWrapper = styled.div`
-//   cursor: pointer;
-// `;
-// const UserNotFound = styled.div`
-//   height: 30px;
-//   margin: 10px 0 0 10px;
-// `;
-
-function listFriendSearch(listFriend, searchValue) {
-  let tempListFriend = [];
-  listFriend.forEach((element) => {
-    if (element.Name.toLowerCase().includes(searchValue.toLowerCase()))
-      tempListFriend.push(element);
-  });
-  return tempListFriend;
-}
 
 function ChatConversations({ onSelectRoom }) {
   const accountId = useSelector(getAuth)?.accountId;
-  const dispatch = useDispatch();
+  const filter = useSelector(getFilterName);
+  const listConversation = useSelector(getConversationsByFilter);
 
-  const listConversation = useSelector(getConversations);
-  console.log();
+  const dispatch = useDispatch();
   const listConversationSorted = listConversation.sort(
     (a, b) => Date.parse(b.SentDate) - Date.parse(a.SentDate)
   );
-  const [allMessageSelected, setAllMessageSelected] = React.useState(true);
-  const [unreadMessageSelected, setUnreadMessageSelected] =
-    React.useState(false);
+  const [searchValue, setSearchValue] = React.useState('');
+
 
   const handleAllMessageClick = () => {
-    setAllMessageSelected(true);
-    setUnreadMessageSelected(false);
-    // dispatch(getListConversation(accountId));
+    dispatch(changeFilterConversation('all'));
+    dispatch(getListConversation(accountId));
   };
   const handleMessageUnreadClick = () => {
-    setAllMessageSelected(false);
-    setUnreadMessageSelected(true);
+    dispatch(changeFilterConversation('unread'));
+    dispatch(getListConversation(accountId));
   };
-  //Searching friend list
 
-  const [searchingFriendList, setSearchingFriendList] = React.useState(
-    listConversationSorted
-  );
-  const [searchValue, setSearchValue] = React.useState('');
   const handleSearchChange = (e) => {
     setSearchValue(e.target.value);
   };
-
-  useEffect(() => {
-    setSearchingFriendList(
-      listFriendSearch(listConversationSorted, searchValue)
-    );
-  }, [searchValue]);
 
   return (
     <SideBar>
       <Logo> MDMB Social</Logo>
       <SearchForm>
-        <Form.Control placeholder="Searching" onChange={handleSearchChange} />
+        <Form.Control
+          placeholder="Searching"
+          onChange={handleSearchChange}
+          value={searchValue}
+        />
         <InputSearch>
           <IconSearch />
         </InputSearch>
       </SearchForm>
       <Tabs>
-        <Tab onClick={handleAllMessageClick} selected={allMessageSelected}>
+        <Tab
+          onClick={handleAllMessageClick}
+          selected={filter === 'all' ? 1 : 0}
+        >
           All Message
         </Tab>
         <Tab
           onClick={handleMessageUnreadClick}
-          selected={unreadMessageSelected}
+          selected={filter === 'unread' ? 1 : 0}
         >
           Message unread
         </Tab>
       </Tabs>
       <Wrapper>
-        {(searchingFriendList.length == 0
-          ? listConversationSorted
-          : searchingFriendList
-        )?.map((item, index) =>
-          allMessageSelected ? (
-            <CardConversation
-              key={index}
-              onSelectRoom={onSelectRoom}
-              conversation={item}
-            />
-          ) : (
-            //message unread
-            !item.SeenDate &&
-            item.LastMessage &&
-            item.FromAccount !== accountId && (
-              <CardConversation
-                key={index}
-                onSelectRoom={onSelectRoom}
-                conversation={item}
-              />
-            )
-          )
-        )}
+        {listConversationSorted?.map((item, index) => (
+          <CardConversation
+            key={index}
+            onSelectRoom={onSelectRoom}
+            conversation={item}
+          />
+        ))}
       </Wrapper>
     </SideBar>
   );

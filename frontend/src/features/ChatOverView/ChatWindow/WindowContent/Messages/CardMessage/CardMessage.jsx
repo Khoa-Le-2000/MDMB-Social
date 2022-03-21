@@ -55,6 +55,7 @@ const Name = styled.h4`
 `;
 const Message = styled.div`
   font-size: 14px;
+  white-space: pre-wrap;
   a {
     :hover {
       text-decoration: underline;

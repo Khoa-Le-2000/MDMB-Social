@@ -5,29 +5,29 @@ import {
   selectRoom,
   sendMessage,
 } from 'app/actions/chat';
-import { getAuth } from 'app/selectors/login';
-import ChatConversations from 'features/ChatOverView/ChatConversations/ChatConversations';
-import ChatWindow from 'features/ChatOverView/ChatWindow/ChatWindow';
-import WindowEmpty from 'features/ChatOverView/ChatWindow/WindowEmpty/WindowEmpty';
-import React from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
-import styled from 'styled-components';
-import Sidebar from 'features/ChatOverView/Sidebar/Sidebar';
-import { getConversations } from 'app/selectors/conversations';
-import {
-  addUserOnline,
-  getListUsersOnline,
-  initSocket,
-  addUserOffline,
-} from 'app/actions/socket';
 import {
   getListConversation,
   updateCountUnreadConversation,
   updateListConversationWithNewMessage,
 } from 'app/actions/conversations';
+import {
+  addUserOffline,
+  addUserOnline,
+  getListUsersOnline,
+  initSocket,
+} from 'app/actions/socket';
+import { getConversations } from 'app/selectors/conversations';
+import { getAuth } from 'app/selectors/login';
 import { getSocket } from 'app/selectors/socket';
+import ChatConversations from 'features/ChatOverView/ChatConversations/ChatConversations';
+import ChatWindow from 'features/ChatOverView/ChatWindow/ChatWindow';
+import WindowEmpty from 'features/ChatOverView/ChatWindow/WindowEmpty/WindowEmpty';
+import Sidebar from 'features/ChatOverView/Sidebar/Sidebar';
+import React from 'react';
+import { Col, Container, Row } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
+import styled from 'styled-components';
 
 const Wrapper = styled(Container)`
   height: 100vh;
@@ -61,7 +61,6 @@ const LeftBar = styled(Col)`
   padding-right: 0;
   width: 80px;
   background-color: #efeff3;
-  
 `;
 
 function ChatOverView() {
@@ -69,10 +68,10 @@ function ChatOverView() {
   const dispatch = useDispatch();
   const { roomId } = useParams();
 
-  const [typing, setTyping] = React.useState(false);
   const navigate = useNavigate();
   const socket = useSelector(getSocket);
   const listConversation = useSelector(getConversations);
+  const [typing, setTyping] = React.useState(false);
 
   React.useEffect(() => {
     if (!socket) {
@@ -159,8 +158,7 @@ function ChatOverView() {
 
   const handleSelectRoomClick = (conversation) => {
     if (+conversation.AccountId !== +roomId) {
-      dispatch(selectRoom(conversation));
-      navigate(`/chat/${conversation.AccountId}`);
+      dispatch(selectRoom(conversation, navigate));
       dispatch(getMessagesLatest(auth?.accountId, conversation.AccountId));
     }
   };
@@ -175,10 +173,10 @@ function ChatOverView() {
         <LeftBar lg={1} xs={1} md={1}>
           <Sidebar MessageActive={true} />
         </LeftBar>
-        <ColBS1 lg={3} xs={3} md={3} roomIdSelected={roomId ? true : false}>
+        <ColBS1 lg={3} xs={3} md={3} roomIdSelected={roomId ? 1 : 0}>
           <ChatConversations onSelectRoom={handleSelectRoomClick} />
         </ColBS1>
-        <ColBS2 lg={8} xs={8} md={8} roomIdSelected={roomId ? true : false}>
+        <ColBS2 lg={8} xs={8} md={8} roomIdSelected={roomId ? 1 : 0}>
           {roomId ? (
             <ChatWindow
               onSendMessage={handleSendMessage}
