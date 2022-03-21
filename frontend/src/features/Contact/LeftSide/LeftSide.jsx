@@ -2,10 +2,13 @@ import { Search } from '@styled-icons/heroicons-solid';
 import { getConversations } from 'app/selectors/conversations';
 import React, { useEffect } from 'react';
 import { Form, InputGroup as BsInputGroup } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-
+import {
+  getMessagesLatest,
+  selectRoom
+} from 'app/actions/chat';
 const LeftSideWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -113,6 +116,7 @@ const Name = styled.div`
 `;
 
 export default function LeftSide() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const listConversation = useSelector(getConversations);
   const [listUserMatch, setListUserMatch] = React.useState(listConversation);
@@ -124,9 +128,11 @@ export default function LeftSide() {
     );
     setListUserMatch(listUserMatch);
   };
-
-  const handleFriendCardClick = (AccountId) => {
-    navigate(`/chat/${AccountId}`);
+ 
+  const handleFriendCardClick = (AccountId,item) => {
+    dispatch(selectRoom(item, navigate));
+    dispatch(getMessagesLatest(AccountId, item.AccountId));
+    // navigate(`/chat/${AccountId}`);
   };
 
   return (
@@ -151,7 +157,7 @@ export default function LeftSide() {
           <FriendCard
             key={index}
             onClick={() => {
-              handleFriendCardClick(item.AccountId);
+              handleFriendCardClick(item.AccountId,item);
             }}
           >
             <Avatar>
