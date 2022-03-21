@@ -9,8 +9,14 @@ import styled from 'styled-components';
 const Wrapper = styled.div`
   padding: 0px 5px;
   width: 100%;
+  overflow-x: hidden;
+  /* height: 100%; */
 `;
-
+const MessageLoadingWrapper = styled.div`
+position: relative;
+margin-bottom: 180px;
+ padding:30px;
+`;
 function WindowContent({ typing, onSeenMessage }) {
   const messagesLatest = useSelector(getListMessageLatest);
   const isFetching = useSelector(getFetchingMessage);
@@ -18,7 +24,9 @@ function WindowContent({ typing, onSeenMessage }) {
   return (
     <Wrapper>
       {isFetching ? (
-        <MessageLoading />
+        <MessageLoadingWrapper>
+          <MessageLoading />
+        </MessageLoadingWrapper>
       ) : messagesLatest && messagesLatest.length > 0 ? (
         <Messages typing={typing} onSeenMessage={onSeenMessage} />
       ) : (
