@@ -111,57 +111,32 @@ const Name = styled.div`
     margin-left: 20px;
   }
 `;
-function listFriendSearch(listFriend, searchValue) {
-  let tempListFriend = [];
-  listFriend.forEach((element) => {
-    if (element.Name.toLowerCase().includes(searchValue.toLowerCase()))
-      tempListFriend.push(element);
-  });
-  return tempListFriend;
-}
+
 export default function LeftSide() {
   const navigate = useNavigate();
   const listConversation = useSelector(getConversations);
-  const listConversationSorted = listConversation.sort(
-    (a, b) => Date.parse(b.SentDate) - Date.parse(a.SentDate)
-  );
-
-  //Searching friend list
-  const [searchingFriendList, setSearchingFriendList] =
-    React.useState(listConversation);
-  const [showListSearch, SetShowListSearch] = React.useState(false);
+  const [listUserMatch, setListUserMatch] = React.useState(listConversation);
   const [searchValue, setSearchValue] = React.useState('');
-
-  const handleSearchClick = (e) => {
-    SetShowListSearch(true);
-  };
-
-  const handleSearchBlur = () => {
-    setTimeout(() => {
-      SetShowListSearch(false);
-    }, 100);
-  };
   const handleSearchChange = (e) => {
     setSearchValue(e.target.value);
-  };
-  useEffect(() => {
-    setSearchingFriendList(
-      listFriendSearch(listConversationSorted, searchValue)
+    const listUserMatch = listConversation.filter((user) =>
+      user.Name.toLowerCase().includes(e.target.value.toLowerCase())
     );
-  }, [searchValue]);
+    setListUserMatch(listUserMatch);
+  };
+
   const handleFriendCardClick = (AccountId) => {
     navigate(`/chat/${AccountId}`);
   };
 
   return (
     <LeftSideWrapper>
-      <Logo> MDMB Social</Logo>
+      <Logo>MDMB Social</Logo>
       <SearchForm>
         <Form.Control
           placeholder="Searching"
-          onClick={handleSearchClick}
-          onBlur={handleSearchBlur}
           onChange={handleSearchChange}
+          value={searchValue}
         />
         <InputSearch>
           <IconSearch />
@@ -169,10 +144,10 @@ export default function LeftSide() {
       </SearchForm>
       <FriendList>
         <FriendCount>Friend({listConversation?.length})</FriendCount>
-        {searchingFriendList.length === 0 && (
-          <UserNotFound> Không có người dùng này!</UserNotFound>
+        {listUserMatch.length === 0 && (
+          <UserNotFound> This user doesn't have!</UserNotFound>
         )}
-        {searchingFriendList?.map((item, index) => (
+        {listUserMatch?.map((item, index) => (
           <FriendCard
             key={index}
             onClick={() => {
