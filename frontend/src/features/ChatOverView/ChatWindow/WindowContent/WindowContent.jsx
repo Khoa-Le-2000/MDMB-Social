@@ -9,6 +9,7 @@ import MessageLoading from './MessageLoading/MessageLoading';
 const Wrapper = styled.div`
   padding: 0px 5px;
   width: 100%;
+  height: 100%;
 `;
 
 function WindowContent({ typing, onSeenMessage }) {
