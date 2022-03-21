@@ -145,7 +145,7 @@ export default function LeftSide() {
       <FriendList>
         <FriendCount>Friend({listConversation?.length})</FriendCount>
         {listUserMatch.length === 0 && (
-          <UserNotFound> This user doesn't have!</UserNotFound>
+          <UserNotFound> User don't exist!</UserNotFound>
         )}
         {listUserMatch?.map((item, index) => (
           <FriendCard
