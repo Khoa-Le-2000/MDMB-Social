@@ -96,6 +96,12 @@ const SearchForm = styled.div`
   align-items: stretch;
   width: 100%;
 `;
+const Notification = styled.div`
+  color: #f15959;
+  position: absolute;
+  margin-left: 10px;
+  margin-top: 18px;
+`;
 
 function ChatConversations({ onSelectRoom }) {
   const dispatch = useDispatch();
@@ -110,9 +116,11 @@ function ChatConversations({ onSelectRoom }) {
     listConversationByName?.length > 0
       ? listConversationByName
       : listConversationSorted;
-  
+
   const [searchTerm, setSearchTerm] = React.useState('');
   const searchValue = useDebounce(searchTerm, 500);
+
+  
 
   React.useLayoutEffect(() => {
     if (searchValue) {
@@ -162,6 +170,7 @@ function ChatConversations({ onSelectRoom }) {
           Message unread
         </Tab>
       </Tabs>
+      {!listConversationByName?.length > 0 && searchValue != ''&&<Notification>:Not Found</Notification>}
       <Wrapper>
         {listFriend?.map((item, index) => (
           <CardConversation
