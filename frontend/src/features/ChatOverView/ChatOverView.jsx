@@ -168,7 +168,9 @@ function ChatOverView() {
     if (latestMessageId) {
       messagesLatest.map((item) => {
         if (!item.SeenDate) {
-          socket?.emit('seen message', item.MessageId);
+          setTimeout(() => {
+            socket?.emit('seen message', item.MessageId);
+          }, 500);
         }
         return item;
       });

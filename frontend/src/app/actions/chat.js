@@ -112,7 +112,6 @@ export const seenMessage = (messageId) => async (dispatch, getState) => {
     chat: { listMessage },
   } = getState();
   dispatch(seenMessageStart());
-  console.log('messageId: ', messageId);
   if (messageId) {
     const newListMessage = listMessage.map((message) => {
       if (message.MessageId === messageId) {
