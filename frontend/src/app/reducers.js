@@ -10,6 +10,9 @@ import userProfileReducer from 'features/UpdateProfile/GetUserProfileSlice'
 import updateProfileReducer from 'features/UpdateProfile/UpdateProfileSlice'
 import storage from 'redux-persist/lib/storage';
 import partnerProfileReducer from 'features/UserInfor/PartnerInforSlice'
+import searchAccountReducer from 'features/Contact/LeftSide/SearchSilce'
+import listRelationshipReducer from 'features/UserInfor/listRelationshipSlice';
+
 const appReducer = combineReducers({
   login: loginReducer,
   register: registerReducer,
@@ -20,6 +23,8 @@ const appReducer = combineReducers({
   socket: socketReducer,
   previewLink:previewLinkReducer,
   partnerProfile:partnerProfileReducer,
+  searchAccount:searchAccountReducer,
+  listRelationship:listRelationshipReducer,
 });
 
 const rootReducer = (state, action) => {

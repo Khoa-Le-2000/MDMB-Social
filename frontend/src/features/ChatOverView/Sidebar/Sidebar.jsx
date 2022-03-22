@@ -83,6 +83,7 @@ const HoverWrapper = styled.div`
     border-radius: 20%;
     padding: 7px;
   }
+  
 `;
 
 const MessageIcon = styled(Message)`
@@ -103,7 +104,14 @@ const SettingIcon = styled(Setting)`
   width: 3rem;
   margin-left: 12px;
   background-color: ${(props) => (props.active ? '#6364af' : '')};
+  ${({ ContactActive }) =>
+    ContactActive
+      ? `@media(max-width:800px){
+    display: none
+      }`
+      : ''}
 `;
+
 const ListGroupBS = styled(ListGroup)`
   width: 150px;
 `;
@@ -186,6 +194,7 @@ function LefBar({ MessageActive, ContactActive }) {
           <SettingIcon
             onClick={handleSettingClick}
             active={settingActive ? 1 : 0}
+            ContactActive={ContactActive}
           />
           <Overlay show={show} target={target} placement="top" container={ref}>
             <PopoverBS>

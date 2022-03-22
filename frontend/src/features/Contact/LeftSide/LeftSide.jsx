@@ -1,11 +1,18 @@
 import { Search } from '@styled-icons/heroicons-solid';
-import { selectRoom } from 'app/actions/chat';
 import { getConversations } from 'app/selectors/conversations';
 import React from 'react';
 import { Form, InputGroup as BsInputGroup } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { getMessagesLatest, selectRoom } from 'app/actions/chat';
+import { getSearchAccount } from 'app/actions/partnerProfile';
+import {
+  getFetchingSearchAccount,
+  getSearchAccountSelector,
+} from 'app/selectors/partnerProfile';
+import { getAuth } from 'app/selectors/login';
+
 const LeftSideWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -56,8 +63,8 @@ const FriendList = styled.div`
   flex-direction: column;
   height: 100%;
 `;
-const FriendCount = styled.div`
-  margin: 10px 10px 10px 10px;
+const HeaderCard = styled.div`
+  margin: 10px 10px 0px 10px;
   font-size: 1rem;
   color: #848181;
 `;
@@ -108,6 +115,8 @@ export default function LeftSide() {
   const listConversation = useSelector(getConversations);
   const [listUserMatch, setListUserMatch] = React.useState(listConversation);
   const [searchValue, setSearchValue] = React.useState('');
+  const [show, setShow] = React.useState(false);
+  const id = useSelector(getAuth)?.accountId;
   const handleSearchChange = (e) => {
     setSearchValue(e.target.value);
     const listUserMatch = listConversation.filter((user) =>
@@ -116,10 +125,35 @@ export default function LeftSide() {
     setListUserMatch(listUserMatch);
   };
 
-  const handleFriendCardClick = (friend) => {
-    dispatch(selectRoom(friend, navigate));
+  const handleFriendCardClick = (AccountId, item) => {
+    dispatch(selectRoom(item, navigate));
+    dispatch(getMessagesLatest(AccountId, item.AccountId));
+  };
+  const typingTimeoutRef = React.useRef(null);
+  var onTyping = false;
+  const handleKeyPress = (e) => {
+    clearTimeout(typingTimeoutRef.current);
+    onTyping = true;
+    setShow(false);
+  };
+  const handleKeyUp = (e) => {
+    clearTimeout(typingTimeoutRef.current);
+    typingTimeoutRef.current = setTimeout(() => {
+      setShow(true);
+
+      dispatch(getSearchAccount(searchValue, id));
+      onTyping = false;
+    }, 1000);
   };
 
+  var ListSearchAccount = useSelector(getSearchAccountSelector);
+  if (searchValue === '' && show) {
+    setShow(false);
+  }
+  const handleUserProfileClick = (AccountId) => {
+    navigate(`/userinfor/${AccountId}`);
+  };
+  console.log(show);
   return (
     <LeftSideWrapper>
       <Logo>MDMB Social</Logo>
@@ -128,21 +162,23 @@ export default function LeftSide() {
           placeholder="Searching"
           onChange={handleSearchChange}
           value={searchValue}
+          onKeyUp={handleKeyUp}
+          onKeyPress={handleKeyPress}
         />
         <InputSearch>
           <IconSearch />
         </InputSearch>
       </SearchForm>
       <FriendList>
-        <FriendCount>Friend({listConversation?.length})</FriendCount>
+        <HeaderCard>Friend({listConversation?.length})</HeaderCard>
         {listUserMatch.length === 0 && (
-          <UserNotFound> User don't exist!</UserNotFound>
+          <UserNotFound> Friend not found!</UserNotFound>
         )}
         {listUserMatch?.map((item, index) => (
           <FriendCard
             key={index}
             onClick={() => {
-              handleFriendCardClick(item);
+              handleFriendCardClick(item.AccountId, item);
             }}
           >
             <Avatar>
@@ -151,6 +187,34 @@ export default function LeftSide() {
             <Name>{item.Name}</Name>
           </FriendCard>
         ))}
+        {searchValue != '' && !show && <HeaderCard>Loading</HeaderCard>}
+        {show && ListSearchAccount.length > 0 && (
+          <HeaderCard>Searching</HeaderCard>
+        )}
+        {show && !ListSearchAccount.length > 0 && (
+          <>
+            <HeaderCard>Searching</HeaderCard>
+            <UserNotFound>
+              {' '}
+              Coun't found any not your friend user for "{searchValue}", check
+              your spell or try complete word!
+            </UserNotFound>
+          </>
+        )}
+        {show &&
+          ListSearchAccount?.map((item, index) => (
+            <FriendCard
+              key={index}
+              onClick={() => {
+                handleUserProfileClick(item.AccountId);
+              }}
+            >
+              <Avatar>
+                <img src={item.Avatar} alt="avatar" />
+              </Avatar>
+              <Name>{item.Name}</Name>
+            </FriendCard>
+          ))}
       </FriendList>
     </LeftSideWrapper>
   );

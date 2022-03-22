@@ -2,14 +2,17 @@ import React from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserProfile } from 'app/actions/userProfile';
-import { getPartnerProfile } from 'app/actions/partnerProfile';
+import { AddFriend, getPartnerProfile } from 'app/actions/partnerProfile';
 import { getUserProfileSelector } from 'app/selectors/userProfile';
-import { getPartnerProfileSelector } from 'app/selectors/partnerProfile';
+import {
+  getAddFriendStatus,
+  getPartnerProfileSelector,
+} from 'app/selectors/partnerProfile';
 import styled from 'styled-components';
 import MainLayout from 'layouts/MainLayout';
 import { Button, Container as BootstrapContainer } from 'react-bootstrap';
 import { Chat, Rss, Cake } from '@styled-icons/heroicons-solid';
-import { UserPlus, UserCheck, User } from '@styled-icons/boxicons-solid';
+import { UserPlus, UserCheck, User, UserX } from '@styled-icons/boxicons-solid';
 import {
   Male as MaleFemale,
   MaleSign,
@@ -20,6 +23,9 @@ import { useEffect } from 'react';
 import { getConversations } from 'app/selectors/conversations';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { getListConversation } from 'app/actions/conversations';
+import { getListRelationship } from 'app/actions/listRelationship';
+import { getListRelationshipSelector } from 'app/selectors/listRelationship';
 dayjs.extend(relativeTime);
 
 const Wrapper = styled.div`
@@ -112,6 +118,11 @@ const AlreadyFriendIcon = styled(UserCheck)`
   width: 1.25rem;
   height: 1.25rem;
 `;
+
+const CancelRequest = styled(UserX)`
+  width: 1.25rem;
+  height: 1.25rem;
+`;
 const InformationHeader = styled.div`
   text-align: left;
   width: 50%;
@@ -158,19 +169,77 @@ function UserInfor() {
   useEffect(() => {
     dispatch(getUserProfile(AccountId));
     dispatch(getPartnerProfile(id));
+    dispatch(getListRelationship(AccountId));
   }, []);
 
   const accountInfor = useSelector(getUserProfileSelector);
   const partnerInfor = useSelector(getPartnerProfileSelector);
-  const listConversation = useSelector(getConversations);
+  const listRelationship = useSelector(getListRelationshipSelector);
+  const RelationshipInfor = listRelationship.filter(
+    (item) => item.RelatedAccountId == id || item.RelatingAccountId == id
+  )[0];
 
-  let isFriend = false;
-  listConversation.forEach((item) => {
-    if (item.AccountId == id) isFriend = true;
-  });
+  const Type = RelationshipInfor?.Type;
+  console.log(AccountId);
+
+  var Case = null;
+  /* 
+    0 : friend
+    1 : not friend
+    2 : you are sender
+    3 : you are revceiver
+  */
+  if (Type == 'friend') Case = 0;
+  if (!Type) Case = 1;
+  if (
+    (Type == 'rsendpending' &&
+      RelationshipInfor.RelatedAccountId == AccountId) ||
+    (Type == 'lsendpending' && RelationshipInfor.RelatingAccountId == AccountId)
+  )
+    Case = 2;
+  if (
+    (Type == 'rsendpending' &&
+      RelationshipInfor.RelatedAccountId != AccountId) ||
+    (Type == 'lsendpending' && RelationshipInfor.RelatingAccountId != AccountId)
+  )
+    Case = 3;
+
+  // console.log(listRelationship);
+  const [countReRender, setCounReRender] = React.useState(0);
+  console.log(Case);
 
   const handleDirectMessageClick = () => {
     navigate(`/chat/${id}`);
+  };
+  const handleAddFriendClick = () => {
+    if (AccountId < id)
+      dispatch(AddFriend(AccountId, id, 'lsendpending')).then(() =>
+        dispatch(getListRelationship(AccountId))
+      );
+    else
+      dispatch(AddFriend(id, AccountId, 'rsendpending')).then(() =>
+        dispatch(getListRelationship(AccountId))
+      );
+  };
+  const AcceptFriendBtnClick = () => {
+    if (AccountId < id)
+      dispatch(AddFriend(AccountId, id, 'friend')).then(() =>
+        dispatch(getListRelationship(AccountId))
+      );
+    else
+      dispatch(AddFriend(id, AccountId, 'friend')).then(() =>
+        dispatch(getListRelationship(AccountId))
+      );
+  };
+  const handleDeleteRelationship = () => {
+    if (AccountId < id)
+      dispatch(AddFriend(AccountId, id, 'delete')).then(() =>
+        dispatch(getListRelationship(AccountId))
+      );
+    else
+      dispatch(AddFriend(id, AccountId, 'delete')).then(() =>
+        dispatch(getListRelationship(AccountId))
+      );
   };
   return (
     <BootstrapContainer fluid>
@@ -184,21 +253,36 @@ function UserInfor() {
               <NameCard>{partnerInfor?.Name}</NameCard>
             </LineWrapper>
             <LineWrapper>
-              {isFriend ? (
-                <ButtonDefault className="btn">
-                  <AlreadyFriendIcon />
-                  Your Friend
-                </ButtonDefault>
-              ) : (
-                <ButtonDefault className="btn">
+              {Case == 0 && (
+                <>
+                  <ButtonDefault className="btn">
+                    <AlreadyFriendIcon />
+                    Your Friend
+                  </ButtonDefault>
+                  <Button onClick={handleDirectMessageClick}>
+                    <ChatIcon /> Direct Message
+                  </Button>
+                </>
+              )}
+              {Case == 1 && (
+                <ButtonDefault className="btn" onClick={handleAddFriendClick}>
                   <AddFriendIcon />
                   Add Friend
                 </ButtonDefault>
               )}
-              {isFriend && (
-                <Button onClick={handleDirectMessageClick}>
-                  <ChatIcon /> Direct Message
-                </Button>
+              {Case == 2 && (
+                <ButtonDefault className="btn" onClick={handleDeleteRelationship}>
+                  <CancelRequest  />
+                  Cancel Request
+                </ButtonDefault>
+              )}
+              {Case == 3 && (
+                <>
+                  <Button onClick={AcceptFriendBtnClick}>
+                    <AddFriendIcon /> Accept
+                  </Button>
+                  <ButtonDefault className="btn" onClick={handleDeleteRelationship}>Delete</ButtonDefault>
+                </>
               )}
             </LineWrapper>
             <LineWrapper>

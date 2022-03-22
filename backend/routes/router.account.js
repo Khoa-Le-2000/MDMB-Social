@@ -15,4 +15,7 @@ api.get("/list-friend", authMiddleware.verifyToken, accountController.getListFri
 api.get("/list-friend-with-last-message", authMiddleware.verifyToken, accountController.getListFriendWithLastMessage);
 api.get("/list-friend-with-last-message-count-unseen", authMiddleware.verifyToken, accountController.getListFriendWithLastMessageCountUnseen);
 api.get("/account-information", authMiddleware.verifyToken, accountController.getAccountInfor);
+api.get("/account-list-searching", authMiddleware.verifyToken, accountController.getAccountListSearching);
+api.get("/insert-relationship", authMiddleware.verifyToken, accountController.AddFriend);
+api.get("/list-have-relationship", authMiddleware.verifyToken, accountController.getListHaveRelationship);
 module.exports = api;

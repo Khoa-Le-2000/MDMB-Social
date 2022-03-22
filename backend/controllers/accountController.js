@@ -497,6 +497,37 @@ async function getAccountInfor(req, res) {
   else res.status(201).send({ result: "get Account infor failed" });
 }
 
+async function getAccountListSearching(req, res) {
+  var SearchKey = req.query.SearchKey || '';
+  var AccountId = req.query.AccountId;
+  if (!AccountId) return res.status(200).send({ result: "Missing AccountId" });
+  let listAccount = await AccountDAO.getAccountListSearching(SearchKey.toLowerCase(), AccountId);
+  if (listAccount[0]) res.status(200).send({ result: listAccount });
+  else res.status(201).send({ result: [] });
+}
+
+function AddFriend(req, res) {
+  var RelatingAccountId = req.query.RelatingAccountId;
+  var RelatedAccountId = req.query.RelatedAccountId;
+  var Type = req.query.Type;
+
+  if (!RelatingAccountId || !RelatedAccountId || !Type) return res.status(200).send({ result: "Missing Infor" });
+
+  if (Type=='delete') AccountDAO.deleteRelationship(RelatingAccountId, RelatedAccountId, (result)=>{
+    return res.status(201).send({ result: result });
+  })
+  else
+  AccountDAO.setRelationship(RelatingAccountId, RelatedAccountId, Type, (result) => {
+    return res.status(201).send({ result: result });
+  })
+}
+
+async function getListHaveRelationship(req, res) {
+  var AccountId = req.query.AccountId;
+  let listFriend = await AccountDAO.getListHaveRelationship(AccountId);
+  if (listFriend) res.status(200).send({ result: listFriend });
+  else res.status(201).send({ result: "get list relationship failed" });
+}
 module.exports = {
   login,
   loginByGoogle,
@@ -508,5 +539,8 @@ module.exports = {
   getListFriendWithLastMessage,
   getListFriendWithLastMessageCountUnseen,
   registerByGoogle,
-  getAccountInfor
+  getAccountInfor,
+  getAccountListSearching,
+  AddFriend,
+  getListHaveRelationship
 };
