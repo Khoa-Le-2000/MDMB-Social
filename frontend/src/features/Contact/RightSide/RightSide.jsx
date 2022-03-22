@@ -44,11 +44,9 @@ const CardFriend = css`
   width: 235px;
   @media (max-width: 1250px) {
     width: 10.5rem;
-    height: 14.5rem;
   }
   @media (max-width: 680px) {
     width: 6rem;
-    height: 10rem;
     margin-top: 5px;
     margin: 2px;
   }
@@ -95,9 +93,14 @@ const Avatar = styled.div`
     }
   }
 `;
+
 const Name = styled.div`
   font-size: 1.4rem;
   font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
   @media (max-width: 1250px) {
     font-size: 1.2rem;
   }
@@ -121,9 +124,9 @@ const ButtonBS = styled(Button)`
   display: flex;
   justify-content: center;
   width: 100%;
-  margin: auto;
-
-  background-color: inherit;
+  margin: 0px auto;
+  margin-top:auto;
+  background-color: #ffffff;
   color: #000000;
   margin-top: 10px;
   @media (max-width: 680px) {
@@ -166,11 +169,23 @@ const AcceptButton = styled(ButtonBS)`
   }
 `;
 const RemoveButton = styled(ButtonBS)`
+
   @media (max-width: 1250px) {
     font-size: 0.8rem;
     padding: 0.3rem;
   }
 `;
+function updateRelationship(AccountId, id, type, dispatch) {
+  if (AccountId < id)
+    dispatch(AddFriend(AccountId, id, type)).then(() =>
+      dispatch(getListRelationship(AccountId))
+    );
+  else
+    dispatch(AddFriend(id, AccountId, type)).then(() =>
+      dispatch(getListRelationship(AccountId))
+    );
+}
+
 export default function RightSide() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -186,24 +201,14 @@ export default function RightSide() {
       (item.Type === 'lsendpending' && item.RelatingAccountId !== AccountId)
   );
   const handleAcceptClick = (id) => {
-    if (AccountId < id)
-      dispatch(AddFriend(AccountId, id, 'friend')).then(() =>
-        dispatch(getListRelationship(AccountId))
-      );
-    else
-      dispatch(AddFriend(id, AccountId, 'friend')).then(() =>
-        dispatch(getListRelationship(AccountId))
-      );
+    updateRelationship(AccountId, id, 'friend', dispatch)
+    dispatch(getListRelationship(AccountId));
+    document.getElementsByClassName('BtnRemoveFocus').forEach(item=>item.Blur());
   };
   const HandleRemoveClick = (id) => {
-    if (AccountId < id)
-      dispatch(AddFriend(AccountId, id, 'delete')).then(() =>
-        dispatch(getListRelationship(AccountId))
-      );
-    else
-      dispatch(AddFriend(id, AccountId, 'delete')).then(() =>
-        dispatch(getListRelationship(AccountId))
-      );
+    updateRelationship(AccountId, id, 'delete', dispatch)
+    dispatch(getListRelationship(AccountId));
+
   };
   const handleAvatarClick = (AccountId) => {
     navigate(`/userinfor/${AccountId}`);
@@ -226,9 +231,9 @@ export default function RightSide() {
             >
               <img src={item.Avatar} alt="avatar" />
             </Avatar>
-            <Name>{item.Name}</Name>
-            <AcceptButton
-              onClick={() => {
+            <Name>{item.Name} asdasd</Name>
+            <AcceptButton className="BtnRemoveFocus"
+              onClick={(e) => {
                 handleAcceptClick(
                   item.RelatedAccountId === AccountId
                     ? item.RelatingAccountId
@@ -238,7 +243,7 @@ export default function RightSide() {
             >
               <AcceptIcon /> Accept
             </AcceptButton>
-            <RemoveButton
+            <RemoveButton className="BtnRemoveFocus"
               onClick={() => {
                 HandleRemoveClick(
                   item.RelatedAccountId === AccountId
