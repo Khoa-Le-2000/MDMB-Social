@@ -78,7 +78,7 @@ function Messages({ typing, onSeenMessage }) {
 
   React.useEffect(() => {
     messagesEndRef.current?.scrollIntoView({
-      behavior: 'smooth',
+      // behavior: 'smooth',
       block: 'end',
       inline: 'nearest',
     });
