@@ -102,7 +102,6 @@ function Messages({ typing, onSeenMessage }) {
             seenLatest={messageSeenDateLatest?.MessageId === item.MessageId}
             idLastMessage={messagesLatest[messagesLatest.length - 1].MessageId}
           />
-          <div ref={messagesEndRef} />
         </WrapperScroll>
       ))}
       {typing && (
@@ -116,6 +115,7 @@ function Messages({ typing, onSeenMessage }) {
           </WrapperContent>
         </Wrapper>
       )}
+      <div ref={messagesEndRef} />
     </>
   );
 }
