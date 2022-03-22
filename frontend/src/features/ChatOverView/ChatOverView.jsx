@@ -166,7 +166,7 @@ function ChatOverView() {
   };
   const handleSeenMessage = (latestMessageId, partnerId) => {
     if (latestMessageId) {
-      messagesLatest.reverse().map((item) => {
+      messagesLatest.map((item) => {
         if (!item.SeenDate) {
           socket?.emit('seen message', item.MessageId);
         }
