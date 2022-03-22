@@ -161,12 +161,7 @@ const chatReducer = (state = initialState, action) => {
         error: false,
         success: true,
         message: null,
-        listMessage: state.listMessage.map((item) => {
-          if (item.MessageId === action.payload) {
-            item.SeenDate = new Date();
-          }
-          return item;
-        }),
+        listMessage: action.payload,
       };
 
     case ChatActionTypes.USER_ONLINE_START:
