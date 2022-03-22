@@ -130,7 +130,7 @@ export default function LeftSide() {
   if (searchValue == '' && listUserMatch.length != listFriend.length)
     setListUserMatch(listFriend);
 
-  var isLoading =false;  
+  var isLoading = false;
   React.useEffect(() => {
     if (searchName) {
       dispatch(getSearchAccount(searchName, accountId));
@@ -140,7 +140,7 @@ export default function LeftSide() {
       setShow(false);
     }
     dispatch(getListRelationship(accountId));
-    isLoading=true;
+    isLoading = true;
   }, [searchName, accountId]);
 
   const handleSearchChange = (e) => {
@@ -151,15 +151,19 @@ export default function LeftSide() {
     setListUserMatch(listUserMatch);
   };
 
-  const handleFriendCardClick = (AccountId, item) => {
-    dispatch(selectRoom(item, navigate));
-    dispatch(getMessagesLatest(AccountId, item.AccountId));
+  const handleFriendCardClick = (item) => {
+    var parnerAccountId= item.RelatingAccountId==accountId?item.RelatedAccountId: item.RelatingAccountId;
+
+    var fakeConversation= {Avatar:item.Avatar,Name:item.Name,AccountId:parnerAccountId};
+
+    dispatch(selectRoom(fakeConversation, navigate));
+    dispatch(getMessagesLatest(accountId, parnerAccountId));
   };
 
   const handleUserProfileClick = (AccountId) => {
     navigate(`/userinfor/${AccountId}`);
   };
-  console.log(show)
+  console.log(listUserMatch);
   return (
     <LeftSideWrapper>
       <Logo>MDMB Social</Logo>
@@ -182,7 +186,7 @@ export default function LeftSide() {
           <FriendCard
             key={index}
             onClick={() => {
-              handleFriendCardClick(item.AccountId, item);
+              handleFriendCardClick(item);
             }}
           >
             <Avatar>
