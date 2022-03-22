@@ -107,13 +107,13 @@ const NotificationContent = styled.div`
   margin-top: 5px;
 `;
 const RemoveSearchIcon = styled(X)`
- position:absolute;
- height:2rem;
- width:2rem;
- right:50px;
- margin-top:2px;
- cursor:pointer;
-`
+  position: absolute;
+  height: 2rem;
+  width: 2rem;
+  right: 50px;
+  margin-top: 2px;
+  cursor: pointer;
+`;
 function ChatConversations({ onSelectRoom }) {
   const dispatch = useDispatch();
   const accountId = useSelector(getAuth)?.accountId;
@@ -127,11 +127,11 @@ function ChatConversations({ onSelectRoom }) {
   const [searchTerm, setSearchTerm] = React.useState('');
   const searchValue = useDebounce(searchTerm, 500);
   const listFriend =
-    searchValue != '' ? listConversationByName : listConversationSorted;
+    searchValue !== '' ? listConversationByName : listConversationSorted;
 
   React.useLayoutEffect(() => {
     if (searchValue) {
-      dispatch(getListConversationByName(searchValue));
+      dispatch(getListConversationByName(searchValue, filter));
     } else {
       dispatch(getListConversation(accountId));
     }
@@ -149,10 +149,9 @@ function ChatConversations({ onSelectRoom }) {
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
-  const handleRemoveSearchClick =()=>{
+  const handleRemoveSearchClick = () => {
     setSearchTerm('');
-
-  }
+  };
   return (
     <SideBar>
       <Logo>MDMB Social</Logo>
@@ -162,7 +161,7 @@ function ChatConversations({ onSelectRoom }) {
           onChange={handleSearchChange}
           value={searchTerm}
         />
-        <RemoveSearchIcon onClick={ handleRemoveSearchClick}/>
+        <RemoveSearchIcon onClick={handleRemoveSearchClick} />
         <InputSearch>
           <IconSearch />
         </InputSearch>
@@ -181,12 +180,13 @@ function ChatConversations({ onSelectRoom }) {
           Message unread
         </Tab>
       </Tabs>
-      {listFriend?.length == 0 && (
+      {listFriend?.length === 0 && (
         <>
           <Notification>Not Found</Notification>
           <NotificationContent>
-            {' '}
-            Coun't found any conversation for "{searchTerm}"
+            {searchTerm
+              ? `Cound't found any conversation for ${searchTerm}`
+              : `You don't have any unread message`}
           </NotificationContent>
         </>
       )}

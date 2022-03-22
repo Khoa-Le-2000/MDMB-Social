@@ -113,15 +113,28 @@ const getListConversationByNameSuccess = (listConversation) => {
 };
 
 export const getListConversationByName =
-  (name) => async (dispatch, getState) => {
+  (name, filter) => async (dispatch, getState) => {
     const {
       conversations: { listConversation },
     } = getState();
     dispatch(getListConversationByNameStart());
+    let data = [];
     if (name) {
-      const data = listConversation.filter((e) =>
-        e.Name.toLowerCase().includes(name.toLowerCase())
-      );
+      if (filter === 'unread') {
+        data = listConversation.filter((e) => {
+          if (
+            e.Name.toLowerCase().includes(name.toLowerCase()) &&
+            e.UnseenMessage > 0
+          ) {
+            return e;
+          }
+          return null;
+        });
+      } else {
+        data = listConversation.filter((e) =>
+          e.Name.toLowerCase().includes(name.toLowerCase())
+        );
+      }
       if (data) {
         dispatch(getListConversationByNameSuccess(data));
       } else {
