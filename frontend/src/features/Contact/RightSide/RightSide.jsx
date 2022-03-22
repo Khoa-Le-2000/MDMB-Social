@@ -1,19 +1,27 @@
-import { UserPlus } from '@styled-icons/boxicons-solid';
-import { Button } from 'react-bootstrap';
-import styled from 'styled-components';
+import { UserPlus, UserCheck, UserX } from '@styled-icons/boxicons-solid';
+import styled, { css } from 'styled-components';
+import { Row, Col, Button } from 'react-bootstrap';
 
 const RightSideWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
   width: 100%;
   border-left: 1px solid black;
 `;
-const CardRecommendFriend = styled.div`
-  width: 15.1rem;
-  height: 15.1rem;
+const Header = styled.div`
+  padding: 10px;
+  width: 100%;
+  background-color: #efeff3;
+  border-bottom: 1px solid #d6dbe0;
+`;
+const RowBS = styled(Row)``;
+const CardFriend = css`
   border-radius: 10px;
   justify-items: center;
   display: flex;
   flex-direction: column;
-  padding: 0.9rem;
+  padding: 1rem;
   border: 1px solid #d6dbe0;
   margin: 10px;
   @media (max-width: 1250px) {
@@ -27,25 +35,20 @@ const CardRecommendFriend = styled.div`
     margin-top: 5px;
   }
 `;
-const FriendRecommend = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  @media (max-width: 680px) {
-    justify-content: space-around;
-  }
+
+const CardFriendRequest = styled.div`
+  ${CardFriend}
 `;
-const Header = styled.div`
-  padding: 10px;
-  width: 100%;
-  background-color: #efeff3;
-  border-bottom: 1px solid #d6dbe0;
+
+const CardFriendRecommend = styled.div`
+  ${CardFriend}
 `;
-const Recommend = styled.div`
+
+const Title = styled.div`
   margin: 4px 0 5px 10px;
   color: #3a4bcb;
 `;
+
 const Avatar = styled.div`
   text-align: center;
   img {
@@ -63,9 +66,7 @@ const Avatar = styled.div`
     }
   }
 `;
-
 const Name = styled.div`
-  text-align: center;
   font-size: 1.4rem;
   font-weight: bold;
   @media (max-width: 1250px) {
@@ -76,12 +77,9 @@ const Name = styled.div`
   }
 `;
 const Description = styled.div`
-  text-align: center;
   font-size: 0.9rem;
   width: 100%;
-  height: 1rem;
-  overflow: hidden;
-  margin: 0px 0 10px 0;
+  margin-top: 10px;
   @media (max-width: 1250px) {
     font-size: 0.8rem;
   }
@@ -89,11 +87,17 @@ const Description = styled.div`
     display: none;
   }
 `;
-const AddFriendButton = styled(Button)`
-  width: max-content;
+
+const ButtonBS = styled(Button)`
+  display: flex;
+  justify-content: center;
+  width: 100%;
   margin: auto;
   background-color: inherit;
   color: #000000;
+  margin-top: 10px;
+`;
+const AddFriendButton = styled(ButtonBS)`
   @media (max-width: 1250px) {
     font-size: 0.8rem;
     padding: 0.3rem;
@@ -103,39 +107,81 @@ const AddFriendButton = styled(Button)`
     padding: 0.05rem 0.05rem 0.05rem 0.05rem;
   }
 `;
-const AddFriendIcon = styled(UserPlus)`
-  width: 1.2em;
-  height: 1.2em;
-  margin-bottom: 3px;
+const Icon = css`
+  width: 1.3rem;
+  height: 1.3rem;
+  margin-right: 5px;
 `;
+const AddFriendIcon = styled(UserPlus)`
+  ${Icon}
+`;
+const RemoveIcon = styled(UserX)`
+  ${Icon}
+`;
+const AcceptIcon = styled(UserCheck)`
+  ${Icon}
+`;
+
+const AcceptButton = styled(ButtonBS)``;
+const RemoveButton = styled(ButtonBS)``;
 export default function RightSide() {
   return (
     <RightSideWrapper>
       <Header>Friend you may know...</Header>
-      <Recommend>
+      <Title>Friend Requests</Title>
+      <RowBS>
+        {Array(4)
+          .fill(1)
+          .map((item, index) => (
+            <Col lg={3}>
+              <CardFriendRequest key={index}>
+                <Avatar>
+                  <img
+                    src={
+                      'https://www.toponseek.com/blogs/wp-content/uploads/2019/06/toi-uu-hinh-anh-optimize-image-4-1200x700.jpg'
+                    }
+                    alt="avatar"
+                  />
+                </Avatar>
+                <Name>Dino</Name>
+                <AcceptButton>
+                  <AcceptIcon /> Confirm
+                </AcceptButton>
+                <RemoveButton>
+                  <RemoveIcon />
+                  Remove
+                </RemoveButton>
+              </CardFriendRequest>
+            </Col>
+          ))}
+      </RowBS>
+      <hr />
+      <Title>
         Recommend (33 <AddFriendIcon />)
-      </Recommend>
-      <FriendRecommend>
+      </Title>
+      <RowBS>
         {Array(50)
           .fill(1)
           .map((item, index) => (
-            <CardRecommendFriend key={index}>
-              <Avatar>
-                <img
-                  src={
-                    'https://www.toponseek.com/blogs/wp-content/uploads/2019/06/toi-uu-hinh-anh-optimize-image-4-1200x700.jpg'
-                  }
-                  alt="avatar"
-                />
-              </Avatar>
-              <Name>Dino</Name>
-              <Description>From friend recommended</Description>
-              <AddFriendButton>
-                <AddFriendIcon /> Add Friend
-              </AddFriendButton>
-            </CardRecommendFriend>
+            <Col lg={3}>
+              <CardFriendRecommend key={index}>
+                <Avatar>
+                  <img
+                    src={
+                      'https://www.toponseek.com/blogs/wp-content/uploads/2019/06/toi-uu-hinh-anh-optimize-image-4-1200x700.jpg'
+                    }
+                    alt="avatar"
+                  />
+                </Avatar>
+                <Name>Dino</Name>
+                <Description>From friend recommended</Description>
+                <AddFriendButton>
+                  <AddFriendIcon /> Add Friend
+                </AddFriendButton>
+              </CardFriendRecommend>
+            </Col>
           ))}
-      </FriendRecommend>
+      </RowBS>
     </RightSideWrapper>
   );
 }

@@ -1,14 +1,11 @@
 import { Search } from '@styled-icons/heroicons-solid';
+import { selectRoom } from 'app/actions/chat';
 import { getConversations } from 'app/selectors/conversations';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Form, InputGroup as BsInputGroup } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import {
-  getMessagesLatest,
-  selectRoom
-} from 'app/actions/chat';
 const LeftSideWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -37,25 +34,14 @@ const InputSearch = styled(InputGroup.Text)`
 const IconSearch = styled(Search)`
   width: 1.2rem;
 `;
-const SearchingPopOut = styled.div`
-  position: absolute;
-  z-index: 2;
-  top: 100%;
-  left: 0px;
-  width: calc(100% - 44px);
-  border-radius: 0 0 10px 10px;
-  background-color: #ffffff;
-  min-width: 300px;
-`;
+
 const SearchForm = styled.div`
   position: relative;
   display: flex;
   align-items: stretch;
   width: 100%;
 `;
-const SearchItemWrapper = styled.div`
-  cursor: pointer;
-`;
+
 const UserNotFound = styled.div`
   height: 30px;
   margin: 10px 0 0 10px;
@@ -71,7 +57,7 @@ const FriendList = styled.div`
   height: 100%;
 `;
 const FriendCount = styled.div`
-  margin: 10px 10px 0px 10px;
+  margin: 10px 10px 10px 10px;
   font-size: 1rem;
   color: #848181;
 `;
@@ -82,6 +68,7 @@ const FriendCard = styled.div`
   width: 100%;
   padding: 10px;
   background-color: #efeff3;
+  cursor: pointer;
   &:hover {
     filter: brightness(85%);
   }
@@ -128,11 +115,9 @@ export default function LeftSide() {
     );
     setListUserMatch(listUserMatch);
   };
- 
-  const handleFriendCardClick = (AccountId,item) => {
-    dispatch(selectRoom(item, navigate));
-    dispatch(getMessagesLatest(AccountId, item.AccountId));
-    // navigate(`/chat/${AccountId}`);
+
+  const handleFriendCardClick = (friend) => {
+    dispatch(selectRoom(friend, navigate));
   };
 
   return (
@@ -157,7 +142,7 @@ export default function LeftSide() {
           <FriendCard
             key={index}
             onClick={() => {
-              handleFriendCardClick(item.AccountId,item);
+              handleFriendCardClick(item);
             }}
           >
             <Avatar>
