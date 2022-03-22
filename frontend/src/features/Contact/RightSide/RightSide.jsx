@@ -6,7 +6,8 @@ import { getListRelationshipSelector } from 'app/selectors/listRelationship';
 import { getListRelationship } from 'app/actions/listRelationship';
 import React from 'react';
 import { getAuth } from 'app/selectors/login';
-import { AddFriend } from 'app/actions/partnerProfile';
+import { AddFriend, getSearchAccount } from 'app/actions/partnerProfile';
+import { useNavigate } from '../../../../node_modules/react-router-dom/index';
 
 const RightSideWrapper = styled.div`
   display: flex;
@@ -14,7 +15,7 @@ const RightSideWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   border-left: 1px solid black;
-  overflow-x:hidden;
+  overflow-x: hidden;
 `;
 const Header = styled.div`
   padding: 10px;
@@ -26,10 +27,10 @@ const RowBS = styled(Row)`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  margin-left:10px;
+  margin-left: 10px;
 
   @media (max-width: 680px) {
-    margin-left:2px;
+    margin-left: 2px;
   }
 `;
 const CardFriend = css`
@@ -40,7 +41,7 @@ const CardFriend = css`
   padding: 1rem;
   border: 1px solid #d6dbe0;
   margin: 10px;
-  width:235px;
+  width: 235px;
   @media (max-width: 1250px) {
     width: 10.5rem;
     height: 14.5rem;
@@ -49,8 +50,7 @@ const CardFriend = css`
     width: 6rem;
     height: 10rem;
     margin-top: 5px;
-  margin: 2px;
-
+    margin: 2px;
   }
 `;
 
@@ -68,8 +68,7 @@ const CardFriendRecommend = styled.div`
     width: 6rem;
     height: 7rem;
     margin-top: 5px;
-  margin: 2px;
-
+    margin: 2px;
   }
 `;
 
@@ -80,6 +79,7 @@ const Title = styled.div`
 
 const Avatar = styled.div`
   text-align: center;
+  cursor: pointer;
   img {
     width: 100px;
     height: 100px;
@@ -128,7 +128,7 @@ const ButtonBS = styled(Button)`
   margin-top: 10px;
   @media (max-width: 680px) {
     margin-top: 5px;
-    padding:0px;
+    padding: 0px;
   }
 `;
 const AddFriendButton = styled(ButtonBS)`
@@ -146,7 +146,7 @@ const Icon = css`
   height: 1.3rem;
   margin-right: 5px;
   @media (max-width: 680px) {
-    display:none;
+    display: none;
   }
 `;
 const AddFriendIcon = styled(UserPlus)`
@@ -173,6 +173,7 @@ const RemoveButton = styled(ButtonBS)`
 `;
 export default function RightSide() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   var AccountId = useSelector(getAuth)?.accountId;
   var listRelationship = useSelector(getListRelationshipSelector);
   React.useEffect(() => {
@@ -184,7 +185,6 @@ export default function RightSide() {
       (item.Type == 'rsendpending' && item.RelatedAccountId != AccountId) ||
       (item.Type == 'lsendpending' && item.RelatingAccountId != AccountId)
   );
-  console.log(listRelationship);
   const handleAcceptClick = (id) => {
     if (AccountId < id)
       dispatch(AddFriend(AccountId, id, 'friend')).then(() =>
@@ -205,41 +205,52 @@ export default function RightSide() {
         dispatch(getListRelationship(AccountId))
       );
   };
+  const handleAvatarClick = (AccountId) => {
+    navigate(`/userinfor/${AccountId}`);
+  };
   return (
     <RightSideWrapper>
       <Header>Friend you may know...</Header>
       <Title>Friend Requests</Title>
       <RowBS>
         {listRelationship.map((item, index) => (
-            <CardFriendRequest key={index}>
-              <Avatar>
-                <img src={item.Avatar} alt="avatar" />
-              </Avatar>
-              <Name>{item.Name}</Name>
-              <AcceptButton
-                onClick={() => {
-                  handleAcceptClick(
-                    item.RelatedAccountId == AccountId
-                      ? item.RelatingAccountId
-                      : item.RelatedAccountId
-                  );
-                }}
-              >
-                <AcceptIcon /> Accept
-              </AcceptButton>
-              <RemoveButton
-                onClick={() => {
-                  HandleRemoveClick(
-                    item.RelatedAccountId == AccountId
-                      ? item.RelatingAccountId
-                      : item.RelatedAccountId
-                  );
-                }}
-              >
-                <RemoveIcon />
-                Remove
-              </RemoveButton>
-            </CardFriendRequest>
+          <CardFriendRequest key={index}>
+            <Avatar
+              onClick={() => {
+                handleAvatarClick(
+                  item.RelatedAccountId == AccountId
+                    ? item.RelatingAccountId
+                    : item.RelatedAccountId
+                );
+              }}
+            >
+              <img src={item.Avatar} alt="avatar" />
+            </Avatar>
+            <Name>{item.Name}</Name>
+            <AcceptButton
+              onClick={() => {
+                handleAcceptClick(
+                  item.RelatedAccountId == AccountId
+                    ? item.RelatingAccountId
+                    : item.RelatedAccountId
+                );
+              }}
+            >
+              <AcceptIcon /> Accept
+            </AcceptButton>
+            <RemoveButton
+              onClick={() => {
+                HandleRemoveClick(
+                  item.RelatedAccountId == AccountId
+                    ? item.RelatingAccountId
+                    : item.RelatedAccountId
+                );
+              }}
+            >
+              <RemoveIcon />
+              Remove
+            </RemoveButton>
+          </CardFriendRequest>
         ))}
       </RowBS>
       <hr />
@@ -250,21 +261,22 @@ export default function RightSide() {
         {Array(50)
           .fill(1)
           .map((item, index) => (
-              <CardFriendRecommend key={index}>
-                <Avatar>
-                  <img
-                    src={
-                      'https://www.toponseek.com/blogs/wp-content/uploads/2019/06/toi-uu-hinh-anh-optimize-image-4-1200x700.jpg'
-                    }
-                    alt="avatar"
-                  />
-                </Avatar>
-                <Name>Dino</Name>
-                <Description>From friend recommended</Description>
-                <AddFriendButton>
-                  <AddFriendIcon />Add Friend
-                </AddFriendButton>
-              </CardFriendRecommend>
+            <CardFriendRecommend key={index}>
+              <Avatar>
+                <img
+                  src={
+                    'https://www.toponseek.com/blogs/wp-content/uploads/2019/06/toi-uu-hinh-anh-optimize-image-4-1200x700.jpg'
+                  }
+                  alt="avatar"
+                />
+              </Avatar>
+              <Name>Dino</Name>
+              <Description>From friend recommended</Description>
+              <AddFriendButton>
+                <AddFriendIcon />
+                Add Friend
+              </AddFriendButton>
+            </CardFriendRecommend>
           ))}
       </RowBS>
     </RightSideWrapper>

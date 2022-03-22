@@ -29,7 +29,7 @@ const getListMessageLatestStart = () => {
 const getListMessageLatestSuccess = (listMessage) => {
   return {
     type: ChatActionTypes.LIST_MESSAGE_LATEST_SUCCESS,
-    payload: listMessage
+    payload: listMessage,
   };
 };
 
@@ -107,7 +107,22 @@ const seenMessageSuccess = (messageId) => {
   };
 };
 
-export const seenMessage = (messageId) => async (dispatch) => {
+export const seenMessage = (messageId) => async (dispatch, getState) => {
+  const {
+    chat: { listMessage },
+  } = getState();
   dispatch(seenMessageStart());
-  if (messageId) dispatch(seenMessageSuccess(messageId));
+  console.log('messageId: ', messageId);
+  if (messageId) {
+    const newListMessage = listMessage.map((message) => {
+      if (message.MessageId === messageId) {
+        return {
+          ...message,
+          SeenDate: new Date(),
+        };
+      }
+      return message;
+    });
+    dispatch(seenMessageSuccess(newListMessage));
+  }
 };

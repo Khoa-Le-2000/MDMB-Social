@@ -60,9 +60,9 @@ const getSearchAccountFailure = (message) => {
   };
 };
 
-export const getSearchAccount = (searchKey) => async (dispatch) => {
+export const getSearchAccount = (searchKey,id) => async (dispatch) => {
   dispatch(getSearchAccountStart());
-  const data = await userApi.search(searchKey);
+  const data = await userApi.search(searchKey,id);
   if (data?.result) {
     dispatch(
       getSearchAccountSuccess(

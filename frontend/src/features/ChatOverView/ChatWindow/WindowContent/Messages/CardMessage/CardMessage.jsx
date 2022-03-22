@@ -88,16 +88,6 @@ const SentStatus = styled(CheckCircle)`
   color: #4849a1;
 `;
 
-// function validURL(str) {
-//   var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
-//       '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-//       '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-//       '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-//       '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-//       '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
-//   return !!pattern.test(str);
-// }
-
 function CardMessage(props) {
   const {
     name,
@@ -116,12 +106,13 @@ function CardMessage(props) {
 
   const { roomId } = useParams();
   React.useEffect(() => {
-    if (!seenDate && +roomId === fromAccount && !seenDate) {
+    if (!seenDate && +roomId === fromAccount && +messageId === +idLastMessage) {
       onSeenMessage(messageId, roomId);
     }
-  }, [roomId, seenDate, messageId]);
+  }, [roomId]);
 
-  const regexContainLink = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/
+  const regexContainLink =
+    /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
   var pattern = new RegExp(
     '^(https?:\\/\\/)?' + // protocol
       '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
@@ -131,11 +122,10 @@ function CardMessage(props) {
       '(\\#[-a-z\\d_]*)?$',
     'i'
   ); // fragment locator
-  // const isLink = !!pattern.test(content)
-  let isLink = regexContainLink.test(content)
-   if(isLink) {
-     var url = content.match(regexContainLink)[0];
-     isLink = !!pattern.test(url)
+  let isLink = regexContainLink.test(content);
+  if (isLink) {
+    var url = content.match(regexContainLink)[0];
+    isLink = !!pattern.test(url);
   }
   return (
     <Wrapper owner={owner ? 1 : 0}>

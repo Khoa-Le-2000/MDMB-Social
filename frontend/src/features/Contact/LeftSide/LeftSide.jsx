@@ -135,12 +135,12 @@ export default function LeftSide() {
     clearTimeout(typingTimeoutRef.current);
     onTyping = true;
     setShow(false);
+    
   };
   const handleKeyUp = (e) => {
     clearTimeout(typingTimeoutRef.current);
     typingTimeoutRef.current = setTimeout(() => {
       setShow(true);
-
       dispatch(getSearchAccount(searchValue, id));
       onTyping = false;
     }, 1000);

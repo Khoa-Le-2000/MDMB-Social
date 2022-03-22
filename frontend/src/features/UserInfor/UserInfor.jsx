@@ -5,8 +5,8 @@ import { getUserProfile } from 'app/actions/userProfile';
 import { AddFriend, getPartnerProfile } from 'app/actions/partnerProfile';
 import { getUserProfileSelector } from 'app/selectors/userProfile';
 import {
-  getAddFriendStatus,
   getPartnerProfileSelector,
+  isFetchingPartnerProfile,
 } from 'app/selectors/partnerProfile';
 import styled from 'styled-components';
 import MainLayout from 'layouts/MainLayout';
@@ -163,12 +163,13 @@ function UserInfor() {
   const navigate = useNavigate();
   const { id } = useParams();
   var AccountId = useSelector(getAuth)?.accountId;
+  const isFetching = useSelector(isFetchingPartnerProfile);
 
   if (id == AccountId) navigate('/update-profile');
-
+  
   useEffect(() => {
-    dispatch(getUserProfile(AccountId));
     dispatch(getPartnerProfile(id));
+    dispatch(getUserProfile(AccountId));
     dispatch(getListRelationship(AccountId));
   }, []);
 
@@ -180,8 +181,7 @@ function UserInfor() {
   )[0];
 
   const Type = RelationshipInfor?.Type;
-  console.log(AccountId);
-
+  console.log(isFetching)
   var Case = null;
   /* 
     0 : friend
@@ -205,7 +205,7 @@ function UserInfor() {
     Case = 3;
 
   // console.log(listRelationship);
-  const [countReRender, setCounReRender] = React.useState(0);
+  // const [countReRender, setCounReRender] = React.useState(0);
   console.log(Case);
 
   const handleDirectMessageClick = () => {
@@ -245,14 +245,15 @@ function UserInfor() {
     <BootstrapContainer fluid>
       <MainLayout Name={accountInfor?.Name} Avatar={accountInfor?.Avatar}>
         <Wrapper>
-          <CardProfile>
+          {isFetching?"Loading...":<CardProfile>
             <AvatarWrapper>
-              <img src={partnerInfor?.Avatar}></img>
+              <img src={partnerInfor?.Avatar} alt="Avatar"></img>
             </AvatarWrapper>
             <LineWrapper>
               <NameCard>{partnerInfor?.Name}</NameCard>
             </LineWrapper>
             <LineWrapper>
+              
               {Case == 0 && (
                 <>
                   <ButtonDefault className="btn">
@@ -284,6 +285,7 @@ function UserInfor() {
                   <ButtonDefault className="btn" onClick={handleDeleteRelationship}>Delete</ButtonDefault>
                 </>
               )}
+              
             </LineWrapper>
             <LineWrapper>
               <IntroduceWrapper>
@@ -329,7 +331,7 @@ function UserInfor() {
                 {dayjs(partnerInfor?.CreatedDate).fromNow() || 'Unknow'}
               </Information>
             </LineWrapper>
-          </CardProfile>
+          </CardProfile>}
         </Wrapper>
       </MainLayout>
     </BootstrapContainer>

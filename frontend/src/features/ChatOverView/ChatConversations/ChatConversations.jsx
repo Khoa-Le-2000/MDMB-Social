@@ -1,4 +1,5 @@
 import { Search } from '@styled-icons/heroicons-solid';
+import { X } from '@styled-icons/boxicons-regular';
 import {
   changeFilterConversation,
   getListConversation,
@@ -96,7 +97,23 @@ const SearchForm = styled.div`
   align-items: stretch;
   width: 100%;
 `;
-
+const Notification = styled.div`
+  color: #848181;
+  margin-left: 10px;
+  margin-top: 15px;
+`;
+const NotificationContent = styled.div`
+  margin-left: 10px;
+  margin-top: 5px;
+`;
+const RemoveSearchIcon = styled(X)`
+ position:absolute;
+ height:2rem;
+ width:2rem;
+ right:50px;
+ margin-top:2px;
+ cursor:pointer;
+`
 function ChatConversations({ onSelectRoom }) {
   const dispatch = useDispatch();
   const accountId = useSelector(getAuth)?.accountId;
@@ -106,13 +123,11 @@ function ChatConversations({ onSelectRoom }) {
   const listConversationSorted = listConversationFilter?.sort(
     (a, b) => Date.parse(b.SentDate) - Date.parse(a.SentDate)
   );
-  const listFriend =
-    listConversationByName?.length > 0
-      ? listConversationByName
-      : listConversationSorted;
-  
+
   const [searchTerm, setSearchTerm] = React.useState('');
   const searchValue = useDebounce(searchTerm, 500);
+  const listFriend =
+    searchValue != '' ? listConversationByName : listConversationSorted;
 
   React.useLayoutEffect(() => {
     if (searchValue) {
@@ -134,7 +149,10 @@ function ChatConversations({ onSelectRoom }) {
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
+  const handleRemoveSearchClick =()=>{
+    setSearchTerm('');
 
+  }
   return (
     <SideBar>
       <Logo>MDMB Social</Logo>
@@ -144,6 +162,7 @@ function ChatConversations({ onSelectRoom }) {
           onChange={handleSearchChange}
           value={searchTerm}
         />
+        <RemoveSearchIcon onClick={ handleRemoveSearchClick}/>
         <InputSearch>
           <IconSearch />
         </InputSearch>
@@ -162,6 +181,15 @@ function ChatConversations({ onSelectRoom }) {
           Message unread
         </Tab>
       </Tabs>
+      {listFriend?.length == 0 && (
+        <>
+          <Notification>Not Found</Notification>
+          <NotificationContent>
+            {' '}
+            Coun't found any conversation for "{searchTerm}"
+          </NotificationContent>
+        </>
+      )}
       <Wrapper>
         {listFriend?.map((item, index) => (
           <CardConversation
