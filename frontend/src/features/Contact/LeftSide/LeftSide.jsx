@@ -12,6 +12,8 @@ import {
   getSearchAccountSelector,
 } from 'app/selectors/partnerProfile';
 import { getAuth } from 'app/selectors/login';
+import { getListRelationshipSelector } from 'app/selectors/listRelationship';
+import { getListRelationship } from 'app/actions/listRelationship';
 
 const LeftSideWrapper = styled.div`
   display: flex;
@@ -112,16 +114,18 @@ const Name = styled.div`
 export default function LeftSide() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const listConversation = useSelector(getConversations);
-  const [listUserMatch, setListUserMatch] = React.useState(listConversation);
+  const listRelationship = useSelector(getListRelationshipSelector);
+  const listFriend = listRelationship.filter((item) => item.Type == 'friend');
+
+  const [listUserMatch, setListUserMatch] = React.useState(listFriend);
   const [searchValue, setSearchValue] = React.useState('');
   const [show, setShow] = React.useState(false);
   const id = useSelector(getAuth)?.accountId;
   const handleSearchChange = (e) => {
     setSearchValue(e.target.value);
-    const listUserMatch = listConversation.filter((user) =>
-      user.Name.toLowerCase().includes(e.target.value.toLowerCase())
-    );
+    const listUserMatch = listFriend.filter((item) =>
+    item.Name.toLowerCase().includes(e.target.value.toLowerCase())
+  );
     setListUserMatch(listUserMatch);
   };
 
@@ -135,7 +139,6 @@ export default function LeftSide() {
     clearTimeout(typingTimeoutRef.current);
     onTyping = true;
     setShow(false);
-    
   };
   const handleKeyUp = (e) => {
     clearTimeout(typingTimeoutRef.current);
@@ -153,7 +156,11 @@ export default function LeftSide() {
   const handleUserProfileClick = (AccountId) => {
     navigate(`/userinfor/${AccountId}`);
   };
-  console.log(show);
+
+  React.useEffect(() => {
+    dispatch(getListRelationship(id));
+  }, []);
+  console.log(listRelationship);
   return (
     <LeftSideWrapper>
       <Logo>MDMB Social</Logo>
@@ -170,7 +177,7 @@ export default function LeftSide() {
         </InputSearch>
       </SearchForm>
       <FriendList>
-        <HeaderCard>Friend({listConversation?.length})</HeaderCard>
+        <HeaderCard>Friend({listFriend?.length})</HeaderCard>
         {listUserMatch.length === 0 && (
           <UserNotFound> Friend not found!</UserNotFound>
         )}

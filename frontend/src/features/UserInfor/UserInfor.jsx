@@ -10,7 +10,11 @@ import {
 } from 'app/selectors/partnerProfile';
 import styled from 'styled-components';
 import MainLayout from 'layouts/MainLayout';
-import { Button, Container as BootstrapContainer } from 'react-bootstrap';
+import {
+  Button,
+  Container as BootstrapContainer,
+  Dropdown,
+} from 'react-bootstrap';
 import { Chat, Rss, Cake } from '@styled-icons/heroicons-solid';
 import { UserPlus, UserCheck, User, UserX } from '@styled-icons/boxicons-solid';
 import {
@@ -158,6 +162,17 @@ const FemaleIcon = styled(FemaleSign)`
   height: 1.25rem;
   margin-bottom: 2px;
 `;
+
+function updateRelationship(AccountId, id, type, dispatch) {
+  if (AccountId < id)
+    dispatch(AddFriend(AccountId, id, type)).then(() =>
+      dispatch(getListRelationship(AccountId))
+    );
+  else
+    dispatch(AddFriend(id, AccountId, type)).then(() =>
+      dispatch(getListRelationship(AccountId))
+    );
+}
 function UserInfor() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -166,7 +181,7 @@ function UserInfor() {
   const isFetching = useSelector(isFetchingPartnerProfile);
 
   if (id == AccountId) navigate('/update-profile');
-  
+
   useEffect(() => {
     dispatch(getPartnerProfile(id));
     dispatch(getUserProfile(AccountId));
@@ -181,7 +196,7 @@ function UserInfor() {
   )[0];
 
   const Type = RelationshipInfor?.Type;
-  console.log(isFetching)
+  console.log(isFetching);
   var Case = null;
   /* 
     0 : friend
@@ -222,116 +237,131 @@ function UserInfor() {
       );
   };
   const AcceptFriendBtnClick = () => {
-    if (AccountId < id)
-      dispatch(AddFriend(AccountId, id, 'friend')).then(() =>
-        dispatch(getListRelationship(AccountId))
-      );
-    else
-      dispatch(AddFriend(id, AccountId, 'friend')).then(() =>
-        dispatch(getListRelationship(AccountId))
-      );
+    updateRelationship(AccountId, id, 'friend', dispatch);
   };
   const handleDeleteRelationship = () => {
-    if (AccountId < id)
-      dispatch(AddFriend(AccountId, id, 'delete')).then(() =>
-        dispatch(getListRelationship(AccountId))
-      );
-    else
-      dispatch(AddFriend(id, AccountId, 'delete')).then(() =>
-        dispatch(getListRelationship(AccountId))
-      );
+    updateRelationship(AccountId, id, 'delete', dispatch);
+  };
+  const HandleUnfriendClick = () => {
+    updateRelationship(AccountId, id, 'delete', dispatch);
   };
   return (
     <BootstrapContainer fluid>
       <MainLayout Name={accountInfor?.Name} Avatar={accountInfor?.Avatar}>
         <Wrapper>
-          {isFetching?"Loading...":<CardProfile>
-            <AvatarWrapper>
-              <img src={partnerInfor?.Avatar} alt="Avatar"></img>
-            </AvatarWrapper>
-            <LineWrapper>
-              <NameCard>{partnerInfor?.Name}</NameCard>
-            </LineWrapper>
-            <LineWrapper>
-              
-              {Case == 0 && (
-                <>
-                  <ButtonDefault className="btn">
-                    <AlreadyFriendIcon />
-                    Your Friend
-                  </ButtonDefault>
-                  <Button onClick={handleDirectMessageClick}>
-                    <ChatIcon /> Direct Message
-                  </Button>
-                </>
-              )}
-              {Case == 1 && (
-                <ButtonDefault className="btn" onClick={handleAddFriendClick}>
-                  <AddFriendIcon />
-                  Add Friend
-                </ButtonDefault>
-              )}
-              {Case == 2 && (
-                <ButtonDefault className="btn" onClick={handleDeleteRelationship}>
-                  <CancelRequest  />
-                  Cancel Request
-                </ButtonDefault>
-              )}
-              {Case == 3 && (
-                <>
-                  <Button onClick={AcceptFriendBtnClick}>
-                    <AddFriendIcon /> Accept
-                  </Button>
-                  <ButtonDefault className="btn" onClick={handleDeleteRelationship}>Delete</ButtonDefault>
-                </>
-              )}
-              
-            </LineWrapper>
-            <LineWrapper>
-              <IntroduceWrapper>
-                <IntroduceHeader>
-                  <IntroduceIcon />
-                  Introduce
-                </IntroduceHeader>
-                <Introduce>There still nothing to see yet</Introduce>
-              </IntroduceWrapper>
-            </LineWrapper>
-            <LineWrapper>
-              <InformationHeader>
-                <CakeIcon /> Birthday
-              </InformationHeader>
-              <Information>
-                {partnerInfor?.Birthday?.split('T')[0] || 'Unknow'}
-              </Information>
-            </LineWrapper>
-            <LineWrapper>
-              <InformationHeader>
-                {partnerInfor?.Gender == 0 ? (
-                  <FemaleIcon />
-                ) : partnerInfor?.Gender == 1 ? (
-                  <MaleIcon />
-                ) : (
-                  <GenderIcon />
+          {isFetching ? (
+            'Loading...'
+          ) : (
+            <CardProfile>
+              <AvatarWrapper>
+                <img src={partnerInfor?.Avatar} alt="Avatar"></img>
+              </AvatarWrapper>
+              <LineWrapper>
+                <NameCard>{partnerInfor?.Name}</NameCard>
+              </LineWrapper>
+              <LineWrapper>
+                {Case == 0 && (
+                  <>
+                    <Dropdown>
+                      <Dropdown.Toggle
+                        className="btn"
+                        variant="default"
+                        id="dropdown-basic"
+                        style={{
+                          border: '1px solid black',
+                          'margin-right': '5px',
+                        }}
+                      >
+                        <AlreadyFriendIcon />
+                        Your Friend
+                      </Dropdown.Toggle>
+                      <Dropdown.Menu>
+                        <Dropdown.Item onClick={HandleUnfriendClick}>
+                          <CancelRequest />
+                          Unfriend
+                        </Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown>
+                    <Button onClick={handleDirectMessageClick}>
+                      <ChatIcon /> Direct Message
+                    </Button>
+                  </>
                 )}
-                Gender
-              </InformationHeader>
-              <Information>
-                {partnerInfor?.Gender == 0
-                  ? 'Male'
-                  : partnerInfor?.Gender == 1
-                  ? 'Female'
-                  : 'Unset'}
-              </Information>
-            </LineWrapper>
-            <LineWrapper>
-              <InformationHeader>
-                <UserIcon /> Join
-              </InformationHeader>
-              <Information>
-                {dayjs(partnerInfor?.CreatedDate).fromNow() || 'Unknow'}
-              </Information>
-            </LineWrapper>
-          </CardProfile>}
+                {Case == 1 && (
+                  <ButtonDefault className="btn" onClick={handleAddFriendClick}>
+                    <AddFriendIcon />
+                    Add Friend
+                  </ButtonDefault>
+                )}
+                {Case == 2 && (
+                  <ButtonDefault
+                    className="btn"
+                    onClick={handleDeleteRelationship}
+                  >
+                    <CancelRequest />
+                    Cancel Request
+                  </ButtonDefault>
+                )}
+                {Case == 3 && (
+                  <>
+                    <Button onClick={AcceptFriendBtnClick}>
+                      <AddFriendIcon /> Accept
+                    </Button>
+                    <ButtonDefault
+                      className="btn"
+                      onClick={handleDeleteRelationship}
+                    >
+                      Delete
+                    </ButtonDefault>
+                  </>
+                )}
+              </LineWrapper>
+              <LineWrapper>
+                <IntroduceWrapper>
+                  <IntroduceHeader>
+                    <IntroduceIcon />
+                    Introduce
+                  </IntroduceHeader>
+                  <Introduce>There still nothing to see yet</Introduce>
+                </IntroduceWrapper>
+              </LineWrapper>
+              <LineWrapper>
+                <InformationHeader>
+                  <CakeIcon /> Birthday
+                </InformationHeader>
+                <Information>
+                  {partnerInfor?.Birthday?.split('T')[0] || 'Unknow'}
+                </Information>
+              </LineWrapper>
+              <LineWrapper>
+                <InformationHeader>
+                  {partnerInfor?.Gender == 0 ? (
+                    <FemaleIcon />
+                  ) : partnerInfor?.Gender == 1 ? (
+                    <MaleIcon />
+                  ) : (
+                    <GenderIcon />
+                  )}
+                  Gender
+                </InformationHeader>
+                <Information>
+                  {partnerInfor?.Gender == 0
+                    ? 'Male'
+                    : partnerInfor?.Gender == 1
+                    ? 'Female'
+                    : 'Unset'}
+                </Information>
+              </LineWrapper>
+              <LineWrapper>
+                <InformationHeader>
+                  <UserIcon /> Join
+                </InformationHeader>
+                <Information>
+                  {dayjs(partnerInfor?.CreatedDate).fromNow() || 'Unknow'}
+                </Information>
+              </LineWrapper>
+            </CardProfile>
+          )}
         </Wrapper>
       </MainLayout>
     </BootstrapContainer>
