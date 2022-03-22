@@ -107,7 +107,7 @@ function LoadingOverlay() {
         <LoadingContent>
           <Spinner>
             {[...Array(6)].map((_, i) => (
-              <Dot />
+              <Dot key={i}/>
             ))}
           </Spinner>
         </LoadingContent>

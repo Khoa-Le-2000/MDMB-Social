@@ -1,6 +1,6 @@
 import { Search } from '@styled-icons/heroicons-solid';
 import { getConversations } from 'app/selectors/conversations';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Form, InputGroup as BsInputGroup } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -41,25 +41,14 @@ const InputSearch = styled(InputGroup.Text)`
 const IconSearch = styled(Search)`
   width: 1.2rem;
 `;
-const SearchingPopOut = styled.div`
-  position: absolute;
-  z-index: 2;
-  top: 100%;
-  left: 0px;
-  width: calc(100% - 44px);
-  border-radius: 0 0 10px 10px;
-  background-color: #ffffff;
-  min-width: 300px;
-`;
+
 const SearchForm = styled.div`
   position: relative;
   display: flex;
   align-items: stretch;
   width: 100%;
 `;
-const SearchItemWrapper = styled.div`
-  cursor: pointer;
-`;
+
 const UserNotFound = styled.div`
   height: 30px;
   margin: 10px 0 0 10px;
@@ -86,6 +75,7 @@ const FriendCard = styled.div`
   width: 100%;
   padding: 10px;
   background-color: #efeff3;
+  cursor: pointer;
   &:hover {
     filter: brightness(85%);
   }
@@ -157,7 +147,7 @@ export default function LeftSide() {
   };
 
   var ListSearchAccount = useSelector(getSearchAccountSelector);
-  if (searchValue == '' && show) {
+  if (searchValue === '' && show) {
     setShow(false);
   }
   const handleUserProfileClick = (AccountId) => {
