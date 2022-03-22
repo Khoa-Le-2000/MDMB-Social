@@ -184,9 +184,7 @@ function ChatConversations({ onSelectRoom }) {
         <>
           <Notification>Not Found</Notification>
           <NotificationContent>
-            {searchTerm
-              ? `Cound't found any conversation for ${searchTerm}`
-              : `You don't have any unread message`}
+            Conversation not found!  
           </NotificationContent>
         </>
       )}
