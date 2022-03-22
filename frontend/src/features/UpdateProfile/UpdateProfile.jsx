@@ -95,7 +95,6 @@ const UploadImageWrapper = styled.div`
 
 const UploadImageInput = styled.input.attrs({
   type: 'file',
-  accept: 'image/png, image/jpeg',
 })`
   width: 100%;
 `;
@@ -217,16 +216,25 @@ function UpdateProfile() {
       userUpdate.Avatar = res.data.secure_url;
     }
     if (
-      userInfor?.Name == userUpdate.Name &&
-      userInfor?.Birthday?.split('T')[0] == userUpdate.Birthday &&
-      userInfor?.Gender == userUpdate.Gender &&
+      userInfor?.Name === userUpdate.Name &&
+      userInfor?.Birthday?.split('T')[0] === userUpdate.Birthday &&
+      userInfor?.Gender === userUpdate.Gender &&
       !userUpdate.Avatar
     )
       return;
 
     const tempCheck = checkRegex(userUpdate);
-    if (tempCheck.result === 'error') setMessage(tempCheck.message);
-    else {
+    if (tempCheck.result === 'error') {
+      setMessage(tempCheck.message);
+      Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: message,
+        allowOutsideClick: true,
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } else {
       setMessage('');
       dispatch(updateUserProfile(userUpdate));
       Swal.fire({
@@ -246,12 +254,27 @@ function UpdateProfile() {
   };
   const onImageChange = (e) => {
     const file = e.target.files[0];
-    let extention = file.name.split('.').pop();
-    if (extention === 'png' || extention === 'jpg' || extention === 'jpeg' ||
-      extention === 'jfif' || extention === 'pjpeg' ||  extention === 'pjp') {
+    const fileExtension = file.name.split('.').pop();
+
+    if ((file.size / 1024 / 1024).toFixed(2) > 3) {
+      Swal.fire({
+        icon: 'warning',
+        allowOutsideClick: false,
+        title: 'File size cannot exceed more than 3MB!',
+      });
+      setImage(userInfor?.Avatar);
+    } else if (
+      fileExtension === 'jpg' ||
+      fileExtension === 'png' ||
+      fileExtension === 'jpeg'
+    ) {
       setImage(URL.createObjectURL(file));
     } else {
-      // show notification error
+      Swal.fire({
+        icon: 'warning',
+        allowOutsideClick: false,
+        title: 'File type must be png, jpg, jpeg!',
+      });
     }
   };
 
@@ -269,11 +292,10 @@ function UpdateProfile() {
             }}
           >
             <Wrapper>
-              <Card style={{margin: '10pt'}}>
+              <Card style={{ margin: '10pt' }}>
                 <div>
                   <Card.Body>
                     <div className="card__header">
-                      {/* <Card.Title className="text-center">Edit profile</Card.Title> */}
                       <div class="text-center card-title h3">Edit profile</div>
                       <Card.Subtitle className="my-4 text-muted title text-center">
                         Updates profile to let people know about you.
@@ -301,16 +323,7 @@ function UpdateProfile() {
 
                       <BootstrapRow className="card-row">
                         <BootstrapCol lg={12}>
-                          <Form.Label>Name </Form.Label>
-                          <Form.Label
-                            style={{
-                              position: 'absolute',
-                              right: '4%',
-                              color: 'red',
-                            }}
-                          >
-                            {message}
-                          </Form.Label>
+                          <Form.Label>Name</Form.Label>
                           <Form.Group className="mb-">
                             <NameInput value={name} onChange={onNameChange} />
                           </Form.Group>
@@ -452,12 +465,12 @@ function UpdateProfile() {
 
                       <BootstrapRow className="card-row">
                         <BootstrapCol lg={12}>
-                            <input placeholder={userInfor.Email} disabled />
+                          <input placeholder={userInfor.Email} disabled />
                         </BootstrapCol>
                       </BootstrapRow>
                       <BootstrapRow className="card-row">
                         <BootstrapCol lg={12}>
-                            <input placeholder={userInfor.Phone} disabled />
+                          <input placeholder={userInfor.Phone} disabled />
                         </BootstrapCol>
                       </BootstrapRow>
 
@@ -465,7 +478,6 @@ function UpdateProfile() {
                         <Col>
                           <ButtonWrapper>
                             <Button
-                              // type="submit"
                               variant="default"
                               onClick={handleBtnSkipClick}
                             >
