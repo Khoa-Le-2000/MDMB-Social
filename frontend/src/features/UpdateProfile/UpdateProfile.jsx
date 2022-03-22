@@ -113,7 +113,7 @@ const ButtonWrapper = styled.div`
 const Wrapper = styled.div`
   // background-color: red;
   width: 25%;
-  min-width: 380px;
+  min-width: 400px;
 `;
 
 const checkRegex = (userUpdate) => {
@@ -263,11 +263,12 @@ function UpdateProfile() {
             }}
           >
             <Wrapper>
-              <Card>
+              <Card style={{margin: '10pt'}}>
                 <div>
                   <Card.Body>
                     <div className="card__header">
-                      <Card.Title className="text-center" styled="">Edit profile</Card.Title>
+                      {/* <Card.Title className="text-center">Edit profile</Card.Title> */}
+                      <div class="text-center card-title h3">Edit profile</div>
                       <Card.Subtitle className="my-4 text-muted title text-center">
                         Updates profile to let people know about you.
                       </Card.Subtitle>
