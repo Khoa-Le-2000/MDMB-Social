@@ -19,6 +19,7 @@ import {
 import { getConversations } from 'app/selectors/conversations';
 import { getAuth } from 'app/selectors/login';
 import { getSocket } from 'app/selectors/socket';
+import LoadingOverlay from 'components/LoadingOverlay';
 import ChatConversations from 'features/ChatOverView/ChatConversations/ChatConversations';
 import ChatWindow from 'features/ChatOverView/ChatWindow/ChatWindow';
 import WindowEmpty from 'features/ChatOverView/ChatWindow/WindowEmpty/WindowEmpty';
@@ -88,7 +89,6 @@ function ChatOverView() {
   }, [listConversation, socket, dispatch]);
 
   React.useEffect(() => {
-    console.log('check user online', socket);
     socket?.on('user-online', function (accountId) {
       dispatch(addUserOnline(accountId));
     });
@@ -192,7 +192,7 @@ function ChatOverView() {
       </RowBS>
     </Wrapper>
   ) : (
-    <div>Loading ...</div>
+    <LoadingOverlay />
   );
 }
 

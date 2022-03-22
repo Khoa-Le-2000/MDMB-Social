@@ -113,7 +113,12 @@ function ChatBox({ onSendMessage, onTyping, WindowEmpty }) {
   const typingTimeoutRef = React.useRef(null);
   const [showPicker, setShowPicker] = React.useState(false);
   const { roomId } = useParams();
+  const chatBoxRef = React.useRef(null);
   const partner = useSelector(getPartner);
+
+  React.useEffect(() => {
+    chatBoxRef.current.focus();
+  });
 
   const handleKeyPress = (e) => {
     clearTimeout(typingTimeoutRef.current);
@@ -143,10 +148,8 @@ function ChatBox({ onSendMessage, onTyping, WindowEmpty }) {
   const onSendClick = (e) => {
     e.preventDefault();
     if (!message || message.trim().length === 0) return;
-    if (message.length > 1000)
-      onSendMessage(message.slice(0, 1000));
-    else
-      onSendMessage(message);
+    if (message.length > 1000) onSendMessage(message.slice(0, 1000));
+    else onSendMessage(message);
     setMessage('');
     setShowPicker(false);
   };
@@ -158,16 +161,6 @@ function ChatBox({ onSendMessage, onTyping, WindowEmpty }) {
   const onEmojiClick = (emoji) => {
     setMessage(message + emoji.native);
   };
-
-  // const handleKeyDown = (e) => {
-  //   if (e.key === 'Enter') {
-  //     if (e.shiftKey) {
-        
-  //     } else {
-  //       onSendClick(e);
-  //     }
-  //   }
-  // };
 
   return (
     <Wrapper WindowEmpty={WindowEmpty}>
@@ -185,11 +178,14 @@ function ChatBox({ onSendMessage, onTyping, WindowEmpty }) {
         <Col lg={12}>
           <WrapperInput>
             <Input
+              ref={chatBoxRef}
               onKeyUp={handleKeyUp}
               onKeyPress={handleKeyPress}
               onChange={(e) => setMessage(e.target.value)}
               value={message}
-              onKeyDown={(e) => (e.key === 'Enter' && !e.shiftKey) && onSendClick(e)}
+              onKeyDown={(e) =>
+                e.key === 'Enter' && !e.shiftKey && onSendClick(e)
+              }
               onFocus={() => setShowPicker(false)}
               rows={1}
             />

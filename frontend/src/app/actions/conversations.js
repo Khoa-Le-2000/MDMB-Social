@@ -99,3 +99,35 @@ export const changeFilterConversation = (filterName) => {
     payload: filterName,
   };
 };
+
+const getListConversationByNameStart = () => {
+  return {
+    type: ConversationActionTypes.GET_LIST_CONVERSATION_BY_NAME_START,
+  };
+};
+const getListConversationByNameSuccess = (listConversation) => {
+  return {
+    type: ConversationActionTypes.GET_LIST_CONVERSATION_BY_NAME_SUCCESS,
+    payload: listConversation,
+  };
+};
+
+export const getListConversationByName =
+  (name) => async (dispatch, getState) => {
+    const {
+      conversations: { listConversation },
+    } = getState();
+    dispatch(getListConversationByNameStart());
+    if (name) {
+      const data = listConversation.filter((e) =>
+        e.Name.toLowerCase().includes(name.toLowerCase())
+      );
+      if (data) {
+        dispatch(getListConversationByNameSuccess(data));
+      } else {
+        dispatch(getListConversationByNameSuccess([]));
+      }
+    } else {
+      dispatch(getListConversationByNameSuccess([]));
+    }
+  };

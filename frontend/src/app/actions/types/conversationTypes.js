@@ -12,4 +12,8 @@ export const ConversationActionTypes = {
     'update/listConversation/with/new/message/success',
 
   CHANGE_FILTER_CONVERSATION: 'change/filter/conversation',
+
+  GET_LIST_CONVERSATION_BY_NAME_START: 'get/listConversation/by/name/start',
+  GET_LIST_CONVERSATION_BY_NAME_SUCCESS: 'get/listConversation/by/name/success',
+  GET_LIST_CONVERSATION_BY_NAME_FAILURE: 'get/listConversation/by/name/failure',
 };
