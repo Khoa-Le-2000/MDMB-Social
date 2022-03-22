@@ -11,6 +11,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Spinner } from 'react-bootstrap';
+import { getListRelationshipSelector } from 'app/selectors/listRelationship';
+import { getListRelationship } from 'app/actions/listRelationship';
 
 const LeftSideWrapper = styled.div`
   display: flex;
@@ -115,27 +117,35 @@ const WrapSpinner = styled.div`
 export default function LeftSide() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const listConversation = useSelector(getConversations);
-  const ListSearchAccount = useSelector(getSearchAccountSelector);
   const accountId = useSelector(getAuth)?.accountId;
-  const [listUserMatch, setListUserMatch] = React.useState(listConversation);
+  const listRelationship = useSelector(getListRelationshipSelector);
+  const listFriend = listRelationship?.filter((item) => item.Type == 'friend');
+
+  const ListSearchAccount = useSelector(getSearchAccountSelector);
+  const [listUserMatch, setListUserMatch] = React.useState(listFriend);
   const [searchValue, setSearchValue] = React.useState('');
   const [show, setShow] = React.useState(false);
-
   const searchName = useDebounce(searchValue, 800);
 
+  if (searchValue == '' && listUserMatch.length != listFriend.length)
+    setListUserMatch(listFriend);
+
+  var isLoading =false;  
   React.useEffect(() => {
     if (searchName) {
       dispatch(getSearchAccount(searchName, accountId));
+      console.log('dispatch');
       setShow(true);
     } else {
       setShow(false);
     }
+    dispatch(getListRelationship(accountId));
+    isLoading=true;
   }, [searchName, accountId]);
 
   const handleSearchChange = (e) => {
     setSearchValue(e.target.value);
-    const listUserMatch = listConversation.filter((user) =>
+    const listUserMatch = listFriend.filter((user) =>
       user.Name.toLowerCase().includes(e.target.value.toLowerCase())
     );
     setListUserMatch(listUserMatch);
@@ -149,6 +159,7 @@ export default function LeftSide() {
   const handleUserProfileClick = (AccountId) => {
     navigate(`/userinfor/${AccountId}`);
   };
+  console.log(show)
   return (
     <LeftSideWrapper>
       <Logo>MDMB Social</Logo>
@@ -163,7 +174,7 @@ export default function LeftSide() {
         </InputSearch>
       </SearchForm>
       <FriendList>
-        <HeaderCard>Friend({listConversation?.length})</HeaderCard>
+        <HeaderCard>Friend({listFriend?.length})</HeaderCard>
         {listUserMatch.length === 0 && (
           <UserNotFound> Friend not found!</UserNotFound>
         )}

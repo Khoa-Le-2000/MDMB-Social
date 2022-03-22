@@ -190,7 +190,7 @@ function UserInfor() {
   const partnerInfor = useSelector(getPartnerProfileSelector);
   const listRelationship = useSelector(getListRelationshipSelector);
   const RelationshipInfor = listRelationship.filter(
-    (item) => item.RelatedAccountId === id || item.RelatingAccountId === id
+    (item) => (item.RelatedAccountId == id || item.RelatingAccountId == id)
   )[0];
 
   const Type = RelationshipInfor?.Type;
@@ -217,7 +217,6 @@ function UserInfor() {
       RelationshipInfor.RelatingAccountId !== AccountId)
   )
     Case = 3;
-
   const handleDirectMessageClick = () => {
     navigate(`/chat/${id}`);
   };
@@ -264,7 +263,7 @@ function UserInfor() {
                         id="dropdown-basic"
                         style={{
                           border: '1px solid black',
-                          'margin-right': '5px',
+                          marginRight: '5px',
                         }}
                       >
                         <AlreadyFriendIcon />
