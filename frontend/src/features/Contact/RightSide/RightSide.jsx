@@ -1,6 +1,12 @@
 import { UserPlus, UserCheck, UserX } from '@styled-icons/boxicons-solid';
 import styled, { css } from 'styled-components';
 import { Row, Col, Button } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { getListRelationshipSelector } from 'app/selectors/listRelationship';
+import { getListRelationship } from 'app/actions/listRelationship';
+import React from 'react';
+import { getAuth } from 'app/selectors/login';
+import { AddFriend } from 'app/actions/partnerProfile';
 
 const RightSideWrapper = styled.div`
   display: flex;
@@ -8,6 +14,7 @@ const RightSideWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   border-left: 1px solid black;
+  overflow-x:hidden;
 `;
 const Header = styled.div`
   padding: 10px;
@@ -15,7 +22,16 @@ const Header = styled.div`
   background-color: #efeff3;
   border-bottom: 1px solid #d6dbe0;
 `;
-const RowBS = styled(Row)``;
+const RowBS = styled(Row)`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-left:10px;
+
+  @media (max-width: 680px) {
+    margin-left:2px;
+  }
+`;
 const CardFriend = css`
   border-radius: 10px;
   justify-items: center;
@@ -24,15 +40,17 @@ const CardFriend = css`
   padding: 1rem;
   border: 1px solid #d6dbe0;
   margin: 10px;
+  width:235px;
   @media (max-width: 1250px) {
-    width: 12.5rem;
-    height: 12.5rem;
+    width: 10.5rem;
+    height: 14.5rem;
   }
   @media (max-width: 680px) {
-    width: 5.8rem;
-    height: 6.5rem;
-    margin: 2px;
+    width: 6rem;
+    height: 10rem;
     margin-top: 5px;
+  margin: 2px;
+
   }
 `;
 
@@ -42,6 +60,17 @@ const CardFriendRequest = styled.div`
 
 const CardFriendRecommend = styled.div`
   ${CardFriend}
+  @media (max-width: 1250px) {
+    width: 10.5rem;
+    height: 14.5rem;
+  }
+  @media (max-width: 680px) {
+    width: 6rem;
+    height: 7rem;
+    margin-top: 5px;
+  margin: 2px;
+
+  }
 `;
 
 const Title = styled.div`
@@ -93,9 +122,14 @@ const ButtonBS = styled(Button)`
   justify-content: center;
   width: 100%;
   margin: auto;
+
   background-color: inherit;
   color: #000000;
   margin-top: 10px;
+  @media (max-width: 680px) {
+    margin-top: 5px;
+    padding:0px;
+  }
 `;
 const AddFriendButton = styled(ButtonBS)`
   @media (max-width: 1250px) {
@@ -103,7 +137,7 @@ const AddFriendButton = styled(ButtonBS)`
     padding: 0.3rem;
   }
   @media (max-width: 680px) {
-    font-size: 0.6rem;
+    font-size: 0.5em;
     padding: 0.05rem 0.05rem 0.05rem 0.05rem;
   }
 `;
@@ -111,6 +145,9 @@ const Icon = css`
   width: 1.3rem;
   height: 1.3rem;
   margin-right: 5px;
+  @media (max-width: 680px) {
+    display:none;
+  }
 `;
 const AddFriendIcon = styled(UserPlus)`
   ${Icon}
@@ -122,38 +159,88 @@ const AcceptIcon = styled(UserCheck)`
   ${Icon}
 `;
 
-const AcceptButton = styled(ButtonBS)``;
-const RemoveButton = styled(ButtonBS)``;
+const AcceptButton = styled(ButtonBS)`
+  @media (max-width: 1250px) {
+    font-size: 0.8rem;
+    padding: 0.3rem;
+  }
+`;
+const RemoveButton = styled(ButtonBS)`
+  @media (max-width: 1250px) {
+    font-size: 0.8rem;
+    padding: 0.3rem;
+  }
+`;
 export default function RightSide() {
+  const dispatch = useDispatch();
+  var AccountId = useSelector(getAuth)?.accountId;
+  var listRelationship = useSelector(getListRelationshipSelector);
+  React.useEffect(() => {
+    dispatch(getListRelationship(AccountId));
+  }, []);
+
+  listRelationship = listRelationship?.filter(
+    (item) =>
+      (item.Type == 'rsendpending' && item.RelatedAccountId != AccountId) ||
+      (item.Type == 'lsendpending' && item.RelatingAccountId != AccountId)
+  );
+  console.log(listRelationship);
+  const handleAcceptClick = (id) => {
+    if (AccountId < id)
+      dispatch(AddFriend(AccountId, id, 'friend')).then(() =>
+        dispatch(getListRelationship(AccountId))
+      );
+    else
+      dispatch(AddFriend(id, AccountId, 'friend')).then(() =>
+        dispatch(getListRelationship(AccountId))
+      );
+  };
+  const HandleRemoveClick = (id) => {
+    if (AccountId < id)
+      dispatch(AddFriend(AccountId, id, 'delete')).then(() =>
+        dispatch(getListRelationship(AccountId))
+      );
+    else
+      dispatch(AddFriend(id, AccountId, 'delete')).then(() =>
+        dispatch(getListRelationship(AccountId))
+      );
+  };
   return (
     <RightSideWrapper>
       <Header>Friend you may know...</Header>
       <Title>Friend Requests</Title>
       <RowBS>
-        {Array(4)
-          .fill(1)
-          .map((item, index) => (
-            <Col lg={3}>
-              <CardFriendRequest key={index}>
-                <Avatar>
-                  <img
-                    src={
-                      'https://www.toponseek.com/blogs/wp-content/uploads/2019/06/toi-uu-hinh-anh-optimize-image-4-1200x700.jpg'
-                    }
-                    alt="avatar"
-                  />
-                </Avatar>
-                <Name>Dino</Name>
-                <AcceptButton>
-                  <AcceptIcon /> Confirm
-                </AcceptButton>
-                <RemoveButton>
-                  <RemoveIcon />
-                  Remove
-                </RemoveButton>
-              </CardFriendRequest>
-            </Col>
-          ))}
+        {listRelationship.map((item, index) => (
+            <CardFriendRequest key={index}>
+              <Avatar>
+                <img src={item.Avatar} alt="avatar" />
+              </Avatar>
+              <Name>{item.Name}</Name>
+              <AcceptButton
+                onClick={() => {
+                  handleAcceptClick(
+                    item.RelatedAccountId == AccountId
+                      ? item.RelatingAccountId
+                      : item.RelatedAccountId
+                  );
+                }}
+              >
+                <AcceptIcon /> Accept
+              </AcceptButton>
+              <RemoveButton
+                onClick={() => {
+                  HandleRemoveClick(
+                    item.RelatedAccountId == AccountId
+                      ? item.RelatingAccountId
+                      : item.RelatedAccountId
+                  );
+                }}
+              >
+                <RemoveIcon />
+                Remove
+              </RemoveButton>
+            </CardFriendRequest>
+        ))}
       </RowBS>
       <hr />
       <Title>
@@ -163,7 +250,6 @@ export default function RightSide() {
         {Array(50)
           .fill(1)
           .map((item, index) => (
-            <Col lg={3}>
               <CardFriendRecommend key={index}>
                 <Avatar>
                   <img
@@ -176,10 +262,9 @@ export default function RightSide() {
                 <Name>Dino</Name>
                 <Description>From friend recommended</Description>
                 <AddFriendButton>
-                  <AddFriendIcon /> Add Friend
+                  <AddFriendIcon />Add Friend
                 </AddFriendButton>
               </CardFriendRecommend>
-            </Col>
           ))}
       </RowBS>
     </RightSideWrapper>
