@@ -111,7 +111,7 @@ const ButtonWrapper = styled.div`
 `;
 
 const Wrapper = styled.div`
-  background-color: red;
+  // background-color: red;
   width: 25%;
   min-width: 380px;
 `;
@@ -267,7 +267,7 @@ function UpdateProfile() {
                 <div>
                   <Card.Body>
                     <div className="card__header">
-                      <Card.Title className="text-center">Profile</Card.Title>
+                      <Card.Title className="text-center" styled="">Edit profile</Card.Title>
                       <Card.Subtitle className="my-4 text-muted title text-center">
                         Updates profile to let people know about you.
                       </Card.Subtitle>
@@ -445,25 +445,26 @@ function UpdateProfile() {
 
                       <BootstrapRow className="card-row">
                         <BootstrapCol lg={12}>
-                          <Form.Group className="mb- email-phone">
                             <input placeholder={userInfor.Email} disabled />
+                        </BootstrapCol>
+                      </BootstrapRow>
+                      <BootstrapRow className="card-row">
+                        <BootstrapCol lg={12}>
                             <input placeholder={userInfor.Phone} disabled />
-                          </Form.Group>
                         </BootstrapCol>
                       </BootstrapRow>
 
-                      <BootstrapRow className="mt-5">
+                      <BootstrapRow className="mt-2">
                         <Col>
                           <ButtonWrapper>
                             <Button
                               // type="submit"
                               variant="default"
-                              size="sm"
                               onClick={handleBtnSkipClick}
                             >
                               Skip
                             </Button>
-                            <Button type="submit" variant="primary" size="sm">
+                            <Button type="submit" variant="primary">
                               Update
                             </Button>
                           </ButtonWrapper>
