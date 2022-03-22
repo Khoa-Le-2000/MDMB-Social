@@ -266,6 +266,79 @@ function getAccountInfor(AccountId) {
   });
 }
 
+function getAccountListSearching(SearchKey, AccountId) {
+  var con = connection.createConnection();
+  return new Promise((resolve, reject) => {
+    let Key = `%${SearchKey}%`;
+    con.connect(async function (err) {
+      if (err) throw err;
+      var sql = `SELECT AccountId,Name, Avatar, Birthday, LastOnline, Gender FROM MDMB.Account Where (lower(Name) like ? or lower(Phone) like ? or lower(Email) like ?) 
+      and AccountId not in(
+        Select RelatingAccountId from MDMB.AccountRelationship Where RelatedAccountId > ? and RelatingAccountId= ?
+      UNION  
+      Select RelatedAccountId from MDMB.AccountRelationship Where RelatingAccountId < ? and RelatedAccountId= ?
+      )
+      limit 10
+      `;
+      con.query(sql, [Key, Key, Key, AccountId, AccountId,AccountId,AccountId],
+        function (err, result) {
+          connection.closeConnection(con);
+          if (err) reject(err);
+          res = result;
+          resolve(res);
+        });
+    });
+  });
+}
+function setRelationship(RelatingAccountId,RelatedAccountId,Type,Callback) {
+  var con = connection.createConnection();
+    con.connect(async function (err) {
+      if (err) throw err;
+      var sql = `CALL MDMB.AddFriend(?, ?, ?);`;
+      con.query(sql, [RelatingAccountId,RelatedAccountId,Type],
+        function (err, result) {
+          connection.closeConnection(con);
+          if (err) return Callback(false);
+        else return Callback(true);
+        });
+    });
+}
+function deleteRelationship(RelatingAccountId,RelatedAccountId,Callback) {
+  var con = connection.createConnection();
+    con.connect(async function (err) {
+      if (err) throw err;
+      var sql = `Delete FROM MDMB.AccountRelationship
+      Where (RelatingAccountId = ? and RelatedAccountId=?)
+      or  (RelatedAccountId= ? and  RelatingAccountId=?);`;
+      con.query(sql, [RelatingAccountId,RelatedAccountId,RelatingAccountId,RelatedAccountId],
+        function (err, result) {
+          connection.closeConnection(con);
+          if (err) return Callback(false);
+        else return Callback(true);
+        });
+    });
+}
+function getListHaveRelationship(AccountId) {
+  let sql = `select RelatingAccountId,RelatedAccountId,Type,LastOnline,CreatedDate,Gender,Birthday,Avatar,Name,Email,Phone from MDMB.Account as acc join MDMB.AccountRelationship as accrel on (acc.AccountID = accrel.RelatingAccountId or acc.AccountID=accrel.RelatedAccountId)
+  where (accrel.RelatingAccountId<? and accrel.RelatedAccountId = ? and AccountId !=?)
+   or (accrel.RelatedAccountId>? and accrel.RelatingAccountId = ? and AccountId !=?);`;
+  return new Promise((resolve, reject) => {
+    var con = connection.createConnection();
+    con.connect(function (err) {
+      if (err) throw err;
+      con.query(sql, [AccountId,AccountId,AccountId,AccountId,AccountId,AccountId],
+        function (err, result) {
+          connection.closeConnection(con);
+          if (err) return reject(err);
+          let accounts = [];
+          for (let i = 0; i < result.length; i++) {
+            accounts.push(result[i]);
+          }
+          resolve(accounts);
+        });
+    });
+  });
+}
 module.exports = {
   getAccount,
   getAccountByEmail,
@@ -277,5 +350,9 @@ module.exports = {
   getListFriendWithLastMessage,
   getListFriendWithLastMessageCountUnseen,
   updateLastOnline,
-  getAccountInfor
+  getAccountInfor,
+  getAccountListSearching,
+  setRelationship,
+  getListHaveRelationship,
+  deleteRelationship
 }

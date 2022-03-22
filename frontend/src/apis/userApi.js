@@ -19,6 +19,18 @@ const userApi = {
     const url = `/account/account-information?accountId=${accountId}`;
     return axiosClient.get(url);
   },
+  search: (SearchKey,AccountId) => {
+    const url = `/account/account-list-searching?SearchKey=${SearchKey}&AccountId=${AccountId}`;
+    return axiosClient.get(url);
+  },
+    addfriend: (RelatingAccountId, RelatedAccountId, Type) => {
+    const url = `/account/insert-relationship?RelatingAccountId=${RelatingAccountId}&RelatedAccountId=${RelatedAccountId}&Type=${Type}`;
+    return axiosClient.get(url);
+  },
+  listRelationship: (AccountId) => {
+    const url = `/account/list-have-relationship?AccountId=${AccountId}`;
+    return axiosClient.get(url);
+  }
 
 };
 

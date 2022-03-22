@@ -109,7 +109,7 @@ const WrapperDialog = styled.div`
 `;
 
 function ChatBox({ onSendMessage, onTyping, WindowEmpty }) {
-  const [message, setMessage] = React.useState('');
+  const [message, setMessage] = React.useState(''); 
   const typingTimeoutRef = React.useRef(null);
   const [showPicker, setShowPicker] = React.useState(false);
   const { roomId } = useParams();
