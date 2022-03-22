@@ -1,17 +1,16 @@
 import { Search } from '@styled-icons/heroicons-solid';
+import { getMessagesLatest, selectRoom } from 'app/actions/chat';
+import { getSearchAccount } from 'app/actions/partnerProfile';
 import { getConversations } from 'app/selectors/conversations';
+import { getAuth } from 'app/selectors/login';
+import { getSearchAccountSelector } from 'app/selectors/partnerProfile';
+import { useDebounce } from 'hooks';
 import React from 'react';
 import { Form, InputGroup as BsInputGroup } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { getMessagesLatest, selectRoom } from 'app/actions/chat';
-import { getSearchAccount } from 'app/actions/partnerProfile';
-import {
-  getFetchingSearchAccount,
-  getSearchAccountSelector,
-} from 'app/selectors/partnerProfile';
-import { getAuth } from 'app/selectors/login';
+import { Spinner } from 'react-bootstrap';
 
 const LeftSideWrapper = styled.div`
   display: flex;
@@ -108,15 +107,32 @@ const Name = styled.div`
     margin-left: 20px;
   }
 `;
+const WrapSpinner = styled.div`
+  display: flex;
+  justify-content: center;
+`;
 
 export default function LeftSide() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const listConversation = useSelector(getConversations);
+  const ListSearchAccount = useSelector(getSearchAccountSelector);
+  const accountId = useSelector(getAuth)?.accountId;
   const [listUserMatch, setListUserMatch] = React.useState(listConversation);
   const [searchValue, setSearchValue] = React.useState('');
   const [show, setShow] = React.useState(false);
-  const id = useSelector(getAuth)?.accountId;
+
+  const searchName = useDebounce(searchValue, 800);
+
+  React.useEffect(() => {
+    if (searchName) {
+      dispatch(getSearchAccount(searchName, accountId));
+      setShow(true);
+    } else {
+      setShow(false);
+    }
+  }, [searchName, accountId]);
+
   const handleSearchChange = (e) => {
     setSearchValue(e.target.value);
     const listUserMatch = listConversation.filter((user) =>
@@ -129,31 +145,10 @@ export default function LeftSide() {
     dispatch(selectRoom(item, navigate));
     dispatch(getMessagesLatest(AccountId, item.AccountId));
   };
-  const typingTimeoutRef = React.useRef(null);
-  var onTyping = false;
-  const handleKeyPress = (e) => {
-    clearTimeout(typingTimeoutRef.current);
-    onTyping = true;
-    setShow(false);
-    
-  };
-  const handleKeyUp = (e) => {
-    clearTimeout(typingTimeoutRef.current);
-    typingTimeoutRef.current = setTimeout(() => {
-      setShow(true);
-      dispatch(getSearchAccount(searchValue, id));
-      onTyping = false;
-    }, 1000);
-  };
 
-  var ListSearchAccount = useSelector(getSearchAccountSelector);
-  if (searchValue === '' && show) {
-    setShow(false);
-  }
   const handleUserProfileClick = (AccountId) => {
     navigate(`/userinfor/${AccountId}`);
   };
-  console.log(show);
   return (
     <LeftSideWrapper>
       <Logo>MDMB Social</Logo>
@@ -162,8 +157,6 @@ export default function LeftSide() {
           placeholder="Searching"
           onChange={handleSearchChange}
           value={searchValue}
-          onKeyUp={handleKeyUp}
-          onKeyPress={handleKeyPress}
         />
         <InputSearch>
           <IconSearch />
@@ -187,7 +180,13 @@ export default function LeftSide() {
             <Name>{item.Name}</Name>
           </FriendCard>
         ))}
-        {searchValue != '' && !show && <HeaderCard>Loading</HeaderCard>}
+        {searchValue && !show && (
+          <HeaderCard>
+            <WrapSpinner>
+              <Spinner animation="border" role="status" />
+            </WrapSpinner>
+          </HeaderCard>
+        )}
         {show && ListSearchAccount.length > 0 && (
           <HeaderCard>Searching</HeaderCard>
         )}
@@ -195,8 +194,7 @@ export default function LeftSide() {
           <>
             <HeaderCard>Searching</HeaderCard>
             <UserNotFound>
-              {' '}
-              Coun't found any not your friend user for "{searchValue}", check
+              Cound't found any not your friend user for "{searchValue}", check
               your spell or try complete word!
             </UserNotFound>
           </>

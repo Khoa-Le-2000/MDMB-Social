@@ -23,7 +23,7 @@ const getListRelationshipFailure = (message) => {
 
 export const getListRelationship = (url) => async (dispatch) => {
   dispatch(getListRelationshipStart());
-  const data = await userApi.listRelationship(url);
+  const data = await userApi.getListRelationship(url);
   if (data?.result) {
     dispatch(
       getListRelationshipSuccess(
