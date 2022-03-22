@@ -246,7 +246,13 @@ function UpdateProfile() {
   };
   const onImageChange = (e) => {
     const file = e.target.files[0];
-    setImage(URL.createObjectURL(file));
+    let extention = file.name.split('.').pop();
+    if (extention === 'png' || extention === 'jpg' || extention === 'jpeg' ||
+      extention === 'jfif' || extention === 'pjpeg' ||  extention === 'pjp') {
+      setImage(URL.createObjectURL(file));
+    } else {
+      // show notification error
+    }
   };
 
   const handleBtnSkipClick = (e) => {

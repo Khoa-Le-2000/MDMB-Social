@@ -73,7 +73,7 @@ function Messages({ typing, onSeenMessage }) {
   const messagesLatest = useSelector(getListMessageLatest);
   const myAccountId = useSelector(getAuth)?.accountId;
   const messageSeenDateLatest = useSelector(getMessageSeenLatest);
-  const messagesEndRef = React.useRef();
+  const messagesEndRef = React.useRef(null);
   const partner = useSelector(getPartner);
 
   React.useEffect(() => {
@@ -83,6 +83,7 @@ function Messages({ typing, onSeenMessage }) {
       inline: 'nearest',
     });
   }, [messagesLatest]);
+
   return (
     <>
       {messagesLatest.map((item) => (
