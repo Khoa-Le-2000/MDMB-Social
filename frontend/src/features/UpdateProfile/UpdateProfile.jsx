@@ -95,7 +95,7 @@ const UploadImageWrapper = styled.div`
 
 const UploadImageInput = styled.input.attrs({
   type: 'file',
-  accept:"image/png, image/jpeg"
+  accept: 'image/png, image/jpeg',
 })`
   width: 100%;
 `;
@@ -108,6 +108,12 @@ const ButtonWrapper = styled.div`
   display: flex;
   justify-content: space-around;
   width: 100%;
+`;
+
+const Wrapper = styled.div`
+  background-color: red;
+  width: 25%;
+  min-width: 380px;
 `;
 
 const checkRegex = (userUpdate) => {
@@ -210,6 +216,13 @@ function UpdateProfile() {
       );
       userUpdate.Avatar = res.data.secure_url;
     }
+    if (
+      userInfor?.Name == userUpdate.Name &&
+      userInfor?.Birthday?.split('T')[0] == userUpdate.Birthday &&
+      userInfor?.Gender == userUpdate.Gender &&
+      !userUpdate.Avatar
+    )
+      return;
 
     const tempCheck = checkRegex(userUpdate);
     if (tempCheck.result === 'error') setMessage(tempCheck.message);
@@ -230,9 +243,7 @@ function UpdateProfile() {
 
   const onUploadImage = (e) => {
     fileImageRef.current.click();
-    // fileImageRef.current.accept="image/png, image/gif, image/jpeg"
-};
-  console.log(fileImageRef)
+  };
   const onImageChange = (e) => {
     const file = e.target.files[0];
     setImage(URL.createObjectURL(file));
@@ -245,241 +256,226 @@ function UpdateProfile() {
   return (
     <BootstrapContainer fluid>
       <MainLayout Name={userInfor.Name} Avatar={userInfor.Avatar}>
-        <BootstrapContainer>
-          <BootstrapRow>
-            <Col
-              style={{
-                justifyContent: 'center',
-              }}
-            >
-              <BootstrapCol lg={5}>
+        <BootstrapRow>
+          <Col
+            style={{
+              justifyContent: 'center',
+            }}
+          >
+            <Wrapper>
+              <Card>
                 <div>
-                  <Card>
-                    <div>
-                      <Card.Body>
-                        <div className="card__header">
-                          <Card.Title className="text-center">
-                            Profile
-                          </Card.Title>
-                          <Card.Subtitle className="my-4 text-muted title text-center">
-                            Updates profile to let people know about you.
-                          </Card.Subtitle>
-                        </div>
-                        <Form onSubmit={onUpdateProfileHandler}>
-                          <BootstrapRow className="card-row">
-                            <BootstrapCol lg={12}>
-                              <Form.Group className="mb-">
-                                <AvatarWrapper>
-                                  <img src={image} alt="" />
-                                  <IconWrapper onClick={onUploadImage}>
-                                    <UploadIcon />
-                                    <UploadImageWrapper>
-                                      <UploadImageInput
-                                        ref={fileImageRef}
-                                        onChange={onImageChange}
-                                      />
-                                    </UploadImageWrapper>
-                                  </IconWrapper>
-                                </AvatarWrapper>
-                              </Form.Group>
-                            </BootstrapCol>
-                          </BootstrapRow>
-
-                          <BootstrapRow className="card-row">
-                            <BootstrapCol lg={12}>
-                              <Form.Label>Name </Form.Label>
-                              <Form.Label
-                                style={{
-                                  position: 'absolute',
-                                  right: '4%',
-                                  color: 'red',
-                                }}
-                              >
-                                {message}
-                              </Form.Label>
-                              <Form.Group className="mb-">
-                                <NameInput
-                                  value={name}
-                                  onChange={onNameChange}
-                                />
-                              </Form.Group>
-                            </BootstrapCol>
-                          </BootstrapRow>
-
-                          <BootstrapRow>
-                            <Col
-                              lg={12}
-                              style={{
-                                justifyContent: 'flex-start',
-                              }}
-                            >
-                              <Form.Group className="mb-3 3 w-100">
-                                <Form.Label>Birthday </Form.Label>
-                                <DatePicker
-                                  renderCustomHeader={({
-                                    date,
-                                    changeYear,
-                                    changeMonth,
-                                    decreaseMonth,
-                                    increaseMonth,
-                                    prevMonthButtonDisabled,
-                                    nextMonthButtonDisabled,
-                                  }) => (
-                                    <div
-                                      style={{
-                                        margin: 10,
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                      }}
-                                    >
-                                      <button
-                                        onClick={decreaseMonth}
-                                        disabled={prevMonthButtonDisabled}
-                                        type='button'
-                                      >
-                                        {'<'}
-                                      </button>
-                                      <select
-                                        value={new Date(date).getFullYear()}
-                                        onChange={({ target: { value } }) =>
-                                          changeYear(value)
-                                        }
-                                      >
-                                        {years.map((option) => (
-                                          <option key={option} value={option}>
-                                            {option}
-                                          </option>
-                                        ))}
-                                      </select>
-
-                                      <select
-                                        value={
-                                          months[new Date(date).getMonth()]
-                                        }
-                                        onChange={({ target: { value } }) =>
-                                          changeMonth(months.indexOf(value))
-                                        }
-                                      >
-                                        {months.map((option) => (
-                                          <option key={option} value={option}>
-                                            {option}
-                                          </option>
-                                        ))}
-                                      </select>
-
-                                      <button
-                                        onClick={increaseMonth}
-                                        disabled={nextMonthButtonDisabled}
-                                        type='button'
-                                      >
-                                        {'>'}
-                                      </button>
-                                    </div>
-                                  )}
-                                  selected={startDate}
-                                  onChange={(date) => setStartDate(date)}
-                                />
-                              </Form.Group>
-                            </Col>
-                          </BootstrapRow>
-
-                          <BootstrapRow>
-                            <Col lg={12}>
-                              <Form.Group className="mb-3 w-100">
-                                <Form.Label>Gender</Form.Label>
-                                <div className="wrapper">
-                                  <input
-                                    type="radio"
-                                    name="select"
-                                    value="0"
-                                    id="option-1"
-                                    defaultChecked={userInfor.Gender === 0}
-                                    onChange={onGenderChange}
-                                  />
-                                  <input
-                                    type="radio"
-                                    name="select"
-                                    id="option-2"
-                                    value="1"
-                                    defaultChecked={userInfor.Gender === 1}
-                                    onChange={onGenderChange}
-                                  />
-                                  <input
-                                    type="radio"
-                                    name="select"
-                                    value="2"
-                                    id="option-3"
-                                    defaultChecked={
-                                      userInfor.Gender === 2 ||
-                                      userInfor.Gender === null
-                                    }
-                                    onChange={onGenderChange}
-                                  />
-                                  <label
-                                    htmlFor="option-1"
-                                    className="option option-1"
-                                  >
-                                    <div className="dot" />
-                                    <span>Male</span>
-                                  </label>
-                                  <label
-                                    htmlFor="option-2"
-                                    className="option option-2"
-                                  >
-                                    <div className="dot" />
-                                    <span>Female</span>
-                                  </label>
-                                  <label
-                                    htmlFor="option-3"
-                                    className="option option-3"
-                                  >
-                                    <div className="dot" />
-                                    <span>Unset</span>
-                                  </label>
-                                </div>
-                              </Form.Group>
-                            </Col>
-                          </BootstrapRow>
-
-                          <BootstrapRow className="card-row">
-                            <BootstrapCol lg={12}>
-                              <Form.Group className="mb- email-phone">
-                                <input placeholder={userInfor.Email} disabled />
-                                <input placeholder={userInfor.Phone} disabled />
-                              </Form.Group>
-                            </BootstrapCol>
-                          </BootstrapRow>
-
-                          <BootstrapRow className="mt-5">
-                            <Col>
-                              <ButtonWrapper>
-                                <Button
-                                  // type="submit"
-                                  variant="default"
-                                  size="sm"
-                                  onClick={handleBtnSkipClick}
-                                >
-                                  Skip
-                                </Button>
-                                <Button
-                                  type="submit"
-                                  variant="primary"
-                                  size="sm"
-                                >
-                                  Update
-                                </Button>
-                              </ButtonWrapper>
-                            </Col>
-                          </BootstrapRow>
-                        </Form>
-                      </Card.Body>
+                  <Card.Body>
+                    <div className="card__header">
+                      <Card.Title className="text-center">Profile</Card.Title>
+                      <Card.Subtitle className="my-4 text-muted title text-center">
+                        Updates profile to let people know about you.
+                      </Card.Subtitle>
                     </div>
-                  </Card>
+                    <Form onSubmit={onUpdateProfileHandler}>
+                      <BootstrapRow className="card-row">
+                        <BootstrapCol lg={12}>
+                          <Form.Group className="mb-">
+                            <AvatarWrapper>
+                              <img src={image} alt="" />
+                              <IconWrapper onClick={onUploadImage}>
+                                <UploadIcon />
+                                <UploadImageWrapper>
+                                  <UploadImageInput
+                                    ref={fileImageRef}
+                                    onChange={onImageChange}
+                                  />
+                                </UploadImageWrapper>
+                              </IconWrapper>
+                            </AvatarWrapper>
+                          </Form.Group>
+                        </BootstrapCol>
+                      </BootstrapRow>
+
+                      <BootstrapRow className="card-row">
+                        <BootstrapCol lg={12}>
+                          <Form.Label>Name </Form.Label>
+                          <Form.Label
+                            style={{
+                              position: 'absolute',
+                              right: '4%',
+                              color: 'red',
+                            }}
+                          >
+                            {message}
+                          </Form.Label>
+                          <Form.Group className="mb-">
+                            <NameInput value={name} onChange={onNameChange} />
+                          </Form.Group>
+                        </BootstrapCol>
+                      </BootstrapRow>
+
+                      <BootstrapRow>
+                        <Col
+                          lg={12}
+                          style={{
+                            justifyContent: 'flex-start',
+                          }}
+                        >
+                          <Form.Group className="mb-3 3 w-100">
+                            <Form.Label>Birthday </Form.Label>
+                            <DatePicker
+                              renderCustomHeader={({
+                                date,
+                                changeYear,
+                                changeMonth,
+                                decreaseMonth,
+                                increaseMonth,
+                                prevMonthButtonDisabled,
+                                nextMonthButtonDisabled,
+                              }) => (
+                                <div
+                                  style={{
+                                    margin: 10,
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                  }}
+                                >
+                                  <button
+                                    onClick={decreaseMonth}
+                                    disabled={prevMonthButtonDisabled}
+                                    type="button"
+                                  >
+                                    {'<'}
+                                  </button>
+                                  <select
+                                    value={new Date(date).getFullYear()}
+                                    onChange={({ target: { value } }) =>
+                                      changeYear(value)
+                                    }
+                                  >
+                                    {years.map((option) => (
+                                      <option key={option} value={option}>
+                                        {option}
+                                      </option>
+                                    ))}
+                                  </select>
+
+                                  <select
+                                    value={months[new Date(date).getMonth()]}
+                                    onChange={({ target: { value } }) =>
+                                      changeMonth(months.indexOf(value))
+                                    }
+                                  >
+                                    {months.map((option) => (
+                                      <option key={option} value={option}>
+                                        {option}
+                                      </option>
+                                    ))}
+                                  </select>
+
+                                  <button
+                                    onClick={increaseMonth}
+                                    disabled={nextMonthButtonDisabled}
+                                    type="button"
+                                  >
+                                    {'>'}
+                                  </button>
+                                </div>
+                              )}
+                              selected={startDate}
+                              onChange={(date) => setStartDate(date)}
+                            />
+                          </Form.Group>
+                        </Col>
+                      </BootstrapRow>
+
+                      <BootstrapRow>
+                        <Col lg={12}>
+                          <Form.Group className="mb-3 w-100">
+                            <Form.Label>Gender</Form.Label>
+                            <div className="wrapper">
+                              <input
+                                type="radio"
+                                name="select"
+                                value="0"
+                                id="option-1"
+                                defaultChecked={userInfor.Gender === 0}
+                                onChange={onGenderChange}
+                              />
+                              <input
+                                type="radio"
+                                name="select"
+                                id="option-2"
+                                value="1"
+                                defaultChecked={userInfor.Gender === 1}
+                                onChange={onGenderChange}
+                              />
+                              <input
+                                type="radio"
+                                name="select"
+                                value="2"
+                                id="option-3"
+                                defaultChecked={
+                                  userInfor.Gender === 2 ||
+                                  userInfor.Gender === null
+                                }
+                                onChange={onGenderChange}
+                              />
+                              <label
+                                htmlFor="option-1"
+                                className="option option-1"
+                              >
+                                <div className="dot" />
+                                <span>Male</span>
+                              </label>
+                              <label
+                                htmlFor="option-2"
+                                className="option option-2"
+                              >
+                                <div className="dot" />
+                                <span>Female</span>
+                              </label>
+                              <label
+                                htmlFor="option-3"
+                                className="option option-3"
+                              >
+                                <div className="dot" />
+                                <span>Unset</span>
+                              </label>
+                            </div>
+                          </Form.Group>
+                        </Col>
+                      </BootstrapRow>
+
+                      <BootstrapRow className="card-row">
+                        <BootstrapCol lg={12}>
+                          <Form.Group className="mb- email-phone">
+                            <input placeholder={userInfor.Email} disabled />
+                            <input placeholder={userInfor.Phone} disabled />
+                          </Form.Group>
+                        </BootstrapCol>
+                      </BootstrapRow>
+
+                      <BootstrapRow className="mt-5">
+                        <Col>
+                          <ButtonWrapper>
+                            <Button
+                              // type="submit"
+                              variant="default"
+                              size="sm"
+                              onClick={handleBtnSkipClick}
+                            >
+                              Skip
+                            </Button>
+                            <Button type="submit" variant="primary" size="sm">
+                              Update
+                            </Button>
+                          </ButtonWrapper>
+                        </Col>
+                      </BootstrapRow>
+                    </Form>
+                  </Card.Body>
                 </div>
-              </BootstrapCol>
-            </Col>
-          </BootstrapRow>
-        </BootstrapContainer>
+              </Card>
+            </Wrapper>
+          </Col>
+        </BootstrapRow>
       </MainLayout>
     </BootstrapContainer>
   );
