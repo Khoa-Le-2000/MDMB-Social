@@ -274,13 +274,17 @@ function getAccountListSearching(SearchKey, AccountId) {
       if (err) throw err;
       var sql = `SELECT AccountId,Name, Avatar, Birthday, LastOnline, Gender FROM MDMB.Account Where (lower(Name) like ? or lower(Phone) like ? or lower(Email) like ?) 
       and AccountId not in(
-        Select RelatingAccountId from MDMB.AccountRelationship Where RelatedAccountId > ? and RelatingAccountId= ?
-      UNION  
-      Select RelatedAccountId from MDMB.AccountRelationship Where RelatingAccountId < ? and RelatedAccountId= ?
+        SELECT RelatingAccountId
+        FROM MDMB.AccountRelationship
+        WHERE (RelatingAccountId < ?) AND (RelatedAccountId = ?) AND (Type = 'friend')
+        UNION
+        SELECT RelatedAccountId
+        FROM MDMB.AccountRelationship
+        WHERE (RelatedAccountId > ?) AND (RelatingAccountId = ?) AND (Type = 'friend')
       )
       limit 10
       `;
-      con.query(sql, [Key, Key, Key, AccountId, AccountId,AccountId,AccountId],
+      con.query(sql, [Key, Key, Key, AccountId, AccountId, AccountId, AccountId],
         function (err, result) {
           connection.closeConnection(con);
           if (err) reject(err);
@@ -290,33 +294,33 @@ function getAccountListSearching(SearchKey, AccountId) {
     });
   });
 }
-function setRelationship(RelatingAccountId,RelatedAccountId,Type,Callback) {
+function setRelationship(RelatingAccountId, RelatedAccountId, Type, Callback) {
   var con = connection.createConnection();
-    con.connect(async function (err) {
-      if (err) throw err;
-      var sql = `CALL MDMB.AddFriend(?, ?, ?);`;
-      con.query(sql, [RelatingAccountId,RelatedAccountId,Type],
-        function (err, result) {
-          connection.closeConnection(con);
-          if (err) return Callback(false);
+  con.connect(async function (err) {
+    if (err) throw err;
+    var sql = `CALL MDMB.AddFriend(?, ?, ?);`;
+    con.query(sql, [RelatingAccountId, RelatedAccountId, Type],
+      function (err, result) {
+        connection.closeConnection(con);
+        if (err) return Callback(false);
         else return Callback(true);
-        });
-    });
+      });
+  });
 }
-function deleteRelationship(RelatingAccountId,RelatedAccountId,Callback) {
+function deleteRelationship(RelatingAccountId, RelatedAccountId, Callback) {
   var con = connection.createConnection();
-    con.connect(async function (err) {
-      if (err) throw err;
-      var sql = `Delete FROM MDMB.AccountRelationship
+  con.connect(async function (err) {
+    if (err) throw err;
+    var sql = `Delete FROM MDMB.AccountRelationship
       Where (RelatingAccountId = ? and RelatedAccountId=?)
       or  (RelatedAccountId= ? and  RelatingAccountId=?);`;
-      con.query(sql, [RelatingAccountId,RelatedAccountId,RelatingAccountId,RelatedAccountId],
-        function (err, result) {
-          connection.closeConnection(con);
-          if (err) return Callback(false);
+    con.query(sql, [RelatingAccountId, RelatedAccountId, RelatingAccountId, RelatedAccountId],
+      function (err, result) {
+        connection.closeConnection(con);
+        if (err) return Callback(false);
         else return Callback(true);
-        });
-    });
+      });
+  });
 }
 function getListHaveRelationship(AccountId) {
   let sql = `select RelatingAccountId,RelatedAccountId,Type,LastOnline,CreatedDate,Gender,Birthday,Avatar,Name,Email,Phone from MDMB.Account as acc join MDMB.AccountRelationship as accrel on (acc.AccountID = accrel.RelatingAccountId or acc.AccountID=accrel.RelatedAccountId)
@@ -326,7 +330,7 @@ function getListHaveRelationship(AccountId) {
     var con = connection.createConnection();
     con.connect(function (err) {
       if (err) throw err;
-      con.query(sql, [AccountId,AccountId,AccountId,AccountId,AccountId,AccountId],
+      con.query(sql, [AccountId, AccountId, AccountId, AccountId, AccountId, AccountId],
         function (err, result) {
           connection.closeConnection(con);
           if (err) return reject(err);
