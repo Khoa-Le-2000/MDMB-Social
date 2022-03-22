@@ -1,31 +1,28 @@
-import React from 'react';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { getUserProfile } from 'app/actions/userProfile';
+import {
+  FemaleSign,
+  Male as MaleFemale,
+  MaleSign,
+} from '@styled-icons/boxicons-regular';
+import { User, UserCheck, UserPlus, UserX } from '@styled-icons/boxicons-solid';
+import { Cake, Chat, Rss } from '@styled-icons/heroicons-solid';
+import { getListRelationship } from 'app/actions/listRelationship';
 import { AddFriend, getPartnerProfile } from 'app/actions/partnerProfile';
-import { getUserProfileSelector } from 'app/selectors/userProfile';
+import { getUserProfile } from 'app/actions/userProfile';
+import { getListRelationshipSelector } from 'app/selectors/listRelationship';
+import { getAuth } from 'app/selectors/login';
 import {
   getPartnerProfileSelector,
   isFetchingPartnerProfile,
 } from 'app/selectors/partnerProfile';
-import styled from 'styled-components';
-import MainLayout from 'layouts/MainLayout';
-import { Button, Container as BootstrapContainer } from 'react-bootstrap';
-import { Chat, Rss, Cake } from '@styled-icons/heroicons-solid';
-import { UserPlus, UserCheck, User, UserX } from '@styled-icons/boxicons-solid';
-import {
-  Male as MaleFemale,
-  MaleSign,
-  FemaleSign,
-} from '@styled-icons/boxicons-regular';
-import { getAuth } from 'app/selectors/login';
-import { useEffect } from 'react';
-import { getConversations } from 'app/selectors/conversations';
+import { getUserProfileSelector } from 'app/selectors/userProfile';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { getListConversation } from 'app/actions/conversations';
-import { getListRelationship } from 'app/actions/listRelationship';
-import { getListRelationshipSelector } from 'app/selectors/listRelationship';
+import MainLayout from 'layouts/MainLayout';
+import React, { useEffect } from 'react';
+import { Button, Container as BootstrapContainer } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
+import styled from 'styled-components';
 dayjs.extend(relativeTime);
 
 const Wrapper = styled.div`
@@ -165,8 +162,8 @@ function UserInfor() {
   var AccountId = useSelector(getAuth)?.accountId;
   const isFetching = useSelector(isFetchingPartnerProfile);
 
-  if (id == AccountId) navigate('/update-profile');
-  
+  if (id === AccountId) navigate('/update-profile');
+
   useEffect(() => {
     dispatch(getPartnerProfile(id));
     dispatch(getUserProfile(AccountId));
@@ -177,36 +174,33 @@ function UserInfor() {
   const partnerInfor = useSelector(getPartnerProfileSelector);
   const listRelationship = useSelector(getListRelationshipSelector);
   const RelationshipInfor = listRelationship.filter(
-    (item) => item.RelatedAccountId == id || item.RelatingAccountId == id
+    (item) => item.RelatedAccountId === id || item.RelatingAccountId === id
   )[0];
 
   const Type = RelationshipInfor?.Type;
-  console.log(isFetching)
   var Case = null;
-  /* 
+  /*
     0 : friend
     1 : not friend
     2 : you are sender
     3 : you are revceiver
   */
-  if (Type == 'friend') Case = 0;
+  if (Type === 'friend') Case = 0;
   if (!Type) Case = 1;
   if (
-    (Type == 'rsendpending' &&
-      RelationshipInfor.RelatedAccountId == AccountId) ||
-    (Type == 'lsendpending' && RelationshipInfor.RelatingAccountId == AccountId)
+    (Type === 'rsendpending' &&
+      RelationshipInfor.RelatedAccountId === AccountId) ||
+    (Type === 'lsendpending' &&
+      RelationshipInfor.RelatingAccountId === AccountId)
   )
     Case = 2;
   if (
-    (Type == 'rsendpending' &&
-      RelationshipInfor.RelatedAccountId != AccountId) ||
-    (Type == 'lsendpending' && RelationshipInfor.RelatingAccountId != AccountId)
+    (Type === 'rsendpending' &&
+      RelationshipInfor.RelatedAccountId !== AccountId) ||
+    (Type === 'lsendpending' &&
+      RelationshipInfor.RelatingAccountId !== AccountId)
   )
     Case = 3;
-
-  // console.log(listRelationship);
-  // const [countReRender, setCounReRender] = React.useState(0);
-  console.log(Case);
 
   const handleDirectMessageClick = () => {
     navigate(`/chat/${id}`);
@@ -245,93 +239,103 @@ function UserInfor() {
     <BootstrapContainer fluid>
       <MainLayout Name={accountInfor?.Name} Avatar={accountInfor?.Avatar}>
         <Wrapper>
-          {isFetching?"Loading...":<CardProfile>
-            <AvatarWrapper>
-              <img src={partnerInfor?.Avatar} alt="Avatar"></img>
-            </AvatarWrapper>
-            <LineWrapper>
-              <NameCard>{partnerInfor?.Name}</NameCard>
-            </LineWrapper>
-            <LineWrapper>
-              
-              {Case == 0 && (
-                <>
-                  <ButtonDefault className="btn">
-                    <AlreadyFriendIcon />
-                    Your Friend
-                  </ButtonDefault>
-                  <Button onClick={handleDirectMessageClick}>
-                    <ChatIcon /> Direct Message
-                  </Button>
-                </>
-              )}
-              {Case == 1 && (
-                <ButtonDefault className="btn" onClick={handleAddFriendClick}>
-                  <AddFriendIcon />
-                  Add Friend
-                </ButtonDefault>
-              )}
-              {Case == 2 && (
-                <ButtonDefault className="btn" onClick={handleDeleteRelationship}>
-                  <CancelRequest  />
-                  Cancel Request
-                </ButtonDefault>
-              )}
-              {Case == 3 && (
-                <>
-                  <Button onClick={AcceptFriendBtnClick}>
-                    <AddFriendIcon /> Accept
-                  </Button>
-                  <ButtonDefault className="btn" onClick={handleDeleteRelationship}>Delete</ButtonDefault>
-                </>
-              )}
-              
-            </LineWrapper>
-            <LineWrapper>
-              <IntroduceWrapper>
-                <IntroduceHeader>
-                  <IntroduceIcon />
-                  Introduce
-                </IntroduceHeader>
-                <Introduce>There still nothing to see yet</Introduce>
-              </IntroduceWrapper>
-            </LineWrapper>
-            <LineWrapper>
-              <InformationHeader>
-                <CakeIcon /> Birthday
-              </InformationHeader>
-              <Information>
-                {partnerInfor?.Birthday?.split('T')[0] || 'Unknow'}
-              </Information>
-            </LineWrapper>
-            <LineWrapper>
-              <InformationHeader>
-                {partnerInfor?.Gender == 0 ? (
-                  <FemaleIcon />
-                ) : partnerInfor?.Gender == 1 ? (
-                  <MaleIcon />
-                ) : (
-                  <GenderIcon />
+          {isFetching ? (
+            'Loading...'
+          ) : (
+            <CardProfile>
+              <AvatarWrapper>
+                <img src={partnerInfor?.Avatar} alt="Avatar"></img>
+              </AvatarWrapper>
+              <LineWrapper>
+                <NameCard>{partnerInfor?.Name}</NameCard>
+              </LineWrapper>
+              <LineWrapper>
+                {Case === 0 && (
+                  <>
+                    <ButtonDefault className="btn">
+                      <AlreadyFriendIcon />
+                      Your Friend
+                    </ButtonDefault>
+                    <Button onClick={handleDirectMessageClick}>
+                      <ChatIcon /> Direct Message
+                    </Button>
+                  </>
                 )}
-                Gender
-              </InformationHeader>
-              <Information>
-                {partnerInfor?.Gender == 0
-                  ? 'Male'
-                  : partnerInfor?.Gender == 1
-                  ? 'Female'
-                  : 'Unset'}
-              </Information>
-            </LineWrapper>
-            <LineWrapper>
-              <InformationHeader>
-                <UserIcon /> Join
-              </InformationHeader>
-              <Information>
-                {dayjs(partnerInfor?.CreatedDate).fromNow() || 'Unknow'}
-              </Information>
-            </LineWrapper>
-          </CardProfile>}
+                {Case === 1 && (
+                  <ButtonDefault className="btn" onClick={handleAddFriendClick}>
+                    <AddFriendIcon />
+                    Add Friend
+                  </ButtonDefault>
+                )}
+                {Case === 2 && (
+                  <ButtonDefault
+                    className="btn"
+                    onClick={handleDeleteRelationship}
+                  >
+                    <CancelRequest />
+                    Cancel Request
+                  </ButtonDefault>
+                )}
+                {Case === 3 && (
+                  <>
+                    <Button onClick={AcceptFriendBtnClick}>
+                      <AddFriendIcon /> Accept
+                    </Button>
+                    <ButtonDefault
+                      className="btn"
+                      onClick={handleDeleteRelationship}
+                    >
+                      Delete
+                    </ButtonDefault>
+                  </>
+                )}
+              </LineWrapper>
+              <LineWrapper>
+                <IntroduceWrapper>
+                  <IntroduceHeader>
+                    <IntroduceIcon />
+                    Introduce
+                  </IntroduceHeader>
+                  <Introduce>There still nothing to see yet</Introduce>
+                </IntroduceWrapper>
+              </LineWrapper>
+              <LineWrapper>
+                <InformationHeader>
+                  <CakeIcon /> Birthday
+                </InformationHeader>
+                <Information>
+                  {partnerInfor?.Birthday?.split('T')[0] || 'unknown'}
+                </Information>
+              </LineWrapper>
+              <LineWrapper>
+                <InformationHeader>
+                  {partnerInfor?.Gender === 0 ? (
+                    <FemaleIcon />
+                  ) : partnerInfor?.Gender === 1 ? (
+                    <MaleIcon />
+                  ) : (
+                    <GenderIcon />
+                  )}
+                  Gender
+                </InformationHeader>
+                <Information>
+                  {partnerInfor?.Gender === 0
+                    ? 'Male'
+                    : partnerInfor?.Gender === 1
+                    ? 'Female'
+                    : 'Unset'}
+                </Information>
+              </LineWrapper>
+              <LineWrapper>
+                <InformationHeader>
+                  <UserIcon /> Join
+                </InformationHeader>
+                <Information>
+                  {dayjs(partnerInfor?.CreatedDate).fromNow() || 'unknown'}
+                </Information>
+              </LineWrapper>
+            </CardProfile>
+          )}
         </Wrapper>
       </MainLayout>
     </BootstrapContainer>
