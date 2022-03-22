@@ -18,4 +18,6 @@ API Endpoint |  HTTP Verb | Descrpition | Parmameter In | Return
 /chat/chat-list | GET | Get chat list | AccountId | result: "No messenger found"/[{FromAccount,ToAccount,Content,SentDateSeenDate,Type},...]
 /account/account-information | GET | Get chat list | AccountId | result: "get Account infor failed"/ [{AccountId, Phone, Email, Name, Avatar, Birthday, Gender, 
 /account/account-list-searching | GET | Get search list account  | SearchKey, AccountId | result: "get Account list failed"/ result:listAccount
+/account/list-have-relationship | GET | Get search list account  | AccountId | result: "get list relationship failed"
+/account/insert-relationship"| GET | Get insert/update/delete relationship  | RelatingAccountId, RelatedAccountId, Type (if Type = 'delete' then delete relationship ) required (RelatingAccountId< RelatedAccountId) | result:listAccount
 CreatedDate,LastOnline}]
