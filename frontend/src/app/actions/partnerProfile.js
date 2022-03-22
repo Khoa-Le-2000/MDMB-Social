@@ -8,7 +8,6 @@ const getPartnerProfileStart = () => {
 };
 
 const getPartnerProfileSuccess = (UserProfile) => {
-
   return {
     type: partnerProfileActionTypes.PARTNER_PROFILE_SUCCESS,
     payload: UserProfile,
@@ -26,17 +25,11 @@ export const getPartnerProfile = (myAccountId) => async (dispatch) => {
   dispatch(getPartnerProfileStart());
   const data = await userApi.getPartnerAccountInfor(myAccountId);
   if (data?.result) {
-    dispatch(
-      getPartnerProfileSuccess(
-         data?.result
-      )
-    );
+    dispatch(getPartnerProfileSuccess(data?.result));
   } else {
     dispatch(getPartnerProfileFailure('get user profile failed!'));
   }
 };
-
-
 
 /*------------------searchAccount----------------------*/
 const getSearchAccountStart = () => {
@@ -46,7 +39,6 @@ const getSearchAccountStart = () => {
 };
 
 const getSearchAccountSuccess = (AccountList) => {
-
   return {
     type: partnerProfileActionTypes.SEARCH_ACCOUNT_SUCCESS,
     payload: AccountList,
@@ -60,15 +52,11 @@ const getSearchAccountFailure = (message) => {
   };
 };
 
-export const getSearchAccount = (searchKey,id) => async (dispatch) => {
+export const getSearchAccount = (searchKey, id) => async (dispatch) => {
   dispatch(getSearchAccountStart());
-  const data = await userApi.search(searchKey,id);
+  const data = await userApi.searchByName(searchKey, id);
   if (data?.result) {
-    dispatch(
-      getSearchAccountSuccess(
-         data?.result
-      )
-    );
+    dispatch(getSearchAccountSuccess(data?.result));
   } else {
     dispatch(getSearchAccountFailure('search friend failed!'));
   }
@@ -82,7 +70,6 @@ const AddFriendStart = () => {
 };
 
 const AddFriendSuccess = (AccountList) => {
-
   return {
     type: partnerProfileActionTypes.ADD_FRIEND_SUCCESS,
     payload: AccountList,
@@ -96,16 +83,17 @@ const AddFriendFailure = (message) => {
   };
 };
 
-export const AddFriend = (RelatingAccountId, RelatedAccountId, Type) => async (dispatch) => {
-  dispatch(AddFriendStart());
-  const data = await userApi.addfriend(RelatingAccountId, RelatedAccountId, Type);
-  if (data?.result) {
-    dispatch(
-      AddFriendSuccess(
-         data?.result
-      )
+export const AddFriend =
+  (relatingAccountId, relatedAccountId, type) => async (dispatch) => {
+    dispatch(AddFriendStart());
+    const data = await userApi.addFriend(
+      relatingAccountId,
+      relatedAccountId,
+      type
     );
-  } else {
-    dispatch(AddFriendFailure('add friend failed'));
-  }
-};
+    if (data?.result) {
+      dispatch(AddFriendSuccess(data?.result));
+    } else {
+      dispatch(AddFriendFailure('add friend failed'));
+    }
+  };

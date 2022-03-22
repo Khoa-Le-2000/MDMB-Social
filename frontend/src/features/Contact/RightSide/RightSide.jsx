@@ -174,16 +174,16 @@ const RemoveButton = styled(ButtonBS)`
 export default function RightSide() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  var AccountId = useSelector(getAuth)?.accountId;
-  var listRelationship = useSelector(getListRelationshipSelector);
+  const AccountId = useSelector(getAuth)?.accountId;
+  const listRelationship = useSelector(getListRelationshipSelector);
   React.useEffect(() => {
     dispatch(getListRelationship(AccountId));
   }, []);
 
-  listRelationship = listRelationship?.filter(
+  const newListRelationship = listRelationship?.filter(
     (item) =>
-      (item.Type == 'rsendpending' && item.RelatedAccountId != AccountId) ||
-      (item.Type == 'lsendpending' && item.RelatingAccountId != AccountId)
+      (item.Type === 'rsendpending' && item.RelatedAccountId !== AccountId) ||
+      (item.Type === 'lsendpending' && item.RelatingAccountId !== AccountId)
   );
   const handleAcceptClick = (id) => {
     if (AccountId < id)
@@ -213,12 +213,12 @@ export default function RightSide() {
       <Header>Friend you may know...</Header>
       <Title>Friend Requests</Title>
       <RowBS>
-        {listRelationship.map((item, index) => (
+        {newListRelationship.map((item, index) => (
           <CardFriendRequest key={index}>
             <Avatar
               onClick={() => {
                 handleAvatarClick(
-                  item.RelatedAccountId == AccountId
+                  item.RelatedAccountId === AccountId
                     ? item.RelatingAccountId
                     : item.RelatedAccountId
                 );
@@ -230,7 +230,7 @@ export default function RightSide() {
             <AcceptButton
               onClick={() => {
                 handleAcceptClick(
-                  item.RelatedAccountId == AccountId
+                  item.RelatedAccountId === AccountId
                     ? item.RelatingAccountId
                     : item.RelatedAccountId
                 );
@@ -241,7 +241,7 @@ export default function RightSide() {
             <RemoveButton
               onClick={() => {
                 HandleRemoveClick(
-                  item.RelatedAccountId == AccountId
+                  item.RelatedAccountId === AccountId
                     ? item.RelatingAccountId
                     : item.RelatedAccountId
                 );
