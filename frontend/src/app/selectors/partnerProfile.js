@@ -1,5 +1,8 @@
 export const getPartnerProfileSelector = (state) =>
   state?.partnerProfile?.partnerInfor;
+  
+export const isFetchingPartnerProfile = (state) =>
+  state?.partnerProfile?.isFetching;
 
 
 export const getSearchAccountSelector = (state) =>
