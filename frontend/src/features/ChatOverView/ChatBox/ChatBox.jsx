@@ -109,7 +109,7 @@ const WrapperDialog = styled.div`
 `;
 
 function ChatBox({ onSendMessage, onTyping, WindowEmpty }) {
-  const [message, setMessage] = React.useState(''); 
+  const [message, setMessage] = React.useState('');
   const typingTimeoutRef = React.useRef(null);
   const [showPicker, setShowPicker] = React.useState(false);
   const { roomId } = useParams();
@@ -117,8 +117,8 @@ function ChatBox({ onSendMessage, onTyping, WindowEmpty }) {
   const partner = useSelector(getPartner);
 
   React.useEffect(() => {
-    chatBoxRef.current.focus();
-  });
+    if (!showPicker) chatBoxRef.current.focus();
+  }, [showPicker]);
 
   const handleKeyPress = (e) => {
     clearTimeout(typingTimeoutRef.current);
@@ -156,6 +156,7 @@ function ChatBox({ onSendMessage, onTyping, WindowEmpty }) {
 
   const onPreviewEmoji = () => {
     setShowPicker((prev) => !prev);
+    chatBoxRef.current.blur();
   };
 
   const onEmojiClick = (emoji) => {
