@@ -276,7 +276,7 @@ export default function RightSide() {
         </RowBS>
       </TopFriendRequest>
       {listFriendRecommended.length>0&&<Title>
-        Recommend (listFriendRecommended?.length <AddFriendIcon />)
+        Recommend ({listFriendRecommended?.length} <AddFriendIcon />)
       </Title>}
       <RowBS>
         {listFriendRecommended.map((item, index) => (
