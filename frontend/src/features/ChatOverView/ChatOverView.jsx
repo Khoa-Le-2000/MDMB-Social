@@ -73,7 +73,6 @@ function ChatOverView() {
   const navigate = useNavigate();
   const socket = useSelector(getSocket);
   const listConversation = useSelector(getConversations);
-  const messagesLatest = useSelector(getListMessageLatest);
   const [typing, setTyping] = React.useState(false);
 
   React.useEffect(() => {
@@ -88,7 +87,7 @@ function ChatOverView() {
     socket?.emit('get online', listAccountId, (data) => {
       dispatch(getListUsersOnline(data));
     });
-  }, [listConversation, socket, dispatch]);
+  }, [socket, dispatch, listConversation]);
 
   React.useEffect(() => {
     socket?.on('user-online', function (accountId) {
@@ -120,9 +119,9 @@ function ChatOverView() {
   React.useEffect(() => {
     socket?.on('seen message', (messageId) => {
       dispatch(seenMessage(messageId));
-      dispatch(getListConversation(auth?.accountId));
     });
-  }, [dispatch, socket]);
+    dispatch(getListConversation(auth?.accountId));
+  }, [socket]);
 
   React.useEffect(() => {
     if (roomId) {
@@ -133,6 +132,10 @@ function ChatOverView() {
         ) {
           dispatch(receiveMessage(data));
         }
+        dispatch(updateListConversationWithNewMessage(data));
+      });
+    } else {
+      socket?.on('chat message', (data) => {
         dispatch(updateListConversationWithNewMessage(data));
       });
     }
@@ -153,7 +156,7 @@ function ChatOverView() {
     socket?.emit('chat message', message, roomId, (status, data) => {
       if (status === 'ok' && +data.ToAccount === +roomId) {
         dispatch(sendMessage(data));
-        dispatch(getListConversation(auth?.accountId));
+        // dispatch(getListConversation(auth?.accountId));
       }
     });
   };
@@ -164,17 +167,12 @@ function ChatOverView() {
       dispatch(getMessagesLatest(auth?.accountId, conversation.AccountId));
     }
   };
+
   const handleSeenMessage = (latestMessageId, partnerId) => {
     if (latestMessageId) {
-      messagesLatest.map((item) => {
-        if (!item.SeenDate) {
-          setTimeout(() => {
-            socket?.emit('seen message', item.MessageId);
-          }, 500);
-        }
-        return item;
-      });
+      dispatch(seenMessage(latestMessageId));
       dispatch(updateCountUnreadConversation(partnerId));
+      socket?.emit('seen message', latestMessageId);
     }
   };
 
