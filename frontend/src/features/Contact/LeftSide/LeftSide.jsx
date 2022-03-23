@@ -130,17 +130,14 @@ export default function LeftSide() {
   if (searchValue == '' && listUserMatch.length != listFriend.length)
     setListUserMatch(listFriend);
 
-  var isLoading = false;
   React.useEffect(() => {
     if (searchName) {
       dispatch(getSearchAccount(searchName, accountId));
-      console.log('dispatch');
       setShow(true);
     } else {
       setShow(false);
     }
     dispatch(getListRelationship(accountId));
-    isLoading = true;
   }, [searchName, accountId]);
 
   const handleSearchChange = (e) => {
@@ -163,7 +160,6 @@ export default function LeftSide() {
   const handleUserProfileClick = (AccountId) => {
     navigate(`/userinfor/${AccountId}`);
   };
-  console.log(listUserMatch);
   return (
     <LeftSideWrapper>
       <Logo>MDMB Social</Logo>

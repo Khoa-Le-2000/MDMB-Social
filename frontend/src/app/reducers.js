@@ -12,6 +12,7 @@ import storage from 'redux-persist/lib/storage';
 import partnerProfileReducer from 'features/UserInfor/PartnerInforSlice'
 import searchAccountReducer from 'features/Contact/LeftSide/SearchSilce'
 import listRelationshipReducer from 'features/UserInfor/listRelationshipSlice';
+import listFriendRecommendedReducer from 'features/Contact/RightSide/ListFriendRecommendSlice';
 
 const appReducer = combineReducers({
   login: loginReducer,
@@ -25,6 +26,7 @@ const appReducer = combineReducers({
   partnerProfile:partnerProfileReducer,
   searchAccount:searchAccountReducer,
   listRelationship:listRelationshipReducer,
+  listFriendRecommended:listFriendRecommendedReducer,
 });
 
 const rootReducer = (state, action) => {
