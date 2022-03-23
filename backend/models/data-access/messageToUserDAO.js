@@ -2,8 +2,9 @@ const connection = require('./connection');
 const messageToUser = require('../messageToUser');
 
 function getOldMessage(fromAccount, toAccount, Callback) {
-    var con = connection.createConnection();
-    con.connect(async function (err) {
+    // var con = connection.createConnection();
+    // con.connect(async function (err) {
+        connection.pool.getConnection(function (err, con) {
         if (err) throw err;
         // console.log("Connected!");
         // await connection.setTimeZone(con);
@@ -14,7 +15,8 @@ function getOldMessage(fromAccount, toAccount, Callback) {
         LIMIT 20`;
         con.query(sql, [fromAccount, toAccount, toAccount, fromAccount],
             function (err, result) {
-                connection.closeConnection(con);
+                // connection.closeConnection(con);
+                con.release();
                 if (err) throw err;
                 if (result.length > 0) {
                     var listMessage = [];
@@ -28,8 +30,9 @@ function getOldMessage(fromAccount, toAccount, Callback) {
 }
 
 function getOlderMessage(fromAccount, toAccount, messageId, Callback) {
-    var con = connection.createConnection();
-    con.connect(function (err) {
+    // var con = connection.createConnection();
+    // con.connect(function (err) {
+        connection.pool.getConnection(function (err, con) {
         if (err) throw err;
         // console.log("Connected!");
         var sql = `SELECT *
@@ -40,7 +43,8 @@ function getOlderMessage(fromAccount, toAccount, messageId, Callback) {
         LIMIT 20`;
         con.query(sql, [fromAccount, toAccount, toAccount, fromAccount, messageId],
             function (err, result) {
-                connection.closeConnection(con);
+                // connection.closeConnection(con);
+                con.release();
                 if (err) throw err;
                 if (result.length > 0) {
                     var listMessage = [];
@@ -54,14 +58,16 @@ function getOlderMessage(fromAccount, toAccount, messageId, Callback) {
 }
 
 function addMessage(fromAccount, toAccount, content, type, Callback) {
-    var con = connection.createConnection();
-    con.connect(async function (err) {
+    // var con = connection.createConnection();
+    // con.connect(async function (err) {
+        connection.pool.getConnection(function (err, con) {
         if (err) throw err;
         // await connection.setTimeZone(con);
         var sql = `insert into MDMB.MessageToUser(FromAccount, ToAccount, Content, Type) values(?,?,?,?);`;
         con.query(sql, [fromAccount, toAccount, content, type],
             function (err, result) {
-                connection.closeConnection(con);
+                // connection.closeConnection(con);
+                con.release();
                 if (err) {
                     console.log(err);
                     return Callback(false);
@@ -72,15 +78,17 @@ function addMessage(fromAccount, toAccount, content, type, Callback) {
 }
 
 async function seenMessage(messageId) {
-    var con = connection.createConnection();
+    // var con = connection.createConnection();
     return new Promise((resolve, reject) => {
-        con.connect(async function (err) {
+        // con.connect(async function (err) {
+            connection.pool.getConnection(function (err, con) {
             if (err) throw err;
             // await connection.setTimeZone(con);
             var sql = `UPDATE MDMB.MessageToUser SET SeenDate = NOW() WHERE MessageId = ?`;
             con.query(sql, [messageId],
                 function (err, result) {
-                    connection.closeConnection(con);
+                    // connection.closeConnection(con);
+                    con.release();
                     if (err) {
                         console.log(err);
                         reject(err);

@@ -1,14 +1,16 @@
 const connection = require('./connection');
 
 function getAccountReceived(AccountId, Callback) {
-    var con = connection.createConnection();
-    con.connect(function (err) {
+    // var con = connection.createConnection();
+    // con.connect(function (err) {
+        connection.pool.getConnection(function (err, con) {
         if (err) throw err;
         // console.log("Connected!");
         var sql = `SELECT ToAccount from MDMB.MessageToUser  where FromAccount =? group by ToAccount`;
         con.query(sql, [AccountId],
             function (err, result) {
-                connection.closeConnection(con);
+                // connection.closeConnection(con);
+                con.release();
                 if (err) throw err;
                 var AccountReceivedList = []
                 for (let i = 0; i < result.length; i++) {
@@ -20,14 +22,16 @@ function getAccountReceived(AccountId, Callback) {
     });
 }
 function getChatList(FromAccount, ToAccount, Callback) {
-    var con = connection.createConnection();
-    con.connect(function (err) {
+    // var con = connection.createConnection();
+    // con.connect(function (err) {
+        connection.pool.getConnection(function (err, con) {
         if (err) throw err;
         // console.log("Connected!");
         var sql = `SELECT * from MDMB.MessageToUser as msg join MDMB.Account as acc on msg.ToAccount = acc.AccountId  where FromAccount =? and ToAccount =? order by SentDate desc limit 1`;
         con.query(sql, [FromAccount, ToAccount],
             function (err, result) {
-                connection.closeConnection(con);
+                // connection.closeConnection(con);
+                con.release();
                 if (err) throw err;
                 if (result.length == 0) return Callback(false)
                 else return Callback({

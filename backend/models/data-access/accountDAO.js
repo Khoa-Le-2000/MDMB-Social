@@ -2,14 +2,16 @@ const connection = require('./connection');
 const Account = require('../account')
 
 function getAccount(Username, Callback) {
-  var con = connection.createConnection();
-  con.connect(function (err) {
+  // var con = connection.createConnection();
+  // con.connect(function (err) {
+  connection.pool.getConnection(function (err, con) {
     if (err) throw err;
     // console.log("Connected!");
     var sql = `SELECT * FROM Account Where (Email=? or Phone =?)`;
     con.query(sql, [Username, Username],
       function (err, result) {
-        connection.closeConnection(con);
+        // connection.closeConnection(con);
+        con.release();
         if (err) throw err;
         if (result.length > 0) {
           var acc = new Account.Account(result[0].AccountId, result[0].Password, result[0].Phone, result[0].Email, result[0].Name, result[0].Avatar, result[0].Birthday, result[0].Gender, result[0].CreatedDate);
@@ -20,14 +22,16 @@ function getAccount(Username, Callback) {
 }
 function getAccountByEmail(Email, Callback) {
 
-  var con = connection.createConnection();
-  con.connect(function (err) {
+  // var con = connection.createConnection();
+  // con.connect(function (err) {
+  connection.pool.getConnection(function(err, con) {
     if (err) throw err;
     // console.log("Connected!");
     var sql = `SELECT * FROM Account Where (Email=?)`;
     con.query(sql, [Email],
       function (err, result) {
-        connection.closeConnection(con);
+        // connection.closeConnection(con);
+        con.release();
         if (err) throw err;
         if (result.length > 0) {
           var acc = new Account.Account(result[0].AccountId, result[0].Password, result[0].Phone, result[0].Email, result[0].Name, result[0].Avatar, result[0].Birthday, result[0].Gender, result[0].CreatedDate);
@@ -39,21 +43,24 @@ function getAccountByEmail(Email, Callback) {
 
 function createAccount(Password, Phone, Email, Name, Callback) {
   var con = connection.createConnection();
-  con.connect(async function (err) {
+  // con.connect(async function (err) {
+  connection.pool.getConnection(async function (err, con) {
     if (err) throw err;
     // await connection.setTimeZone(con);
     var sql = `insert into MDMB.Account(Password, Phone, Email, Name) values(?,?,?,?);`;
     con.query(sql, [Password, Phone, Email, Name],
       function (err, result) {
-        connection.closeConnection(con);
+        // connection.closeConnection(con);
+        con.release();
         if (err) return Callback(false);
         else return Callback(true);
       });
   });
 }
 function updateAccount(AccountId, Password, Phone, Email, Name, Avatar, Birthday, Gender, Callback) {
-  var con = connection.createConnection();
-  con.connect(function (err) {
+  // var con = connection.createConnection();
+  // con.connect(function (err) {
+  connection.pool.getConnection(function (err, con) {
     if (err) throw err;
     let str = ""
     let Args = [Name, Phone, Gender, Birthday, Avatar, Email, Password];
@@ -71,7 +78,8 @@ function updateAccount(AccountId, Password, Phone, Email, Name, Avatar, Birthday
     var sql = `UPDATE MDMB.Account SET ${str} where AccountId=?`;
     con.query(sql, Args2,
       function (err, result) {
-        connection.closeConnection(con);
+        // connection.closeConnection(con);
+        con.release();
         if (err) return Callback(false);
         else return Callback(true);
 
@@ -79,13 +87,15 @@ function updateAccount(AccountId, Password, Phone, Email, Name, Avatar, Birthday
   });
 }
 function getAccountId(Email, Phone, Callback) {
-  var con = connection.createConnection();
-  con.connect(function (err) {
+  // var con = connection.createConnection();
+  // con.connect(function (err) {
+  connection.pool.getConnection(function (err, con) {
     if (err) throw err;
     var sql = `SELECT * FROM MDMB.Account where Phone =? or Email=?;`;
     con.query(sql, [Phone, Email],
       function (err, result) {
-        connection.closeConnection(con);
+        // connection.closeConnection(con);
+        con.release();
         if (err) throw err;
         if (result.length > 0) {
           return Callback(result[0].AccountId);
@@ -95,9 +105,9 @@ function getAccountId(Email, Phone, Callback) {
 }
 
 function getListFriend(AccountId, Callback) {
-  console.log('====================================');
-  var con = connection.createConnection();
-  con.connect(function (err) {
+  // console.log('====================================');
+  // var con = connection.createConnection();
+  connection.pool.getConnection(function (err, con) {
     if (err) throw err;
     var sql = `select * 
     from MDMB.Account
@@ -112,7 +122,8 @@ function getListFriend(AccountId, Callback) {
     )`;
     con.query(sql, [AccountId, AccountId, AccountId, AccountId],
       function (err, result) {
-        connection.closeConnection(con);
+        // connection.closeConnection(con);
+        con.release();
         if (err) throw err;
         let accounts = [];
         // console.log(result);
@@ -141,12 +152,14 @@ function getListFriend(AccountId) {
     WHERE (RelatedAccountId > ?) AND (RelatingAccountId = ?) AND (Type = 'friend')
   )`;
   return new Promise((resolve, reject) => {
-    var con = connection.createConnection();
-    con.connect(function (err) {
+    // var con = connection.createConnection();
+    // con.connect(function (err) {
+    connection.pool.getConnection(function (err, con) {
       if (err) throw err;
       con.query(sql, [AccountId, AccountId, AccountId, AccountId],
         function (err, result) {
-          connection.closeConnection(con);
+          // connection.closeConnection(con);
+          con.release();
           if (err) return reject(err);
           let accounts = [];
           // console.log(result);
@@ -176,12 +189,14 @@ function getListFriendAsync(AccountId) {
     WHERE (RelatedAccountId > ?) AND (RelatingAccountId = ?) AND (Type = 'friend')
   )`;
   return new Promise((resolve, reject) => {
-    var con = connection.createConnection();
-    con.connect(function (err) {
+    // var con = connection.createConnection();
+    // con.connect(function (err) {
+    connection.pool.getConnection(function (err, con) {
       if (err) throw err;
       con.query(sql, [AccountId, AccountId, AccountId, AccountId],
         function (err, result) {
-          connection.closeConnection(con);
+          // connection.closeConnection(con);
+          con.release();
           if (err) return reject(err);
           let accounts = [];
           // console.log(result);
@@ -201,12 +216,14 @@ function getListFriendAsync(AccountId) {
 function getListFriendWithLastMessage(AccountId) {
   let sql = `CALL MDMB.proc_get_list_friend_with_last_message(?);`
   return new Promise((resolve, reject) => {
-    var con = connection.createConnection();
-    con.connect(function (err) {
+    // var con = connection.createConnection();
+    // con.connect(function (err) {
+    connection.pool.getConnection(function (err, con) {
       if (err) throw err;
       con.query(sql, [AccountId],
         function (err, result) {
-          connection.closeConnection(con);
+          // connection.closeConnection(con);
+          con.release();
           if (err) return reject(err);
           resolve(result);
         });
@@ -214,15 +231,17 @@ function getListFriendWithLastMessage(AccountId) {
   });
 }
 
-function getListFriendWithLastMessageCountUnseen(AccountId) {
+async function getListFriendWithLastMessageCountUnseen(AccountId) {
   let sql = `CALL MDMB.proc_get_list_friend_with_last_message_count_unseen(?);`
   return new Promise((resolve, reject) => {
-    var con = connection.createConnection();
-    con.connect(function (err) {
+    // var con = connection.createConnection();
+    
+    connection.pool.getConnection(function (err, con) {
       if (err) throw err;
       con.query(sql, [AccountId],
         function (err, result) {
-          connection.closeConnection(con);
+          // connection.closeConnection(con);
+          con.release();
           if (err) return reject(err);
           resolve(result);
         });
@@ -232,15 +251,17 @@ function getListFriendWithLastMessageCountUnseen(AccountId) {
 
 function updateLastOnline(AccountId) {
   let res;
-  var con = connection.createConnection();
+  // var con = connection.createConnection();
   return new Promise((resolve, reject) => {
-    con.connect(async function (err) {
+    // con.connect(async function (err) {
+    connection.pool.getConnection(async function (err, con) {
       if (err) throw err;
       // await connection.setTimeZone(con);
       var sql = `UPDATE MDMB.Account SET LastOnline = NOW() where AccountId=?;`;
       con.query(sql, [AccountId],
         function (err, result) {
-          connection.closeConnection(con);
+          // connection.closeConnection(con);
+          con.release();
           if (err) reject(err);
           res = result;
           resolve(res);
@@ -250,14 +271,16 @@ function updateLastOnline(AccountId) {
 }
 
 function getAccountInfor(AccountId) {
-  var con = connection.createConnection();
+  // var con = connection.createConnection();
   return new Promise((resolve, reject) => {
-    con.connect(async function (err) {
+    // con.connect(async function (err) {
+    connection.pool.getConnection(async function (err, con) {
       if (err) throw err;
       var sql = `select AccountId, Phone, Email, Name, Avatar, Birthday, Gender, CreatedDate,LastOnline from MDMB.Account where AccountId=?;`;
       con.query(sql, [AccountId],
         function (err, result) {
-          connection.closeConnection(con);
+          // connection.closeConnection(con);
+          con.release();
           if (err) reject(err);
           res = result;
           resolve(res);
@@ -267,10 +290,11 @@ function getAccountInfor(AccountId) {
 }
 
 function getAccountListSearching(SearchKey, AccountId) {
-  var con = connection.createConnection();
+  // var con = connection.createConnection();
   return new Promise((resolve, reject) => {
     let Key = `%${SearchKey}%`;
-    con.connect(async function (err) {
+    // con.connect(async function (err) {
+    connection.pool.getConnection(async function (err, con) {
       if (err) throw err;
       var sql = `SELECT AccountId,Name, Avatar, Birthday, LastOnline, Gender FROM MDMB.Account Where (lower(Name) like ? or lower(Phone) like ? or lower(Email) like ?) 
       and AccountId not in(
@@ -286,7 +310,8 @@ function getAccountListSearching(SearchKey, AccountId) {
       `;
       con.query(sql, [Key, Key, Key, AccountId, AccountId, AccountId, AccountId],
         function (err, result) {
-          connection.closeConnection(con);
+          // connection.closeConnection(con);
+          con.release();
           if (err) reject(err);
           res = result;
           resolve(res);
@@ -295,28 +320,32 @@ function getAccountListSearching(SearchKey, AccountId) {
   });
 }
 function setRelationship(RelatingAccountId, RelatedAccountId, Type, Callback) {
-  var con = connection.createConnection();
-  con.connect(async function (err) {
+  // var con = connection.createConnection();
+  // con.connect(async function (err) {
+  connection.pool.getConnection(async function (err, con) {
     if (err) throw err;
     var sql = `CALL MDMB.AddFriend(?, ?, ?);`;
     con.query(sql, [RelatingAccountId, RelatedAccountId, Type],
       function (err, result) {
-        connection.closeConnection(con);
+        // connection.closeConnection(con);
+        con.release();
         if (err) return Callback(false);
         else return Callback(true);
       });
   });
 }
 function deleteRelationship(RelatingAccountId, RelatedAccountId, Callback) {
-  var con = connection.createConnection();
-  con.connect(async function (err) {
+  // var con = connection.createConnection();
+  // con.connect(async function (err) {
+  connection.pool.getConnection(async function (err, con) {
     if (err) throw err;
     var sql = `Delete FROM MDMB.AccountRelationship
       Where (RelatingAccountId = ? and RelatedAccountId=?)
       or  (RelatedAccountId= ? and  RelatingAccountId=?);`;
     con.query(sql, [RelatingAccountId, RelatedAccountId, RelatingAccountId, RelatedAccountId],
       function (err, result) {
-        connection.closeConnection(con);
+        // connection.closeConnection(con);
+        con.release();
         if (err) return Callback(false);
         else return Callback(true);
       });
@@ -327,12 +356,14 @@ function getListHaveRelationship(AccountId) {
   where (accrel.RelatingAccountId<? and accrel.RelatedAccountId = ? and AccountId !=?)
    or (accrel.RelatedAccountId>? and accrel.RelatingAccountId = ? and AccountId !=?);`;
   return new Promise((resolve, reject) => {
-    var con = connection.createConnection();
-    con.connect(function (err) {
+    // var con = connection.createConnection();
+    // con.connect(function (err) {
+    connection.pool.getConnection(function (err, con) {
       if (err) throw err;
       con.query(sql, [AccountId, AccountId, AccountId, AccountId, AccountId, AccountId],
         function (err, result) {
-          connection.closeConnection(con);
+          // connection.closeConnection(con);
+          con.release();
           if (err) return reject(err);
           let accounts = [];
           for (let i = 0; i < result.length; i++) {
