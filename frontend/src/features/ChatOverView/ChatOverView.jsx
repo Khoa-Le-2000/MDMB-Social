@@ -9,6 +9,7 @@ import {
   getListConversation,
   updateCountUnreadConversation,
   updateListConversationWithNewMessage
+  updateListConversationWithSentMessage,
 } from 'app/actions/conversations';
 import {
   addUserOffline,
@@ -122,21 +123,17 @@ function ChatOverView() {
   }, [socket]);
 
   React.useEffect(() => {
-    if (roomId) {
-      socket?.on('chat message', (data) => {
+    socket?.on('chat message', (data) => {
+      if (roomId) {
         if (
           data.ToAccount === auth?.accountId &&
           data.FromAccount === +roomId
         ) {
           dispatch(receiveMessage(data));
         }
-        dispatch(updateListConversationWithNewMessage(data));
-      });
-    } else {
-      socket?.on('chat message', (data) => {
-        dispatch(updateListConversationWithNewMessage(data));
-      });
-    }
+      }
+      dispatch(updateListConversationWithNewMessage(data));
+    });
     return () => {
       socket?.off('chat message');
     };
@@ -154,7 +151,7 @@ function ChatOverView() {
     socket?.emit('chat message', message, roomId, (status, data) => {
       if (status === 'ok' && +data.ToAccount === +roomId) {
         dispatch(sendMessage(data));
-        // dispatch(getListConversation(auth?.accountId));
+        dispatch(updateListConversationWithSentMessage(data));
       }
     });
   };
