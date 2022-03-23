@@ -67,7 +67,9 @@ const DotFalling = styled.div`
   animation: ${dotTyping} 1.5s infinite linear;
 `;
 
-const WrapperScroll = styled.div``;
+const WrapperScroll = styled.div`
+  position: relative;
+`;
 
 function Messages({ typing, onSeenMessage }) {
   const messagesLatest = useSelector(getListMessageLatest);
