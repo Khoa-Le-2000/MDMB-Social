@@ -82,6 +82,21 @@ const AvatarSeen = styled.div`
     object-fit: cover;
   }
 `;
+const AvatarSeenLatest = styled.div`
+  position: absolute;
+  right: 0;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: flex-start;
+  img {
+    width: 32px;
+    height: 32px;
+    padding: 4px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+`;
+
 const SentStatus = styled(CheckCircle)`
   width: 1rem;
   height: 1rem;
@@ -162,17 +177,20 @@ function CardMessage(props) {
               <Time owner={owner ? 1 : 0}>{dayjs(sentDate).fromNow()}</Time>
             )}
           </WrapperContent>
-          {seenLatest && owner ? (
+          {seenLatest && !owner && (
+            <AvatarSeenLatest>
+              <img src={avatar} alt="" />
+            </AvatarSeenLatest>
+          )}
+          {seenLatest && owner && (
             <AvatarSeen>
               <img src={avatar} alt="" />
             </AvatarSeen>
-          ) : (
-            idLastMessage === messageId &&
-            owner && (
-              <AvatarSeen>
-                <SentStatus />
-              </AvatarSeen>
-            )
+          )}
+          {idLastMessage === messageId && !seenLatest && owner && (
+            <AvatarSeen>
+              <SentStatus />
+            </AvatarSeen>
           )}
         </Col>
       </Row>
