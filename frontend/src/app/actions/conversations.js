@@ -174,3 +174,31 @@ export const updateListConversationWithSentMessage =
     });
     dispatch(updateListConversationWithSentMessageSuccess(newListConversation));
   };
+
+const updateListConversationWithSeenMessageStart = () => {
+  return {
+    type: ConversationActionTypes.UPDATE_LIST_CONVERSATION_WITH_SEEN_MESSAGE_START,
+  };
+};
+
+const updateListConversationWithSeenMessageSuccess = (newListConversation) => {
+  return {
+    type: ConversationActionTypes.UPDATE_LIST_CONVERSATION_WITH_SEEN_MESSAGE_SUCCESS,
+    payload: newListConversation,
+  };
+};
+
+export const updateListConversationWithSeenMessage =
+  (roomId) => (dispatch, getState) => {
+    const {
+      conversations: { listConversation },
+    } = getState();
+    dispatch(updateListConversationWithSeenMessageStart());
+    const newListConversation = listConversation.filter((e) => {
+      if (e.AccountId === +roomId) {
+        e.SeenDate = new Date();
+      }
+      return e;
+    });
+    dispatch(updateListConversationWithSeenMessageSuccess(newListConversation));
+  };

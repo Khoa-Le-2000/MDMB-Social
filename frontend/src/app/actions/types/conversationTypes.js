@@ -21,4 +21,10 @@ export const ConversationActionTypes = {
     'update/listConversation/with/sent/message/start',
   UPDATE_LIST_CONVERSATION_WITH_SENT_MESSAGE_SUCCESS:
     'update/listConversation/with/sent/message/success',
+
+  UPDATE_LIST_CONVERSATION_WITH_SEEN_MESSAGE_START:
+    'update/listConversation/with/seen/message/start',
+
+  UPDATE_LIST_CONVERSATION_WITH_SEEN_MESSAGE_SUCCESS:
+    'update/listConversation/with/seen/message/success',
 };

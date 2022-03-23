@@ -1,7 +1,7 @@
 import {
   getMessagesLatest,
   receiveMessage,
-  seenMessage,
+  updateSeenMessage,
   selectRoom,
   sendMessage,
 } from 'app/actions/chat';
@@ -9,6 +9,7 @@ import {
   getListConversation,
   updateCountUnreadConversation,
   updateListConversationWithNewMessage,
+  updateListConversationWithSeenMessage,
   updateListConversationWithSentMessage,
 } from 'app/actions/conversations';
 import {
@@ -117,9 +118,9 @@ function ChatOverView() {
 
   React.useEffect(() => {
     socket?.on('seen message', (messageId) => {
-      dispatch(seenMessage(messageId));
+      dispatch(updateSeenMessage(messageId));
+      dispatch(updateListConversationWithSeenMessage(roomId));
     });
-    dispatch(getListConversation(auth?.accountId));
   }, [socket]);
 
   React.useEffect(() => {
@@ -165,7 +166,7 @@ function ChatOverView() {
 
   const handleSeenMessage = (latestMessageId, partnerId) => {
     if (latestMessageId) {
-      dispatch(seenMessage(latestMessageId));
+      dispatch(updateSeenMessage(latestMessageId));
       dispatch(updateCountUnreadConversation(partnerId));
       socket?.emit('seen message', latestMessageId);
     }
