@@ -1,18 +1,16 @@
 import { Search } from '@styled-icons/heroicons-solid';
 import { getMessagesLatest, selectRoom } from 'app/actions/chat';
+import { getListRelationship } from 'app/actions/listRelationship';
 import { getSearchAccount } from 'app/actions/partnerProfile';
-import { getConversations } from 'app/selectors/conversations';
+import { getListRelationshipSelector } from 'app/selectors/listRelationship';
 import { getAuth } from 'app/selectors/login';
 import { getSearchAccountSelector } from 'app/selectors/partnerProfile';
 import { useDebounce } from 'hooks';
 import React from 'react';
-import { Form, InputGroup as BsInputGroup } from 'react-bootstrap';
+import { Form, InputGroup as BsInputGroup, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { Spinner } from 'react-bootstrap';
-import { getListRelationshipSelector } from 'app/selectors/listRelationship';
-import { getListRelationship } from 'app/actions/listRelationship';
 
 const LeftSideWrapper = styled.div`
   display: flex;
@@ -119,28 +117,28 @@ export default function LeftSide() {
   const navigate = useNavigate();
   const accountId = useSelector(getAuth)?.accountId;
   const listRelationship = useSelector(getListRelationshipSelector);
-  const listFriend = listRelationship?.filter((item) => item.Type == 'friend');
+  const listFriend = listRelationship?.filter((item) => item.Type === 'friend');
 
   const ListSearchAccount = useSelector(getSearchAccountSelector);
   const [listUserMatch, setListUserMatch] = React.useState(listFriend);
   const [searchValue, setSearchValue] = React.useState('');
   const [show, setShow] = React.useState(false);
-  const searchName = useDebounce(searchValue, 800);
+  const loadingRef = React.useRef(false);
 
-  if (searchValue == '' && listUserMatch.length != listFriend.length)
+  const searchName = useDebounce(searchValue, 800);
+  if (searchValue === '' && listUserMatch.length !== listFriend.length)
     setListUserMatch(listFriend);
 
-  var isLoading = false;
+  loadingRef.current = false;
   React.useEffect(() => {
     if (searchName) {
       dispatch(getSearchAccount(searchName, accountId));
-      console.log('dispatch');
       setShow(true);
     } else {
       setShow(false);
     }
     dispatch(getListRelationship(accountId));
-    isLoading = true;
+    loadingRef.current = true;
   }, [searchName, accountId]);
 
   const handleSearchChange = (e) => {
@@ -152,18 +150,24 @@ export default function LeftSide() {
   };
 
   const handleFriendCardClick = (item) => {
-    var parnerAccountId= item.RelatingAccountId==accountId?item.RelatedAccountId: item.RelatingAccountId;
+    var partnerAccountId =
+      item.RelatingAccountId === accountId
+        ? item.RelatedAccountId
+        : item.RelatingAccountId;
 
-    var fakeConversation= {Avatar:item.Avatar,Name:item.Name,AccountId:parnerAccountId};
+    var fakeConversation = {
+      Avatar: item.Avatar,
+      Name: item.Name,
+      AccountId: partnerAccountId,
+    };
 
     dispatch(selectRoom(fakeConversation, navigate));
-    dispatch(getMessagesLatest(accountId, parnerAccountId));
+    dispatch(getMessagesLatest(accountId, partnerAccountId));
   };
 
   const handleUserProfileClick = (AccountId) => {
     navigate(`/userinfor/${AccountId}`);
   };
-  console.log(listUserMatch);
   return (
     <LeftSideWrapper>
       <Logo>MDMB Social</Logo>
@@ -209,7 +213,7 @@ export default function LeftSide() {
           <>
             <HeaderCard>Searching</HeaderCard>
             <UserNotFound>
-              Coundn't find any not your friend user for "{searchValue}", check
+              Couldn't find any not your friend user for "{searchValue}", check
               your spell or try complete word!
             </UserNotFound>
           </>

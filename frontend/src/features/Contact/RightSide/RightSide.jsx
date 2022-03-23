@@ -125,7 +125,7 @@ const ButtonBS = styled(Button)`
   justify-content: center;
   width: 100%;
   margin: 0px auto;
-  margin-top:auto;
+  margin-top: auto;
   background-color: #ffffff;
   color: #000000;
   margin-top: 10px;
@@ -169,7 +169,6 @@ const AcceptButton = styled(ButtonBS)`
   }
 `;
 const RemoveButton = styled(ButtonBS)`
-
   @media (max-width: 1250px) {
     font-size: 0.8rem;
     padding: 0.3rem;
@@ -201,13 +200,12 @@ export default function RightSide() {
       (item.Type === 'lsendpending' && item.RelatingAccountId !== AccountId)
   );
   const handleAcceptClick = (id) => {
-    updateRelationship(AccountId, id, 'friend', dispatch)
+    updateRelationship(AccountId, id, 'friend', dispatch);
     dispatch(getListRelationship(AccountId));
   };
   const HandleRemoveClick = (id) => {
-    updateRelationship(AccountId, id, 'delete', dispatch)
+    updateRelationship(AccountId, id, 'delete', dispatch);
     dispatch(getListRelationship(AccountId));
-
   };
   const handleAvatarClick = (AccountId) => {
     navigate(`/userinfor/${AccountId}`);
@@ -231,7 +229,7 @@ export default function RightSide() {
               <img src={item.Avatar} alt="avatar" />
             </Avatar>
             <Name>{item.Name} asdasd</Name>
-            <AcceptButton 
+            <AcceptButton
               onClick={(e) => {
                 handleAcceptClick(
                   item.RelatedAccountId === AccountId

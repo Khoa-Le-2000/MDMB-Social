@@ -4,7 +4,6 @@ import { PaperClip, Photograph } from '@styled-icons/heroicons-solid';
 import { getPartner } from 'app/selectors/chat';
 import { ReactComponent as StickerTest } from 'assets/images/icons/sticker.svg';
 import { NimblePicker } from 'emoji-mart';
-import 'emoji-mart/css/emoji-mart.css';
 import data from 'emoji-mart/data/google.json';
 import React from 'react';
 import { Col, Row } from 'react-bootstrap';
