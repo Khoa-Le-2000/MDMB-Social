@@ -131,10 +131,10 @@ const checkRegex = (userUpdate) => {
   )
     return {
       result: 'error',
-      message: `Name invalid! ${
+      message: `${
         userUpdate.Name.length < 2 || userUpdate.Name.length > 45
-          ? 'Length must be 2-45 char'
-          : 'Name not contains special character'
+          ? 'Name must be between 2 and 45 characters'
+          : 'Name must not contain special characters'
       }`,
     };
   if (!regGender.test(userUpdate.Gender))
@@ -165,7 +165,6 @@ function UpdateProfile() {
   const [gender, setGender] = React.useState(userInfor?.Gender || 2);
   const [image, setImage] = React.useState(userInfor?.Avatar);
   const [name, setName] = React.useState(userInfor?.Name);
-  const [message, setMessage] = React.useState('');
 
   const max = new Date().getUTCFullYear();
   const min = max - 40;
@@ -225,16 +224,14 @@ function UpdateProfile() {
 
     const tempCheck = checkRegex(userUpdate);
     if (tempCheck.result === 'error') {
-      setMessage(tempCheck.message);
       Swal.fire({
         icon: 'error',
-        title: message,
+        title: tempCheck.message,
         allowOutsideClick: true,
         showConfirmButton: false,
-        timer: 1500,
+        timer: 2000,
       });
     } else {
-      setMessage('');
       dispatch(updateUserProfile(userUpdate));
       Swal.fire({
         icon: 'success',
@@ -274,7 +271,7 @@ function UpdateProfile() {
         allowOutsideClick: false,
         title: 'File type must be png, jpg, jpeg!',
       });
-      e.target.value='';
+      e.target.value = null;
     }
   };
 
@@ -296,7 +293,9 @@ function UpdateProfile() {
                 <div>
                   <Card.Body>
                     <div className="card__header">
-                      <div className="text-center card-title h3">Edit profile</div>
+                      <div className="text-center card-title h3">
+                        Edit profile
+                      </div>
                       <Card.Subtitle className="my-4 text-muted title text-center">
                         Updates profile to let people know about you.
                       </Card.Subtitle>
