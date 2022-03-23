@@ -144,3 +144,33 @@ export const getListConversationByName =
       dispatch(getListConversationByNameSuccess([]));
     }
   };
+
+const updateListConversationWithSentMessageStart = () => {
+  return {
+    type: ConversationActionTypes.UPDATE_LIST_CONVERSATION_WITH_SENT_MESSAGE_START,
+  };
+};
+
+const updateListConversationWithSentMessageSuccess = (newListConversation) => {
+  return {
+    type: ConversationActionTypes.UPDATE_LIST_CONVERSATION_WITH_SENT_MESSAGE_SUCCESS,
+    payload: newListConversation,
+  };
+};
+
+export const updateListConversationWithSentMessage =
+  (data) => (dispatch, getState) => {
+    const {
+      conversations: { listConversation },
+    } = getState();
+    dispatch(updateListConversationWithSentMessageStart());
+    const newListConversation = listConversation.filter((e) => {
+      if (e.AccountId === data.ToAccount) {
+        e.LastMessage = data.Content;
+        e.SentDate = data.SentDate;
+        e.SeenDate = data.SeenDate;
+      }
+      return e;
+    });
+    dispatch(updateListConversationWithSentMessageSuccess(newListConversation));
+  };
