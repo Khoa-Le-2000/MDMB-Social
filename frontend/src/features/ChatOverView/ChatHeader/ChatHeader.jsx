@@ -20,7 +20,8 @@ const Wrapper = styled.div`
     rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
   visibility: ${(props) => (props.WindowEmpty ? 'hidden' : 'none')};
 `;
-const WrapperInfoPadding = styled.div``;
+const WrapperInfoPadding = styled.div`
+`;
 
 const WrapperInfo = styled.div`
   display: flex;
@@ -28,6 +29,8 @@ const WrapperInfo = styled.div`
 const WrapperText = styled.div`
   display: flex;
   flex-direction: column;
+  width:100%;
+  max-width: 100px;
 `;
 const Avatar = styled.div`
   margin-right: 10px;
@@ -49,6 +52,12 @@ const Name = styled.h3`
   font-weight: bold;
   margin-bottom: 5px;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow:hidden;
+  @media (max-width: 600px) {
+  font-size: 1rem;
+  margin-top: 5px;
+  }
 `;
 const Status = styled.span`
   font-size: 0.8rem;
@@ -56,6 +65,7 @@ const Status = styled.span`
   padding: 2px 5px;
   border-radius: 5px;
   width: 100%;
+  display:flex;
 `;
 const WrapperFeaturesPadding = styled.div`
 `;
@@ -114,6 +124,9 @@ const StyledColRight = styled(Col)`
   }
 `
 const FutureSwitchWrapper = styled(Feature)`
+  @media (max-width:500px){
+    visibility: hidden;
+  }
 `;
 
 const StatusText = styled.span``;

@@ -16,6 +16,9 @@ const WrapperText = styled.div`
   @media (max-width: 1000px) {
     padding: 20px;
   }
+  @media (max-width: 500px) {
+    padding-bottom: 50px;
+  }
 `;
 const Title = styled.div`
   text-align: center;

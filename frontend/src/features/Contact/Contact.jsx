@@ -33,9 +33,16 @@ const LeftSideWrapper = styled.div`
     max-width: 300px;
   }
   @media (max-width: 680px) {
-    width: 260px;
-    max-width: 300px;
+    min-width: 280px;
   }
+  @media (max-width: 590px) {
+    min-width: 230px;
+  }
+  @media (max-width: 415px) {
+    width:155px;
+    min-width: 155px;
+  }
+  
 `;
 const RightSideWrapper = styled.div`
   width: 100%;

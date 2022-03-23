@@ -18,6 +18,8 @@ const RightSideWrapper = styled.div`
   width: 100%;
   border-left: 1px solid black;
   overflow-x: hidden;
+  height:100vh;
+  justify-content: flex-start;
 `;
 const Header = styled.div`
   padding: 10px;

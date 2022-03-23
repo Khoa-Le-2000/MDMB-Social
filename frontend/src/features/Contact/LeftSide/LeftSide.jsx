@@ -18,6 +18,7 @@ const LeftSideWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
+  
 `;
 const Logo = styled.div`
   height: 7%;
@@ -25,7 +26,7 @@ const Logo = styled.div`
   padding-top: 2%;
   padding-bottom: 3%;
   justify-content: center;
-  @media (max-width: 700px) {
+  @media (max-width: 415px) {
     margin-left: auto;
     padding-top: 8%;
   }
@@ -90,6 +91,10 @@ const Avatar = styled.div`
       width: 40px;
       height: 40px;
     }
+    @media (max-width: 415px) {
+      width: 30px;
+      height: 30px;
+  }
   }
 `;
 const Name = styled.div`
@@ -100,11 +105,17 @@ const Name = styled.div`
   align-self: center;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 200px;
   @media (max-width: 1250px) {
     margin-left: 10px;
   }
   @media (max-width: 800px) {
     margin-left: 20px;
+  }
+  @media (max-width: 415px) {
+    margin-left: 15px;
+    font-size: 0.8rem;
   }
 `;
 const WrapSpinner = styled.div`
