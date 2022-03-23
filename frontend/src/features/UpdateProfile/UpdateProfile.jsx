@@ -275,6 +275,7 @@ function UpdateProfile() {
         allowOutsideClick: false,
         title: 'File type must be png, jpg, jpeg!',
       });
+      e.target.value='';
     }
   };
 
