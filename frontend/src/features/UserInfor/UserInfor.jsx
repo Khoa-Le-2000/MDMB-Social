@@ -1,9 +1,10 @@
 import {
   FemaleSign,
   Male as MaleFemale,
-  MaleSign,
+  MaleSign
 } from '@styled-icons/boxicons-regular';
 import { User, UserCheck, UserPlus, UserX } from '@styled-icons/boxicons-solid';
+import { Cake, Chat, Rss } from '@styled-icons/heroicons-solid';
 import { getListRelationship } from 'app/actions/listRelationship';
 import { AddFriend, getPartnerProfile } from 'app/actions/partnerProfile';
 import { getUserProfile } from 'app/actions/userProfile';
@@ -11,23 +12,21 @@ import { getListRelationshipSelector } from 'app/selectors/listRelationship';
 import { getAuth } from 'app/selectors/login';
 import {
   getPartnerProfileSelector,
-  isFetchingPartnerProfile,
+  isFetchingPartnerProfile
 } from 'app/selectors/partnerProfile';
-import styled from 'styled-components';
+import { getUserProfileSelector } from 'app/selectors/userProfile';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import MainLayout from 'layouts/MainLayout';
+import React, { useEffect } from 'react';
 import {
   Button,
   Container as BootstrapContainer,
-  Dropdown,
+  Dropdown
 } from 'react-bootstrap';
-import { Chat, Rss, Cake } from '@styled-icons/heroicons-solid';
-import { getConversations } from 'app/selectors/conversations';
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
-import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getUserProfileSelector } from 'app/selectors/userProfile';
+import styled from 'styled-components';
 dayjs.extend(relativeTime);
 
 const Wrapper = styled.div`
@@ -178,7 +177,7 @@ function UserInfor() {
   var AccountId = useSelector(getAuth)?.accountId;
   const isFetching = useSelector(isFetchingPartnerProfile);
 
-  if (id == AccountId) navigate('/update-profile');
+  if (id === AccountId) navigate('/update-profile');
 
   useEffect(() => {
     dispatch(getPartnerProfile(id));
@@ -190,7 +189,7 @@ function UserInfor() {
   const partnerInfor = useSelector(getPartnerProfileSelector);
   const listRelationship = useSelector(getListRelationshipSelector);
   const RelationshipInfor = listRelationship.filter(
-    (item) => (item.RelatedAccountId == id || item.RelatingAccountId == id)
+    (item) => item.RelatedAccountId === id || item.RelatingAccountId === id
   )[0];
 
   const Type = RelationshipInfor?.Type;
@@ -254,7 +253,7 @@ function UserInfor() {
                 <NameCard>{partnerInfor?.Name}</NameCard>
               </LineWrapper>
               <LineWrapper>
-                {Case == 0 && (
+                {Case === 0 && (
                   <>
                     <Dropdown>
                       <Dropdown.Toggle
@@ -281,13 +280,13 @@ function UserInfor() {
                     </Button>
                   </>
                 )}
-                {Case == 1 && (
+                {Case === 1 && (
                   <ButtonDefault className="btn" onClick={handleAddFriendClick}>
                     <AddFriendIcon />
                     Add Friend
                   </ButtonDefault>
                 )}
-                {Case == 2 && (
+                {Case === 2 && (
                   <ButtonDefault
                     className="btn"
                     onClick={handleDeleteRelationship}
@@ -296,7 +295,7 @@ function UserInfor() {
                     Cancel Request
                   </ButtonDefault>
                 )}
-                {Case == 3 && (
+                {Case === 3 && (
                   <>
                     <Button onClick={AcceptFriendBtnClick}>
                       <AddFriendIcon /> Accept
@@ -329,9 +328,9 @@ function UserInfor() {
               </LineWrapper>
               <LineWrapper>
                 <InformationHeader>
-                  {partnerInfor?.Gender == 0 ? (
+                  {partnerInfor?.Gender === 0 ? (
                     <FemaleIcon />
-                  ) : partnerInfor?.Gender == 1 ? (
+                  ) : partnerInfor?.Gender === 1 ? (
                     <MaleIcon />
                   ) : (
                     <GenderIcon />
@@ -339,9 +338,9 @@ function UserInfor() {
                   Gender
                 </InformationHeader>
                 <Information>
-                  {partnerInfor?.Gender == 0
+                  {partnerInfor?.Gender === 0
                     ? 'Male'
-                    : partnerInfor?.Gender == 1
+                    : partnerInfor?.Gender === 1
                     ? 'Female'
                     : 'Unset'}
                 </Information>

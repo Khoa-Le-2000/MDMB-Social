@@ -13,7 +13,6 @@ const WrapperText = styled.div`
   border-radius: 10px;
   padding: -10%;
   box-shadow: -4px 4px 4px 4px #d8d5d8;
-  /* box-shadow: inset 0 20px 20px -20px #000000; */
   @media (max-width: 1000px) {
     padding: 20px;
   }
@@ -61,10 +60,6 @@ function MessageEmpty() {
   return (
     <Wrapper>
       <WrapperText>
-        {/* <img
-          src="https://images.unsplash.com/photo-1638913974071-ad0045d13691?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwxNnx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60"
-          alt=""
-        /> */}
         <MiddlePicture />
         <Title>No messages yet! </Title>
         <Description>
