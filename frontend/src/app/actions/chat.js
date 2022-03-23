@@ -107,7 +107,7 @@ const seenMessageSuccess = (messageId) => {
   };
 };
 
-export const seenMessage = (messageId) => async (dispatch, getState) => {
+export const updateSeenMessage = (messageId) => async (dispatch, getState) => {
   const {
     chat: { listMessage },
   } = getState();
