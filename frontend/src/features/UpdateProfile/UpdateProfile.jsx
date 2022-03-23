@@ -297,7 +297,7 @@ function UpdateProfile() {
                 <div>
                   <Card.Body>
                     <div className="card__header">
-                      <div class="text-center card-title h3">Edit profile</div>
+                      <div className="text-center card-title h3">Edit profile</div>
                       <Card.Subtitle className="my-4 text-muted title text-center">
                         Updates profile to let people know about you.
                       </Card.Subtitle>

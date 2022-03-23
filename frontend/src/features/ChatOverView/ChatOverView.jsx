@@ -3,20 +3,19 @@ import {
   receiveMessage,
   seenMessage,
   selectRoom,
-  sendMessage,
+  sendMessage
 } from 'app/actions/chat';
 import {
   getListConversation,
   updateCountUnreadConversation,
-  updateListConversationWithNewMessage,
+  updateListConversationWithNewMessage
 } from 'app/actions/conversations';
 import {
   addUserOffline,
   addUserOnline,
   getListUsersOnline,
-  initSocket,
+  initSocket
 } from 'app/actions/socket';
-import { getListMessageLatest } from 'app/selectors/chat';
 import { getConversations } from 'app/selectors/conversations';
 import { getAuth } from 'app/selectors/login';
 import { getSocket } from 'app/selectors/socket';
@@ -30,7 +29,6 @@ import { Col, Container, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-
 const Wrapper = styled(Container)`
   height: 100vh;
   overflow: hidden;
@@ -46,7 +44,7 @@ const ColBS1 = styled(Col)`
   width: 25%;
   @media (max-width: 1250px) {
     width: calc(100% - 90px);
-    display: ${(props) => (props.roomidselected ? 'none' : 'unset')};
+    display: ${(props) => (props.active ? 'none' : 'unset')};
   }
 `;
 const ColBS2 = styled(Col)`
@@ -55,7 +53,7 @@ const ColBS2 = styled(Col)`
   width: calc(75% - 80px);
   @media (max-width: 1250px) {
     width: calc(100% - 90px);
-    display: ${(props) => (props.roomidselected ? 'unset' : 'none')};
+    display: ${(props) => (props.active ? 'unset' : 'none')};
   }
 `;
 const LeftBar = styled(Col)`
@@ -182,10 +180,10 @@ function ChatOverView() {
         <LeftBar lg={1} xs={1} md={1}>
           <Sidebar MessageActive={true} />
         </LeftBar>
-        <ColBS1 lg={3} xs={3} md={3} roomidselected={roomId ? 1 : 0}>
+        <ColBS1 lg={3} xs={3} md={3} active={roomId ? 1 : 0}>
           <ChatConversations onSelectRoom={handleSelectRoomClick} />
         </ColBS1>
-        <ColBS2 lg={8} xs={8} md={8} roomidselected={roomId ? 1 : 0}>
+        <ColBS2 lg={8} xs={8} md={8} active={roomId ? 1 : 0}>
           {roomId ? (
             <ChatWindow
               onSendMessage={handleSendMessage}
