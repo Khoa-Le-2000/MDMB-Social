@@ -374,6 +374,22 @@ function getListHaveRelationship(AccountId) {
     });
   });
 }
+
+function getListFriendRecommended(AccountId) {
+  let sql = `CALL MDMB.proc_get_list_friend_recommended(?);`
+  return new Promise((resolve, reject) => {
+    var con = connection.createConnection();
+    con.connect(function (err) {
+      if (err) throw err;
+      con.query(sql, [AccountId],
+        function (err, result) {
+          connection.closeConnection(con);
+          if (err) return reject({result:'error'});
+          resolve(result);
+        });
+    });
+  });
+}
 module.exports = {
   getAccount,
   getAccountByEmail,
@@ -389,5 +405,6 @@ module.exports = {
   getAccountListSearching,
   setRelationship,
   getListHaveRelationship,
-  deleteRelationship
+  deleteRelationship,
+  getListFriendRecommended
 }

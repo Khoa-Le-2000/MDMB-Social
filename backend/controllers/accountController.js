@@ -528,6 +528,15 @@ async function getListHaveRelationship(req, res) {
   if (listFriend) res.status(200).send({ result: listFriend });
   else res.status(201).send({ result: "get list relationship failed" });
 }
+async function getListFriendRecommended(req, res){
+  var AccountId = req.query.AccountId;
+
+  if(!AccountId) return res.status(201).send({result:[]});
+
+  let listFriendRecommended= await AccountDAO.getListFriendRecommended(AccountId);
+  if (listFriendRecommended[0]) res.status(200).send({ result: listFriendRecommended[0] });
+  else res.status(201).send({ result: "get list relationship failed" });
+}
 module.exports = {
   login,
   loginByGoogle,
@@ -542,5 +551,6 @@ module.exports = {
   getAccountInfor,
   getAccountListSearching,
   AddFriend,
-  getListHaveRelationship
+  getListHaveRelationship,
+  getListFriendRecommended
 };

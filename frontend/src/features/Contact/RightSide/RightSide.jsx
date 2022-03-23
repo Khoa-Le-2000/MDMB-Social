@@ -8,6 +8,8 @@ import React from 'react';
 import { getAuth } from 'app/selectors/login';
 import { AddFriend, getSearchAccount } from 'app/actions/partnerProfile';
 import { useNavigate } from '../../../../node_modules/react-router-dom/index';
+import { getListFriendRecommended } from 'app/actions/listFriendRecommended';
+import { getListFriendRecommendedSelector } from 'app/selectors/listFriendRecommended';
 
 const RightSideWrapper = styled.div`
   display: flex;
@@ -174,6 +176,9 @@ const RemoveButton = styled(ButtonBS)`
     padding: 0.3rem;
   }
 `;
+const TopFriendRequest = styled.div`
+  border-bottom: 1px solid #d6dbe0;
+`;
 function updateRelationship(AccountId, id, type, dispatch) {
   if (AccountId < id)
     dispatch(AddFriend(AccountId, id, type)).then(() =>
@@ -190,8 +195,11 @@ export default function RightSide() {
   const navigate = useNavigate();
   const AccountId = useSelector(getAuth)?.accountId;
   const listRelationship = useSelector(getListRelationshipSelector);
+  const listFriendRecommended = useSelector(getListFriendRecommendedSelector);
+  console.log(listFriendRecommended);
   React.useEffect(() => {
     dispatch(getListRelationship(AccountId));
+    dispatch(getListFriendRecommended(AccountId));
   }, []);
 
   const newListRelationship = listRelationship?.filter(
@@ -210,76 +218,86 @@ export default function RightSide() {
   const handleAvatarClick = (AccountId) => {
     navigate(`/userinfor/${AccountId}`);
   };
+  const handleAddfriendClick = (id) => {
+    if (AccountId < id)
+      dispatch(AddFriend(AccountId, id, 'lsendpending')).then(() => {
+        dispatch(getListFriendRecommended(AccountId));
+      });
+    else
+      dispatch(AddFriend(id, AccountId, 'rsendpending')).then(() => {
+        dispatch(getListFriendRecommended(AccountId));
+      });
+  };
   return (
     <RightSideWrapper>
       <Header>Friend you may know...</Header>
-      <Title>Friend Requests</Title>
+      {newListRelationship?.length > 0 && <Title>Friend Requests</Title>}
+      <TopFriendRequest>
+        <RowBS>
+          {newListRelationship.map((item, index) => (
+            <CardFriendRequest key={index}>
+              <Avatar
+                onClick={() => {
+                  handleAvatarClick(
+                    item.RelatedAccountId === AccountId
+                      ? item.RelatingAccountId
+                      : item.RelatedAccountId
+                  );
+                }}
+              >
+                <img src={item.Avatar} alt="avatar" />
+              </Avatar>
+              <Name>{item.Name} asdasd</Name>
+              <AcceptButton
+                onClick={(e) => {
+                  handleAcceptClick(
+                    item.RelatedAccountId === AccountId
+                      ? item.RelatingAccountId
+                      : item.RelatedAccountId
+                  );
+                }}
+              >
+                <AcceptIcon /> Accept
+              </AcceptButton>
+              <RemoveButton
+                onClick={() => {
+                  HandleRemoveClick(
+                    item.RelatedAccountId === AccountId
+                      ? item.RelatingAccountId
+                      : item.RelatedAccountId
+                  );
+                }}
+              >
+                <RemoveIcon />
+                Remove
+              </RemoveButton>
+            </CardFriendRequest>
+          ))}
+        </RowBS>
+      </TopFriendRequest>
+      {listFriendRecommended.length>0&&<Title>
+        Recommend ({listFriendRecommended?.length} <AddFriendIcon />)
+      </Title>}
       <RowBS>
-        {newListRelationship.map((item, index) => (
-          <CardFriendRequest key={index}>
-            <Avatar
-              onClick={() => {
-                handleAvatarClick(
-                  item.RelatedAccountId === AccountId
-                    ? item.RelatingAccountId
-                    : item.RelatedAccountId
-                );
-              }}
-            >
+        {listFriendRecommended.map((item, index) => (
+          <CardFriendRecommend key={index}>
+            <Avatar onClick={() => {
+                handleAvatarClick(item.AccountId);
+              }}>
               <img src={item.Avatar} alt="avatar" />
             </Avatar>
-            <Name>{item.Name} asdasd</Name>
-            <AcceptButton
-              onClick={(e) => {
-                handleAcceptClick(
-                  item.RelatedAccountId === AccountId
-                    ? item.RelatingAccountId
-                    : item.RelatedAccountId
-                );
-              }}
-            >
-              <AcceptIcon /> Accept
-            </AcceptButton>
-            <RemoveButton
+            <Name>{item.Name}</Name>
+            <Description>From friend recommended</Description>
+            <AddFriendButton
               onClick={() => {
-                HandleRemoveClick(
-                  item.RelatedAccountId === AccountId
-                    ? item.RelatingAccountId
-                    : item.RelatedAccountId
-                );
+                handleAddfriendClick(item.AccountId);
               }}
             >
-              <RemoveIcon />
-              Remove
-            </RemoveButton>
-          </CardFriendRequest>
+              <AddFriendIcon />
+              Add Friend
+            </AddFriendButton>
+          </CardFriendRecommend>
         ))}
-      </RowBS>
-      <hr />
-      <Title>
-        Recommend (33 <AddFriendIcon />)
-      </Title>
-      <RowBS>
-        {Array(50)
-          .fill(1)
-          .map((item, index) => (
-            <CardFriendRecommend key={index}>
-              <Avatar>
-                <img
-                  src={
-                    'https://www.toponseek.com/blogs/wp-content/uploads/2019/06/toi-uu-hinh-anh-optimize-image-4-1200x700.jpg'
-                  }
-                  alt="avatar"
-                />
-              </Avatar>
-              <Name>Dino</Name>
-              <Description>From friend recommended</Description>
-              <AddFriendButton>
-                <AddFriendIcon />
-                Add Friend
-              </AddFriendButton>
-            </CardFriendRecommend>
-          ))}
       </RowBS>
     </RightSideWrapper>
   );

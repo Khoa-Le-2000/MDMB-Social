@@ -31,6 +31,12 @@ const userApi = {
     const url = `/account/list-have-relationship?AccountId=${AccountId}`;
     return axiosClient.get(url);
   },
+  getListFriendRecommended: (AccountId) => {
+    const url = `/account/list-friend-recommended?AccountId=${AccountId}`;
+    return axiosClient.get(url);
+  },
+  
+  
 };
 
 export default userApi;
