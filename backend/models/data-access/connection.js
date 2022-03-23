@@ -20,6 +20,20 @@ const pool = mysql.createPool({
     connectionLimit: 50
 });
 
+async function getConnection() {
+    return new Promise((resolve, reject) => {
+        pool.getConnection(function (err, connection) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(connection);
+            }
+        });
+    }).catch(err => {
+        console.log(err);
+    });
+}
+
 // async function setTimeZone(connection){
 //     let sql = 'SET time_zone = "+07:00"';
 //     await connection.query(sql, function(err, result){
@@ -36,6 +50,8 @@ function closeConnection(connection){
 
 module.exports = {
     createConnection,
-    closeConnection
+    closeConnection,
+    pool,
+    getConnection
     // setTimeZone
 }
