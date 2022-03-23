@@ -93,7 +93,7 @@ const conversationsReducer = (state = initialState, action) => {
         error: false,
         success: false,
         message: null,
-      }
+      };
     case ConversationActionTypes.UPDATE_LIST_CONVERSATION_WITH_SENT_MESSAGE_SUCCESS:
       return {
         ...state,
@@ -102,7 +102,24 @@ const conversationsReducer = (state = initialState, action) => {
         success: true,
         message: null,
         listConversation: action.payload,
-      }
+      };
+    case ConversationActionTypes.UPDATE_LIST_CONVERSATION_WITH_SEEN_MESSAGE_START:
+      return {
+        ...state,
+        isFetching: true,
+        error: false,
+        success: false,
+        message: null,
+      };
+    case ConversationActionTypes.UPDATE_LIST_CONVERSATION_WITH_SEEN_MESSAGE_SUCCESS:
+      return {
+        ...state,
+        isFetching: false,
+        error: false,
+        success: true,
+        message: null,
+        listConversation: action.payload,
+      };
     default:
       return state;
   }
