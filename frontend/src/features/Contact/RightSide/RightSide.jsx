@@ -203,7 +203,6 @@ export default function RightSide() {
   const handleAcceptClick = (id) => {
     updateRelationship(AccountId, id, 'friend', dispatch)
     dispatch(getListRelationship(AccountId));
-    document.getElementsByClassName('BtnRemoveFocus').forEach(item=>item.Blur());
   };
   const HandleRemoveClick = (id) => {
     updateRelationship(AccountId, id, 'delete', dispatch)
@@ -232,7 +231,7 @@ export default function RightSide() {
               <img src={item.Avatar} alt="avatar" />
             </Avatar>
             <Name>{item.Name} asdasd</Name>
-            <AcceptButton className="BtnRemoveFocus"
+            <AcceptButton 
               onClick={(e) => {
                 handleAcceptClick(
                   item.RelatedAccountId === AccountId
@@ -243,7 +242,7 @@ export default function RightSide() {
             >
               <AcceptIcon /> Accept
             </AcceptButton>
-            <RemoveButton className="BtnRemoveFocus"
+            <RemoveButton
               onClick={() => {
                 HandleRemoveClick(
                   item.RelatedAccountId === AccountId
