@@ -97,7 +97,7 @@ function register(req, res) {
   let regEmail =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,45}))$/;
   let regPhone = /(84|0[3|5|7|8|9])+([0-9]{8})$/;
-  let regPass = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{6,60})$/;
+  let regPass = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\w\W]{6,60}$/;
 
   if (
     !Name ||
@@ -109,7 +109,7 @@ function register(req, res) {
     Password.trim() == null ||
     Phone.trim() == null
   ) {
-    return res.status(401).send({
+    return res.status(201).send({
       result: "incorrect format for: empty value",
       description: `Not allow empty value for${!Name || Name.trim() == null ? " Name" : ""}${!Email || Email.trim() == null ? " Email" : ""
         }${!Password || Password.trim() == null ? " Password" : ""}${!Phone || Phone.trim() == null ? " Phone" : ""
@@ -118,7 +118,7 @@ function register(req, res) {
   }
 
   if (!regName.test(Name)) {
-    return res.status(401).send({
+    return res.status(201).send({
       result: "incorrect format for: Name",
       description:
         2 <= Name.length && Name.length <= 45
@@ -127,14 +127,14 @@ function register(req, res) {
     });
   }
   if (!regEmail.test(Email) || Email.length > 45) {
-    return res.status(401).send({
+    return res.status(201).send({
       result: "incorrect format for: Email",
       description:
         Email.length <= 45 ? "Valid Email look like this: 123@gmail.com" : "Email length < 45",
     });
   }
   if (!regPhone.test(Phone)) {
-    return res.status(401).send({
+    return res.status(201).send({
       result: "incorrect format for: Phone",
       description: `${10 == Phone.length || 11 == Phone.length
         ? "Valid Phone look like this: 098333**** or 848333****"
@@ -143,7 +143,7 @@ function register(req, res) {
     });
   }
   if (!regPass.test(Password)) {
-    res.status(401).send({
+    res.status(201).send({
       result: "incorrect format for: Password",
       description: `${6 <= Password.length && Password.length <= 45
         ? "Valid Password must contains a Uppercase, a lowercase, and a number"
@@ -153,7 +153,7 @@ function register(req, res) {
     return;
   }
   AccountDAO.getAccountId(Email, Phone, (result) => {
-    if (result) res.status(401).send({ result: "account existed", description: "account existed" });
+    if (result) res.status(201).send({ result: "account existed", description: "account existed" });
     else {
       if (Email) Email = Email.toLowerCase();
       if (Name)
@@ -193,14 +193,14 @@ function update(req, res) {
   let regGender = /^\d$/;
 
   if (!Email && !Phone) {
-    return res.status(401).send({
+    return res.status(201).send({
       result: "incorrect fields",
       description: "Must recieved a Phone or Email",
     });
   }
 
   if (!regName.test(Name)) {
-    return res.status(401).send({
+    return res.status(201).send({
       result: "incorrect format for: Name",
       description:
         2 <= Name.length && Name.length <= 45
@@ -210,7 +210,7 @@ function update(req, res) {
   }
   if (Email)
     if (!regEmail.test(Email) || Email.length > 45) {
-      return res.status(401).send({
+      return res.status(201).send({
         result: "incorrect format for: Email",
         description:
           Email.length <= 45 ? "Valid Email look like this: 123@gmail.com" : "Email length < 45",
@@ -218,7 +218,7 @@ function update(req, res) {
     }
   if (Phone)
     if (!regPhone.test(Phone)) {
-      return res.status(401).send({
+      return res.status(201).send({
         result: "incorrect format for: Phone",
         description: `${10 == Phone.length ? "Valid Phone look like this: 098333****" : "Phone length 10 char"
           }`,
@@ -226,7 +226,7 @@ function update(req, res) {
     }
   if (Password)
     if (!regPass.test(Password)) {
-      return res.status(401).send({
+      return res.status(201).send({
         result: "incorrect format for: Password",
         description: `${6 <= Password.length && Password.length <= 45
           ? "Valid Password must contains a Uppercase, a lowercase, and a number"
@@ -236,7 +236,7 @@ function update(req, res) {
     }
   if (Avatar)
     if (!regLink.test(Avatar) || Avatar.length > 200) {
-      return res.status(401).send({
+      return res.status(201).send({
         result: "incorrect format for: Avatar",
         description: `${Avatar.length <= 200
           ? "invalid Url: incorrect format for url"
@@ -246,7 +246,7 @@ function update(req, res) {
     }
   if (Birthday)
     if (!regBirthday.test(Birthday)) {
-      return res.status(401).send({
+      return res.status(201).send({
         result: "incorrect format for: Birthday",
         description: `${10 == Birthday.length
           ? "Birthday look like this: (yyyy/mm/dd)"
@@ -256,14 +256,14 @@ function update(req, res) {
     }
   if (Birthday)
     if (!moment(Birthday, "YYYY.MM.DD").isValid()) {
-      return res.status(401).send({
+      return res.status(201).send({
         result: "incorrect format for: Birthday",
         description: "Date not exist",
       });
     }
   if (Gender)
     if (!regGender.test(Gender)) {
-      return res.status(401).send({
+      return res.status(201).send({
         result: "incorrect format for: Gender",
         description: "Gender must be one digit",
       });
@@ -271,7 +271,7 @@ function update(req, res) {
   AccountDAO.getAccountId(Email ? Email.trim() : null, Phone ? Phone.trim() : null, (AccountId) => {
     if (!AccountId)
       res
-        .status(401)
+        .status(201)
         .send({ result: "user not found", description: "Could not find a user by Phone/Email" });
     else {
       if (Email) Email = Email.toLowerCase();
@@ -294,7 +294,7 @@ function update(req, res) {
                 res.status(200).send({ result: "update successful", description: "successful" });
               else
                 res
-                  .status(401)
+                  .status(201)
                   .send({ result: "update failure", description: "There must be a error..." });
             }
           );
@@ -313,7 +313,7 @@ function update(req, res) {
             if (result) res.status(200).send({ result: "update successful" });
             else
               res
-                .status(401)
+                .status(201)
                 .send({ result: "update failure", description: "There must be a error..." });
           }
         );
@@ -349,7 +349,7 @@ function sendVerifyEmail(req, res, Email, token) {
     `,
   };
   transporter.sendMail(mailOptions, (err, succ) => {
-    if (err) return res.status(401).send({ result: "Cant send email" });
+    if (err) return res.status(201).send({ result: "Cant send email" });
     else res.status(200).send({ result: "email sent successful" });
   });
 }
@@ -403,7 +403,7 @@ function registerByGoogle(req, res) {
     Email.trim() == null ||
     Phone.trim() == null
   ) {
-    return res.status(401).send({
+    return res.status(201).send({
       result: "incorrect format for: empty value",
       description: `Not allow empty value for${!Name || Name.trim() == null ? " Name" : ""}${!Email || Email.trim() == null ? " Email" : ""
         }${!Phone || Phone.trim() == null ? " Phone" : ""}`,
@@ -411,7 +411,7 @@ function registerByGoogle(req, res) {
   }
 
   if (!regName.test(Name)) {
-    return res.status(401).send({
+    return res.status(201).send({
       result: "incorrect format for: Name",
       description:
         2 <= Name.length && Name.length <= 45
@@ -420,14 +420,14 @@ function registerByGoogle(req, res) {
     });
   }
   if (!regEmail.test(Email) || Email.length > 45) {
-    return res.status(401).send({
+    return res.status(201).send({
       result: "incorrect format for: Email",
       description:
         Email.length <= 45 ? "Valid Email look like this: 123@gmail.com" : "Email length < 45",
     });
   }
   if (!regPhone.test(Phone)) {
-    return res.status(401).send({
+    return res.status(201).send({
       result: "incorrect format for: Phone",
       description: `${10 == Phone.length || 11 == Phone.length
         ? "Valid Phone look like this: 098333**** or 848333****"
@@ -436,7 +436,7 @@ function registerByGoogle(req, res) {
     });
   }
   AccountDAO.getAccountId(Email, Phone, (result) => {
-    if (result) res.status(401).send({ result: "account existed", description: "account existed" });
+    if (result) res.status(201).send({ result: "account existed", description: "account existed" });
     else {
       if (Email) Email = Email.toLowerCase();
       if (Name)
@@ -453,7 +453,7 @@ async function getListFriend(req, res) {
   var accountId = req.query.accountId;
   let listFriend = await AccountDAO.getListFriend(accountId);
   if (listFriend) res.status(200).send({ result: listFriend });
-  else res.status(401).send({ result: "get list friend failed" });
+  else res.status(201).send({ result: "get list friend failed" });
   // , (result) => {
   //   if (result) res.status(200).send({ result: result });
   //   else res.status(401).send({ result: "failure" });
@@ -472,7 +472,7 @@ async function getListFriendWithLastMessage(req, res) {
     }
   });
   if (listFriend) res.status(200).send({ result: listFriend[0] });
-  else res.status(401).send({ result: "get list friend failed" });
+  else res.status(201).send({ result: "get list friend failed" });
 }
 
 async function getListFriendWithLastMessageCountUnseen(req, res) {
@@ -487,7 +487,7 @@ async function getListFriendWithLastMessageCountUnseen(req, res) {
     }
   });
   if (listFriend) res.status(200).send({ result: listFriend[0] });
-  else res.status(401).send({ result: "get list friend failed" });
+  else res.status(201).send({ result: "get list friend failed" });
 }
 
 async function getAccountInfor(req, res) {

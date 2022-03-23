@@ -112,7 +112,7 @@ const schema = yup.object().shape({
     .max(60, 'Passwords must be less than 60 characters in length')
     .required('This field is required')
     .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{6,32})/,
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\w\W]{6,60}$/,
       'Passwords must be at least 6 characters, one uppercase, one lowercase and one number'
     ),
   confirmPassword: yup

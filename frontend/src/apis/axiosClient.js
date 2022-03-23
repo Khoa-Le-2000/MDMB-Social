@@ -25,6 +25,7 @@ export const interceptor = (store) => {
   );
   axiosClient.interceptors.response.use(
     (response) => {
+      console.log(response)
       if (response && response.data) {
         return response.data;
       }
