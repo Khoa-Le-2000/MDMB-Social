@@ -209,7 +209,7 @@ export default function LeftSide() {
           <>
             <HeaderCard>Searching</HeaderCard>
             <UserNotFound>
-              Cound't found any not your friend user for "{searchValue}", check
+              Coundn't find any not your friend user for "{searchValue}", check
               your spell or try complete word!
             </UserNotFound>
           </>
