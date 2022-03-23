@@ -11,6 +11,15 @@ function createConnection(){
     });
 }
 
+const pool = mysql.createPool({
+    host: config.HOST,
+    user: config.USER,
+    password: config.PASSWORD,
+    database: config.DATABASE,
+    timezone: 'utc',
+    connectionLimit: 50
+});
+
 // async function setTimeZone(connection){
 //     let sql = 'SET time_zone = "+07:00"';
 //     await connection.query(sql, function(err, result){
