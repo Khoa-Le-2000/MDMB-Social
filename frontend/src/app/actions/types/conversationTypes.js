@@ -16,4 +16,9 @@ export const ConversationActionTypes = {
   GET_LIST_CONVERSATION_BY_NAME_START: 'get/listConversation/by/name/start',
   GET_LIST_CONVERSATION_BY_NAME_SUCCESS: 'get/listConversation/by/name/success',
   GET_LIST_CONVERSATION_BY_NAME_FAILURE: 'get/listConversation/by/name/failure',
+
+  UPDATE_LIST_CONVERSATION_WITH_SENT_MESSAGE_START:
+    'update/listConversation/with/sent/message/start',
+  UPDATE_LIST_CONVERSATION_WITH_SENT_MESSAGE_SUCCESS:
+    'update/listConversation/with/sent/message/success',
 };
