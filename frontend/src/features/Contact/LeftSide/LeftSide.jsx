@@ -209,8 +209,7 @@ export default function LeftSide() {
           <>
             <HeaderCard>Searching</HeaderCard>
             <UserNotFound>
-              Coundn't find any not your friend user for "{searchValue}", check
-              your spell or try complete word!
+            Not seeing your friends here? Send them an invite to join MDMB Social!
             </UserNotFound>
           </>
         )}
