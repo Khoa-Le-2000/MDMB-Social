@@ -13,12 +13,11 @@ const WarpLink = styled.div`
 const WarpRawLink = styled.a`
   font-size: 1.125rem;
   margin-left: 5px;
-  /* color: #0a58ca; */
   :hover {
     text-decoration: underline;
     color: #00bcd4;
   }
-  color:${({owner})=>owner?"#0a58ca":"#fffff" }
+  color: ${({ owner }) => (owner ? '#0a58ca' : '#fffff')};
 `;
 
 const WarpTitle = styled.a`
@@ -63,28 +62,30 @@ function getUrlDisplay(url, urlInfor) {
   });
   return temp;
 }
-function CardLink({ url, content,owner }) {
+function CardLink({ url, content, owner }) {
   const dispatch = useDispatch();
   const urlInfor = useSelector(getPreviewLinkSelector);
 
   if (!url.match('^https?://')) url = 'http://' + url;
 
   useEffect(() => {
-    if (!checkUrlInState(url, urlInfor)) dispatch(getPreviewLink(url))
+    if (!checkUrlInState(url, urlInfor)) dispatch(getPreviewLink(url));
   }, []);
+  
   function handleClick() {
     window.open(url, '_blank');
   }
   var urlDisplay;
   if (checkUrlInState(url, urlInfor)) urlDisplay = getUrlDisplay(url, urlInfor);
-  // console.log(urlDisplay)
   return (
     <WarpLink onClick={handleClick}>
       <WarpRawLink owner={owner}>{content}</WarpRawLink>
       <br />
       {urlDisplay?.image && <Thumbnail src={urlDisplay.image} alt="" />}
       {<WarpTitle>{urlDisplay?.title}</WarpTitle>}
-      {urlDisplay?.description && <WarpDescription>{urlDisplay.description}</WarpDescription>}
+      {urlDisplay?.description && (
+        <WarpDescription>{urlDisplay.description}</WarpDescription>
+      )}
     </WarpLink>
   );
 }

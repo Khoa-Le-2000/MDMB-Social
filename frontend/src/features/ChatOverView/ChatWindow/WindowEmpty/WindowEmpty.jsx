@@ -147,7 +147,6 @@ function WindowEmpty() {
       </WrapperBottom>
       <Footer> You are signin as {userInfo.Email||"Loading"} </Footer>
       <Footer2>
-        {' '}
         Try switching accounts if you not see your contact history,{' '}
         <Link href="https://mail.google.com/">learn more</Link> on{' '}
         <Link href="https://mail.google.com/">mdmbsocial@gmail.com</Link>{' '}
