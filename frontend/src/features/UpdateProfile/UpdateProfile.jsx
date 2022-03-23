@@ -227,7 +227,6 @@ function UpdateProfile() {
     if (tempCheck.result === 'error') {
       setMessage(tempCheck.message);
       Swal.fire({
-        position: 'top-end',
         icon: 'error',
         title: message,
         allowOutsideClick: true,
