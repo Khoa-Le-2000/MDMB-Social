@@ -3,19 +3,19 @@ import {
   receiveMessage,
   seenMessage,
   selectRoom,
-  sendMessage
+  sendMessage,
 } from 'app/actions/chat';
 import {
   getListConversation,
   updateCountUnreadConversation,
-  updateListConversationWithNewMessage
+  updateListConversationWithNewMessage,
   updateListConversationWithSentMessage,
 } from 'app/actions/conversations';
 import {
   addUserOffline,
   addUserOnline,
   getListUsersOnline,
-  initSocket
+  initSocket,
 } from 'app/actions/socket';
 import { getConversations } from 'app/selectors/conversations';
 import { getAuth } from 'app/selectors/login';
