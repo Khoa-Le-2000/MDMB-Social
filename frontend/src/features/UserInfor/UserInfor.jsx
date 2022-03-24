@@ -175,12 +175,13 @@ function UserInfor() {
   const navigate = useNavigate();
   const { id } = useParams();
   var AccountId = useSelector(getAuth)?.accountId;
+  
   const isFetching = useSelector(isFetchingPartnerProfile);
 
-  if (id === AccountId) navigate('/update-profile');
-
   useEffect(() => {
-    dispatch(getPartnerProfile(id));
+  if (id == AccountId) navigate('/update-profile');
+  
+  dispatch(getPartnerProfile(id));
     dispatch(getUserProfile(AccountId));
     dispatch(getListRelationship(AccountId));
   }, []);
@@ -216,7 +217,6 @@ function UserInfor() {
       RelationshipInfor.RelatingAccountId !== AccountId)
   )
     Case = 3;
-  console.log(Case)
   const handleDirectMessageClick = () => {
     navigate(`/chat/${id}`);
   };

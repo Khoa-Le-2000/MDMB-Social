@@ -198,7 +198,6 @@ export default function RightSide() {
   const AccountId = useSelector(getAuth)?.accountId;
   const listRelationship = useSelector(getListRelationshipSelector);
   const listFriendRecommended = useSelector(getListFriendRecommendedSelector);
-  console.log(listFriendRecommended);
   React.useEffect(() => {
     dispatch(getListRelationship(AccountId));
     dispatch(getListFriendRecommended(AccountId));
